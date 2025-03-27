@@ -346,25 +346,39 @@ class StudentRegistrationController extends Controller
 
 
 
-
     public function madrashaWariStuNibondList($madrasha_id = null)
     {
         // মাদরাসা আইডি অনুসারে ছাত্রদের তালিকা পাওয়া
         $students = [];
-
+    
         if ($madrasha_id) {
-            // reg_stu_informations টেবিল থেকে ছাত্রদের তথ্য সংগ্রহ করা
-            $students = DB::table('reg_stu_informations')
+            // Eloquent ব্যবহার করে ছাত্রদের তথ্য সংগ্রহ করা
+            $students = reg_stu_information::with(['latestLog' => function($query) {
+                    $query->latest();
+                }])
                 ->where('madrasha_id', $madrasha_id)
-                ->select('id', 'name_bn', 'Date_of_birth', 'father_name_bn', 'mother_name_bn', 'student_image')
-                ->get();
+                ->get()
+                ->map(function($student) {
+                    return [
+                        'id' => $student->id,
+                        'name_bn' => $student->name_bn,
+                        'Date_of_birth' => $student->Date_of_birth,
+                        'father_name_bn' => $student->father_name_bn,
+                        'mother_name_bn' => $student->mother_name_bn,
+                        'student_image' => $student->student_image,
+                        'status' => $student->latestLog ? $student->latestLog->status : null,
+                        'status_date' => $student->latestLog ? $student->latestLog->created_at : null
+                    ];
+                });
         }
-
+    
         return Inertia::render('nibondon_for_admin/madrashaWari_stu_nibond_list', [
             'students' => $students,
             'madrasha_id' => $madrasha_id
         ]);
     }
+    
+    
 
 
 
@@ -502,7 +516,7 @@ class StudentRegistrationController extends Controller
 
 
 
-
+// for madrasa view
 
     public function studentRegistrationView($id)
     {
@@ -516,7 +530,24 @@ class StudentRegistrationController extends Controller
     }
 
 
+// for admin view
 
+public function AdminstudentRegistrationView($id)
+{
+    // reg_stu_informations টেবিল থেকে ডাটা নিয়ে আসা
+    $student = reg_stu_information::findOrFail($id);
+
+    // পুরো ডাটা পাঠানো হচ্ছে
+    return inertia('nibondon_for_admin/student_detiles_For_nibondon', [
+        'student' => $student
+    ]);
+}
+
+
+
+
+
+// for madrahsa delete
 
     public function studentRegistrationDelete($id)
     {
@@ -531,6 +562,42 @@ class StudentRegistrationController extends Controller
         return redirect()->back()->with('success', 'আবেদন সফলভাবে মুছে ফেলা হয়েছে!');
     }
 
+
+
+
+
+    // for admin student registration aprove
+
+    public function StuApproveApplication(Request $request, $id)
+    {
+        // Find the agreement
+        $student = reg_stu_information::find($id);
+
+        if (!$student) {
+            return back()->withErrors(['error' => 'আবেদন পাওয়া যায়নি!']);
+        }
+
+        $adminId = Auth::guard('admin')->id();
+        $adminName = Auth::guard('admin')->user()->name;
+
+        // Create activity log entry
+        $logData = [
+            'admin_id' => $adminId,
+            'admin_name' => $adminName,
+            'reg_student_id' => $student->id,
+            'status' => 'অনুমোদন',
+            'processed_at' => now(),
+        ];
+
+        // Insert into activity_logs
+        $inserted = reg_stu_information_log::create($logData);
+
+        if ($inserted) {
+            return back()->with('success', 'আবেদন সফলভাবে অনুমোদন করা হয়েছে!');
+        }
+
+        return back()->withErrors(['error' => 'আপডেট করতে সমস্যা হয়েছে!']);
+    }
 
 
 }

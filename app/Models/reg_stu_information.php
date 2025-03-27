@@ -80,5 +80,13 @@ class reg_stu_information extends Model
 
 
 
+    // সর্বশেষ লগ পাওয়ার জন্য রিলেশন
+    public function latestLog()
+    {
+        return $this->hasOne(reg_stu_information_log::class, 'reg_student_id')
+            ->latest();
+    }
+
+
 
 }

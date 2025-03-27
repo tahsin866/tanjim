@@ -171,6 +171,8 @@ Route::get('/subject-settings', [SubjectSettingsController::class, 'index'])->na
 
 
     Route::post('/markaz/approve/{id}', [MarkazAgreementController::class, 'approveApplication'])->name('markaz.approve');
+
+
     Route::post('/markaz/reject/{id}', [MarkazAgreementController::class, 'return'])->name('markaz.reject');
 
 
@@ -206,5 +208,10 @@ Route::get('/subject-settings', [SubjectSettingsController::class, 'index'])->na
     Route::get('/nibondon/madrashaWari-stu-nibond-list/{madrasha_id?}', [StudentRegistrationController::class, 'madrashaWariStuNibondList'])
     ->name('nibondon_for_admin.madrashaWari_stu_nibond_list');
 
-// Route::get('/nibondon/student-detiles-for-nibondon/{student_id?}', [StudentRegistrationController::class, 'studentDetilesForNibondon'])
-//     ->name('nibondon_for_admin.student_detiles_For_nibondon');
+
+    Route::get('/students/registration-forAdmin/{id}', [StudentRegistrationController::class, 'AdminstudentRegistrationView'])
+    ->name('nibondon_for_admin.student_detiles_For_nibondon');
+
+
+    
+    Route::post('/student/approve/{id}', [StudentRegistrationController::class, 'StuApproveApplication'])->name('student.approve');

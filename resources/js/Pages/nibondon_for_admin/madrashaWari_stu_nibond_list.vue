@@ -85,12 +85,29 @@
         <td class="p-2 text-center">{{  student.father_name_bn  }}</td>
         <td class="p-2 text-center">{{  student.mother_name_bn  }}</td>
         <td class="p-2 text-center">
-          <!-- <span :class="statusClass(student.status)">{{  }}</span> -->
-        </td>
+  <span 
+    :class="{
+      'bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'বোর্ড দাখিল',
+      'bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'অনুমোদন',
+      'bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'ফেরত',
+      'bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'পেন্ডিং',
+      'bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-medium': !student.status
+    }"
+  >
+    {{ student.status || 'অনির্ধারিত' }}
+  </span>
+</td>
         <td class="p-2 text-center">
           <Link
-           :href="route('nibondon_for_admin.student_detiles_For_nibondon')"
-          class="bg-yellow-500 text-white px-3 py-1 rounded-sm text-xs hover:bg-yellow-600">ডিটেইলস</Link>
+  :href="route('nibondon_for_admin.student_detiles_For_nibondon', student.id)"
+  class="inline-flex items-center justify-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 focus:outline-none focus:border-emerald-700 focus:ring focus:ring-emerald-200 active:bg-emerald-700 transition ease-in-out duration-150"
+>
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+  </svg>
+  বিস্তারিত দেখুন
+</Link>
         </td>
       </tr>
     </tbody>
@@ -126,17 +143,6 @@ const props = defineProps({
       ? 'bg-green-500 text-white px-2 py-1 rounded-sm text-xs'
       : 'bg-red-500 text-white px-2 py-1 rounded-sm text-xs'
   }
-
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -214,4 +214,6 @@ Route::get('/students/registration/{id}', [StudentRegistrationController::class,
     ->name('students_registration.student_registraion_view');
 
 
+    
+    
 Route::delete('/students/delete/{id}', [StudentRegistrationController::class, 'studentRegistrationDelete'])->name('students.delete');
