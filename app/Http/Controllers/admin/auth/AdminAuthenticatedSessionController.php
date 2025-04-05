@@ -30,11 +30,10 @@ class AdminAuthenticatedSessionController extends Controller
     public function store(adminLoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
-
         return redirect()->intended(route('admin.admin_Dashboard', absolute: false));
     }
+    
 
     /**
      * Destroy an authenticated session.
@@ -47,6 +46,6 @@ class AdminAuthenticatedSessionController extends Controller
 
         $request->session()->regenerateToken();
 
-        return redirect('/admin/login');
+        return redirect('/');
     }
 }

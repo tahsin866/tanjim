@@ -10,6 +10,7 @@ use App\Http\Controllers\MarkazAgreementController;
 use App\Http\Controllers\MadrashaController;
 use App\Http\Controllers\MarhalaListController;
 use App\Http\Controllers\StudentRegistrationController;
+use App\Http\Controllers\dashboardController;
 
 
 
@@ -66,6 +67,9 @@ Route::get('/madrasha-list', [MadrashaController::class, 'getMadrashaList']);
 Route::get('/markaz-list', [MadrashaController::class, 'getMarkazList']);
 // এডমিনের মারকায ফিল্টার
 Route::get('/madrashas/filter', [MadrashaController::class, 'filterMadrashas']);
+
+// Route::get('/markaz/filter', [MadrashaController::class, 'filterMarkazRegstudent']);
+Route::get('/filter-markaz-students', [MadrashaController::class, 'filterMarkazStudents']);
 
 // Route::get('/markaz/{id}/madrashas', [MadrashaController::class, 'getMadrashasUnderMarkaz'])
 //     ->name('markaz_for_admin.madrasha_list_underMarkaz');
@@ -135,8 +139,17 @@ Route::get('/markaz-madrasa-list/{markaz_id}', [StudentRegistrationController::c
 
 
 
+    Route::get('/dashboard/student-stats', [dashboardController::class, 'getStudentStats']);
+
+    Route::get('/payment-stats', [dashboardController::class, 'getPaymentStats']);
 
 
+    
+Route::get('/payment-stats', [dashboardController::class, 'getPaymentStats']);
+Route::post('/store-payment', [dashboardController::class, 'storePayment']);
+
+Route::get('/check-payment-status', [dashboardController::class, 'checkPaymentStatus']);
+Route::get('/unpaid-students-count', [dashboardController::class, 'getUnpaidStudentsCount']);
 
 
 });

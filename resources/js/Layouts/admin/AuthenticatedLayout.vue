@@ -105,7 +105,7 @@ const setSelected = (item) => {
     </div>
 </div>
 
-            <nav style=" font-family: 'Merriweather','SolaimanLipi',sans-serif;" class="max-h-[calc(100vh-4rem)] mt-4 overflow-y-auto scrollbar-hidden space-y-2">
+<nav style="font-family: 'Merriweather','SolaimanLipi',sans-serif;" class="max-h-[calc(100vh-4rem)] mt-4 overflow-y-auto custom-scrollbar space-y-2">
                <Link :href="route('admin.admin_Dashboard')" class="flex text-lg gap-2 hover:bg-[#123524] items-center px-4 py-2">
         <i class="h-6 text-sm w-6 fa-mosque fas"></i>
        ই এম ড্যাশবোর্ড
@@ -146,12 +146,14 @@ const setSelected = (item) => {
             কেন্দ্রীয় পরীক্ষা সেটাপ
         </Link>
 
-        <Link :href="route('user_create_for_admin.user_create')"
-            @click="setSelected('user_setup')"
-            class="text-lg block hover:bg-[#123524] px-4 py-2"
-            :class="{'bg-[#123524] text-white': selectedItem === 'user_setup'}">
-            ব্যবহারকারী সেটাপ
-        </Link>
+      <Link 
+    :href="route('user_create_for_admin.user_create_for_admin')"  
+    @click="setSelected('user_setup')"
+    class="text-lg block hover:bg-[#123524] px-4 py-2"
+    :class="{'bg-[#123524] text-white': selectedItem === 'user_setup'}">
+    ব্যবহারকারী সেটাপ
+</Link>
+
 
         <Link href="route('Takmil.cirtificateProvide')"
             @click="setSelected('instruction')"
@@ -557,7 +559,27 @@ const setSelected = (item) => {
 </template>
 
 <style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
 
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0, 77, 64, 0.1);
+  border-radius: 10px;
+}
 
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 77, 64, 0.5);
+  border-radius: 10px;
+}
 
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 77, 64, 0.7);
+}
+
+/* Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 77, 64, 0.5) rgba(0, 77, 64, 0.1);
+}
 </style>

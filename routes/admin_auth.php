@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\admin\auth\AdminAuthenticatedSessionController;
+use App\Http\Controllers\admin\Auth\AdminAuthenticatedSessionController;
 // use App\Http\Controllers\Auth\ConfirmablePasswordController;
 // use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
 // use App\Http\Controllers\Auth\NewPasswordController;
 // use App\Http\Controllers\Auth\PasswordController;
 // use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\admin\auth\AdminRegisteredUserController;
+use App\Http\Controllers\admin\Auth\AdminRegisteredUserController;
 
 // use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
@@ -16,12 +16,10 @@ use Inertia\Inertia;
 
 Route::prefix('admin')->middleware('guest:admin')->group(function () {
     Route::get('register', [AdminRegisteredUserController::class, 'create'])->name('admin.register');
-
     Route::post('register', [AdminRegisteredUserController::class, 'store']);
-
     Route::get('login', [AdminAuthenticatedSessionController::class, 'create'])->name('admin.login');
-
     Route::post('login', [AdminAuthenticatedSessionController::class, 'store']);
+    
 
     // Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
     //     ->name('password.request');
@@ -36,6 +34,7 @@ Route::prefix('admin')->middleware('guest:admin')->group(function () {
     //     ->name('password.store');
 
 
+    
 
 
 });

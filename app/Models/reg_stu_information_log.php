@@ -45,5 +45,13 @@ class reg_stu_information_log extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+
+    }
+
+
+
+    public function student()
+    {
+        return $this->belongsTo(reg_stu_information::class, 'reg_student_id');
     }
 }

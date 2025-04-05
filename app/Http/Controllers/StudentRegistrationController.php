@@ -7,6 +7,7 @@ use App\Models\MarkazAgreementMadrasa;
 use Illuminate\Support\Facades\Storage;
 
 use App\Models\student;
+use App\Models\User;
 use Illuminate\Http\Request;
 use MirazMac\BanglaString\Translator\BijoyToAvro\Translator;
 use Inertia\Inertia;
@@ -117,22 +118,32 @@ class StudentRegistrationController extends Controller
             'name_bn',
             'father_name_bn',
             'current_madrasha',
+            'current_class',
             'Date_of_birth',
             'student_type',
             'exam_name_Bn'
         )->get();
-
-        // প্রতিটি ছাত্রের জন্য status যোগ করা
+        
+        // প্রতিটি ছাত্রের জন্য status এবং payment_status যোগ করা
         foreach ($students as $student) {
+            // রেজিস্ট্রেশন স্ট্যাটাস
             $log = reg_stu_information_log::where('reg_student_id', $student->id)
                 ->latest()
                 ->first();
             $student->status = $log ? $log->status : null;
+            
+            // পেমেন্ট স্ট্যাটাস
+            $payment = DB::table('student_reg_payments')
+                ->where('students_id', $student->id)
+                ->latest()
+                ->first();
+            
+            $student->payment_status = $payment && $payment->payment_status == 1 ? 'পরিশোধিত' : 'অপরিশোধিত';
+            $student->is_paid = $payment && $payment->payment_status == 1;
         }
-
+        
         return response()->json($students);
     }
-
 
 
 
@@ -200,71 +211,91 @@ class StudentRegistrationController extends Controller
 
 
 
+    
 
 
 
-    // public function getMarkazStudents()
-// {
-//     // markaz_agreements টেবিল থেকে শুরু করে, প্রতিটি markaz_id একবারই দেখানো হবে
-//     $students = DB::table('markaz_agreements')
-//         ->select(
-//             'markaz_agreements.id',
-//             'markaz_agreements.madrasha_Name',
-//             'markaz_agreements.Elhaq_no',
-//             'markaz_agreements.madrasha_code',
-//             DB::raw('(SELECT exam_name_Bn FROM reg_stu_informations WHERE markaz_id = markaz_agreements.id LIMIT 1) as exam_name_Bn'),
-//             DB::raw('COUNT(reg_stu_informations.id) as student_count')
-//         )
-//         ->leftJoin('reg_stu_informations', 'markaz_agreements.id', '=', 'reg_stu_informations.markaz_id')
-//         ->groupBy(
-//             'markaz_agreements.id',
-//             'markaz_agreements.madrasha_Name',
-//             'markaz_agreements.Elhaq_no',
-//             'markaz_agreements.madrasha_code'
-//         )
-//         ->having('student_count', '>', 0)
-//         ->get();
-
-    //     return response()->json($students);
-// }
 
 
     public function getMarkazStudents()
     {
-        $students = DB::table('reg_stu_informations')
-            ->select(
-                'reg_stu_informations.markaz_id as id',
-                DB::raw('(SELECT MName FROM madrasha WHERE id = reg_stu_informations.markaz_id LIMIT 1) as madrasha_Name'),
-                DB::raw('(SELECT ElhaqNo FROM madrasha WHERE id = reg_stu_informations.markaz_id LIMIT 1) as Elhaq_no'),
-                'reg_stu_informations.exam_name_Bn',
-                DB::raw('COUNT(reg_stu_informations.id) as student_count')
-            )
-            ->whereNotNull('reg_stu_informations.markaz_id')
-            ->groupBy(
-                'reg_stu_informations.markaz_id',
-                'reg_stu_informations.exam_name_Bn'
-            )
-            ->having('student_count', '>', 0)
-            ->get();
-
-        // After getting the results, fetch the custom_code for each record
-        foreach ($students as $student) {
-            $user = DB::table('users')
-                ->where('madrasha_id', function ($query) use ($student) {
-                    $query->select('madrasha_id')
-                        ->from('reg_stu_informations')
-                        ->where('markaz_id', $student->id)
-                        ->limit(1);
-                })
-                ->select('custom_code')
-                ->first();
-
-            $student->madrasha_code = $user ? $user->custom_code : null;
-        }
-
+        $self = $this;
+    
+        $students = reg_stu_information::select(
+            'reg_stu_informations.markaz_id as id',
+            'madrasha.MName as madrasha_Name',
+            'madrasha.ElhaqNo as Elhaq_no',
+            'madrasha.Mobile as Mobile',
+            'madrasha.DID',
+            'madrasha.DISID',
+            'madrasha.TID',
+            'division.Division as division_name',
+            'district.District as district_name',
+            'thana.Thana as thana_name',
+            'reg_stu_informations.exam_name_Bn'
+        )
+        ->selectRaw('COUNT(reg_stu_informations.id) as student_count')
+        ->leftJoin('madrasha', 'reg_stu_informations.markaz_id', '=', 'madrasha.id')
+        ->leftJoin('division', 'madrasha.DID', '=', 'division.id')
+        ->leftJoin('district', 'madrasha.DISID', '=', 'district.DesID')
+        ->leftJoin('thana', 'madrasha.TID', '=', 'thana.Thana_ID')
+        ->whereNotNull('reg_stu_informations.markaz_id')
+        ->groupBy(
+            'reg_stu_informations.markaz_id', 
+            'reg_stu_informations.exam_name_Bn',
+            'madrasha.MName',
+            'madrasha.ElhaqNo',
+            'madrasha.Mobile',
+            'madrasha.DID',
+            'madrasha.DISID',
+            'madrasha.TID',
+            'division.Division',
+            'district.District',
+            'thana.Thana'
+        )
+        ->havingRaw('COUNT(reg_stu_informations.id) > 0')
+        ->get()
+        ->map(function ($item) use ($self) {
+            return [
+                'id' => $item->id,
+                'madrasha_Name' => $item->madrasha_Name,
+                'Elhaq_no' => $item->Elhaq_no,
+                'Mobile' => $item->Mobile,
+                'DID' => $item->DID,
+                'DISID' => $item->DISID,
+                'TID' => $item->TID,
+                'division_name' => $item->division_name,
+                'district_name' => $item->district_name,
+                'thana_name' => $item->thana_name,
+                'exam_name_Bn' => $item->exam_name_Bn,
+                'student_count' => $item->student_count,
+                'madrasha_code' => $self->getMadrashaCode($item->id)
+            ];
+        });
+    
         return response()->json($students);
     }
+    
+    
 
+
+
+
+
+
+    // পাবলিক মেথড হিসেবে ডিফাইন করা
+    public function getMadrashaCode($markazId)
+    {
+        $user = User::whereHas('regStuInformation', function ($query) use ($markazId) {
+            $query->where('markaz_id', $markazId);
+        })
+        ->select('custom_code')
+        ->first();
+        
+        return $user ? $user->custom_code : null;
+    }
+    
+    
 
 
 
@@ -365,6 +396,8 @@ class StudentRegistrationController extends Controller
                         'Date_of_birth' => $student->Date_of_birth,
                         'father_name_bn' => $student->father_name_bn,
                         'mother_name_bn' => $student->mother_name_bn,
+                        'current_madrasha' => $student->current_madrasha,
+                        'current_class' => $student->current_class,
                         'student_image' => $student->student_image,
                         'status' => $student->latestLog ? $student->latestLog->status : null,
                         'status_date' => $student->latestLog ? $student->latestLog->created_at : null
@@ -600,4 +633,53 @@ public function AdminstudentRegistrationView($id)
     }
 
 
+
+// admin return student registration 
+
+
+public function studentReturn(Request $request, $id)
+{
+    // Find the agreement by ID
+    $student = reg_stu_information::find($id);
+
+    // If the agreement is not found, return error
+    if (!$student) {
+        return back()->withErrors(['error' => 'আবেদন পাওয়া যায়নি!']);
+    }
+
+    $adminId = Auth::guard('admin')->id();
+    $adminName = Auth::guard('admin')->user()->name;
+
+    // Initialize feedback data
+    $feedbackData = [
+        'admin_id' => $adminId,
+        'admin_name' => $adminName,
+        'reg_student_id' => $student->id,
+        'status' => 'বোর্ড ফেরত', // Update status
+        'admin_message' => $request->message, // Insert the admin's message
+        'processed_at' => now(),
+    ];
+
+    // Check if an image is uploaded and store it
+    // if ($request->hasFile('image')) {
+    //     $imagePath = $request->file('image')->store('images/feedback', 'public');
+    //     $feedbackData['admin_feedback_image'] = $imagePath; // Store the image path
+    // }
+
+    // Insert the feedback into the activity_logs table
+    $inserted = reg_stu_information_log::create($feedbackData);
+
+    // If the insert was successful, return success message
+    if ($inserted) {
+        return back()->with('success', 'আবেদন সফলভাবে ফেরত পাঠানো হয়েছে!');
+    } else {
+        return back()->withErrors(['error' => 'আপডেট করতে সমস্যা হয়েছে!']);
+    }
 }
+
+
+}
+
+
+
+

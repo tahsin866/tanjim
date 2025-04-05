@@ -4,36 +4,64 @@
 
 <!-- Header -->
 <div class="bg-[#2d6a4f] text-white p-4 rounded-sm shadow-md mb-4">
-  <h1 class="text-2xl font-semibold text-center">মাদ্রাসা ছাত্র তালিকা</h1>
+  <h1 class="text-2xl font-semibold text-center">
+    {{ students.length > 0 ? students[0].current_madrasha : '' }} : ছাত্র তালিকা
+  </h1>
 </div>
 
 <!-- Search Filters -->
-<div class="bg-white shadow-md rounded-sm p-4 mb-6">
-  <div class="grid grid-cols-4 gap-4">
+<div class="bg-white shadow-lg rounded-md p-6 mb-6 border border-gray-100">
+  <h2 class="text-xl font-semibold text-gray-800 mb-4 pb-2 border-b border-gray-200">ছাত্র তথ্য অনুসন্ধান</h2>
+  
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
     <div>
-      <label class="block text-sm font-medium text-gray-700">বিভাগ</label>
-      <select class="mt-1 block w-full border-gray-300 rounded-sm shadow-sm">
-        <option>সিলেক্ট</option>
-      </select>
+      <label class="block text-sm font-medium text-gray-700 mb-1">স্ট্যাটাস</label>
+      <div class="relative">
+        <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+          <option>সিলেক্ট করুন</option>
+          <option>অনুমোদন</option>
+          <option>বোর্ড দাখিল</option>
+          <option>স্থগিত</option>
+        </select>
+      
+      </div>
     </div>
+    
     <div>
-      <label class="block text-sm font-medium text-gray-700">শ্রেণি</label>
-      <select class="mt-1 block w-full border-gray-300 rounded-sm shadow-sm">
-        <option>সিলেক্ট</option>
-      </select>
+      <label class="block text-sm font-medium text-gray-700 mb-1">মারহালা</label>
+      <div class="relative">
+        <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors">
+          <option>সিলেক্ট করুন</option>
+          <option>ফযিলত</option>
+          <option>সানাবিয়া উলইয়া</option>
+          <option>সানাবিয়া</option>
+          <option>মুতাওয়াসসিতা</option>
+          <option>ইবতেদাইয়া</option>
+          <option>হিফজুল কোরআন</option>
+          <option>ইলমুল কিরাআত</option>
+        </select>
+   
+      </div>
     </div>
+    
     <div>
-      <label class="block text-sm font-medium text-gray-700">রেজিস্ট্রেশন নাম্বার</label>
-      <input type="text" class="mt-1 block w-full border-gray-300 rounded-sm shadow-sm" />
+      <label class="block text-sm font-medium text-gray-700 mb-1">রেজিস্ট্রেশন নাম্বার</label>
+      <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" placeholder="রেজিস্ট্রেশন নাম্বার লিখুন" />
     </div>
+    
     <div>
-      <label class="block text-sm font-medium text-gray-700">রোল নাম্বার</label>
-      <input type="text" class="mt-1 block w-full border-gray-300 rounded-sm shadow-sm" />
+      <label class="block text-sm font-medium text-gray-700 mb-1">রোল নাম্বার</label>
+      <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors" placeholder="রোল নাম্বার লিখুন" />
     </div>
   </div>
-
-  <div class="mt-4 flex justify-end">
-    <button class="bg-[#2d6a4f] text-white px-4 py-2 rounded-sm hover:bg-green-700">সার্চ করুন</button>
+  
+  <div class="mt-6 flex justify-end">
+    <button class="bg-[#2d6a4f] text-white px-5 py-2 rounded-md hover:bg-[#1b4332] transition-colors duration-300 flex items-center shadow-md">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+      সার্চ করুন
+    </button>
   </div>
 </div>
 
@@ -53,7 +81,7 @@
         <th class="p-2">ছবি</th>
         <th class="p-2">নাম</th>
         <th class="p-2">শ্রেণি</th>
-        <th class="p-2">রোল নাম্বার</th>
+    
         <th class="p-2">রেজিস্ট্রেশন নাম্বার</th>
         <th class="p-2">জন্ম তারিখ</th>
         <th class="p-2">পিতার নাম</th>
@@ -78,8 +106,8 @@
 </td>
 
         <td class="p-2 text-center">{{ student.name_bn }}</td>
-        <td class="p-2 text-center">{{ }}</td>
-        <td class="p-2 text-center">{{}}</td>
+        <td class="p-2 text-center">{{student.current_class }}</td>
+
         <td class="p-2 text-center">{{ student.id  }}</td>
         <td class="p-2 text-center">{{ student.Date_of_birth }}</td>
         <td class="p-2 text-center">{{  student.father_name_bn  }}</td>
@@ -89,7 +117,7 @@
     :class="{
       'bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'বোর্ড দাখিল',
       'bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'অনুমোদন',
-      'bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'ফেরত',
+      'bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'বোর্ড ফেরত',
       'bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-medium': student.status === 'পেন্ডিং',
       'bg-gray-100 text-gray-800 px-2 py-1 rounded-full text-xs font-medium': !student.status
     }"

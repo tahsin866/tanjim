@@ -68,4 +68,10 @@ class User extends Authenticatable
         return $this->hasMany(activity_log::class);
     }
 
+    public function regStuInformation()
+{
+    return $this->hasMany(reg_stu_information::class, 'user_id');
+}
+
+
 }

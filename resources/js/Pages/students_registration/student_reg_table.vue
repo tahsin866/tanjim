@@ -434,15 +434,20 @@ const closeDeleteToast = () => {
       <td class="text-center px-6 py-4">{{ student.father_name_bn }}</td>
       <td class="text-center px-6 py-4">{{ student.current_madrasha }}</td>
       <td class="text-center px-6 py-4">{{ student.exam_name_Bn }}</td>
-      <td class="text-center px-6 py-4"></td>
+      <td class="text-center px-6 py-4">{{ student.current_class }}</td>
 
       <td class="text-center px-6 py-4">{{ student.Date_of_birth }}</td>
 
       <td class="text-center px-6 py-4">{{ student.student_type }}</td>
       <td class="text-center px-6 py-4">
+  <span :class="{
+    'bg-green-600 text-white px-4 py-2 text-sm font-medium rounded-full': student.is_paid,
+    'bg-red-100 text-red-700 px-4 py-2 text-sm font-medium rounded-full': !student.is_paid
+  }">
+    {{ student.payment_status }}
+  </span>
+</td>
 
-
-      </td>
 
       <td class="text-center px-6 py-4">
         <div class="flex justify-center">

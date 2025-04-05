@@ -34,4 +34,9 @@ class ExamFee extends Model
     {
         return $this->belongsTo(ExamSetup::class , 'exam_setup_id');
     }
+
+    public function students()
+    {
+        return $this->hasMany(reg_stu_information::class, 'exam_id', 'exam_setup_id');
+    }
 }

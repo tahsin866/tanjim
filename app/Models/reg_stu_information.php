@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use App\Models\admin\marhala_for_admin\ExamFee;
 use Illuminate\Database\Eloquent\Model;
 
 class reg_stu_information extends Model
@@ -84,9 +84,26 @@ class reg_stu_information extends Model
     public function latestLog()
     {
         return $this->hasOne(reg_stu_information_log::class, 'reg_student_id')
-            ->latest();
+            ->latest('id'); // 'id' কলাম অনুসারে সর্টিং করুন
     }
 
+
+    public function examFee()
+    {
+        return $this->belongsTo(ExamFee::class, 'exam_id', 'exam_setup_id');
+    }
+    
+    public function payments()
+    {
+        return $this->hasMany(student_reg_payment::class, 'students_id', 'id');
+    }
+
+
+    public function markaz()
+    {
+        return $this->belongsTo(Madrasha::class, 'markaz_id');
+    }
+    
 
 
 }

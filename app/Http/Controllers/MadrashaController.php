@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use App\Exports\MadrasaExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
-
+use App\Models\reg_stu_information;
 
 class MadrashaController extends Controller
 {
@@ -257,6 +257,125 @@ public function filterMadrashas(Request $request)
 
     return response()->json($madrashas);
 }
+
+
+// filter markaz for studetn registration
+
+public function filterMarkazStudents(Request $request)
+{
+    $self = $this;
+    
+    $query = reg_stu_information::select(
+        'reg_stu_informations.markaz_id as id',
+        'madrasha.MName as madrasha_Name',
+        'madrasha.ElhaqNo as Elhaq_no',
+        'madrasha.Mobile as Mobile',
+        'madrasha.DID',
+        'madrasha.DISID',
+        'madrasha.TID',
+        'division.Division as division_name',
+        'district.District as district_name',
+        'thana.Thana as thana_name',
+        'reg_stu_informations.exam_name_Bn',
+        'madrasha.markaz_serial as madrasha_code' // Add this line to get the code directly
+    )
+    ->selectRaw('COUNT(reg_stu_informations.id) as student_count')
+    ->leftJoin('madrasha', 'reg_stu_informations.markaz_id', '=', 'madrasha.id')
+    ->leftJoin('division', 'madrasha.DID', '=', 'division.id')
+    ->leftJoin('district', 'madrasha.DISID', '=', 'district.DesID')
+    ->leftJoin('thana', 'madrasha.TID', '=', 'thana.Thana_ID')
+    ->whereNotNull('reg_stu_informations.markaz_id');
+    
+    // মাদরাসার নাম/ইলহাক নম্বর ফিল্টার
+    if ($request->filled('madrasahName')) {
+        $searchTerm = $request->madrasahName;
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('madrasha.MName', 'like', '%' . $searchTerm . '%')
+              ->orWhere('madrasha.ElhaqNo', 'like', '%' . $searchTerm . '%');
+        });
+    }
+    
+    // বিভাগ ফিল্টার
+    if ($request->filled('division')) {
+        $query->where('madrasha.DID', $request->division);
+    }
+    
+    // জেলা ফিল্টার
+    if ($request->filled('district')) {
+        $query->where('madrasha.DISID', $request->district);
+    }
+    
+    // থানা ফিল্টার
+    if ($request->filled('thana')) {
+        $query->where('madrasha.TID', $request->thana);
+    }
+    
+    // পরীক্ষার নাম ফিল্টার
+    if ($request->filled('exam_name')) {
+        $query->where('reg_stu_informations.exam_name_Bn', $request->exam_name);
+    }
+    
+    // মাদরাসার ধরন ফিল্টার
+    if ($request->filled('type')) {
+        if ($request->type === 'ছাত্র') {
+            $query->where('madrasha.MType', 1);
+        } elseif ($request->type === 'ছাত্রী') {
+            $query->where('madrasha.MType', 0);
+        }
+    }
+    
+    // Group by the same fields as in the original query
+    $students = $query->groupBy(
+        'reg_stu_informations.markaz_id',
+        'reg_stu_informations.exam_name_Bn',
+        'madrasha.MName',
+        'madrasha.ElhaqNo',
+        'madrasha.Mobile',
+        'madrasha.DID',
+        'madrasha.DISID',
+        'madrasha.TID',
+        'division.Division',
+        'district.District',
+        'thana.Thana',
+        'madrasha.markaz_serial' // Add this to the group by clause
+    )
+    ->havingRaw('COUNT(reg_stu_informations.id) > 0')
+    ->get()
+    ->map(function ($item) {
+        return [
+            'id' => $item->id,
+            'madrasha_Name' => $item->madrasha_Name,
+            'Elhaq_no' => $item->Elhaq_no,
+            'Mobile' => $item->Mobile,
+            'DID' => $item->DID,
+            'DISID' => $item->DISID,
+            'TID' => $item->TID,
+            'division_name' => $item->division_name,
+            'district_name' => $item->district_name,
+            'thana_name' => $item->thana_name,
+            'exam_name_Bn' => $item->exam_name_Bn,
+            'student_count' => $item->student_count,
+            'madrasha_code' => $item->madrasha_code // Use the directly selected field
+        ];
+    });
+    
+    return response()->json($students);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

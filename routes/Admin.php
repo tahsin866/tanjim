@@ -7,6 +7,7 @@ use App\Http\Controllers\MarhalaListController;
 use App\Http\Controllers\MadrashaController;
 use App\Http\Controllers\SubjectSettingsController;
 use App\Http\Controllers\StudentRegistrationController;
+use App\Http\Controllers\admin\Auth\AdminRegisteredUserController;
 use App\Http\Controllers\ExamSetupController;
 use App\Http\Controllers\MarkazAgreementController;
 // মারহালা সেটাপ
@@ -143,9 +144,9 @@ Route::get('nibondon_for_admin/student_detiles_For_nibondon', function () {
 
 
 
-Route::get('user_create_for_admin/user_create', function () {
-    return Inertia::render('user_create_for_admin/user_create');
-})->name('user_create_for_admin.user_create');
+Route::get('user_create_for_admin/user_create_for_admin', function () {
+    return Inertia::render('user_create_for_admin/user_create_for_admin');
+})->name('user_create_for_admin.user_create_for_admin');
 
 
 
@@ -215,3 +216,11 @@ Route::get('/subject-settings', [SubjectSettingsController::class, 'index'])->na
 
     
     Route::post('/student/approve/{id}', [StudentRegistrationController::class, 'StuApproveApplication'])->name('student.approve');
+    Route::post('/student/reject/{id}', [StudentRegistrationController::class, 'studentReturn'])->name('student.return');
+
+
+
+// এই রাউট কনফিগারেশন ব্যবহার করুন
+Route::get('user_create_for_admin/user_create_for_admin', [AdminRegisteredUserController::class, 'create'])->name('user_create_for_admin.user_create_for_admin');
+Route::post('user_create_for_admin/user_create_for_admin', [AdminRegisteredUserController::class, 'store'])->name('user_create_for_admin.store');
+

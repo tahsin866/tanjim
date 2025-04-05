@@ -1,6 +1,28 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
 
+const studentStats = ref({
+    totalStudents: 0,
+    boardSubmittedStudents: 0,
+    approvedStudents: 0,
+    boardReturnedStudents: 0
+});
+
+const loading = ref(true);
+const error = ref(null);
+
+onMounted(async () => {
+    try {
+        const response = await axios.get('/api/dashboard/student-stats');
+        studentStats.value = response.data;
+        loading.value = false;
+    } catch (err) {
+        error.value = 'ডাটা লোড করতে সমস্যা হয়েছে';
+        loading.value = false;
+        console.error(err);
+    }
+});
 </script>
 
 <template>
@@ -9,28 +31,27 @@ import { ref } from 'vue';
 
     <!-- Total Students Card -->
     <div class="bg-gradient-to-br from-green-50 to-white rounded-md p-6 border border-green-100 hover:shadow-lg transition-all duration-300">
-        <div class="flex justify-between items-start">
-            <div class="space-y-4">
-                <div class="flex items-baseline space-x-2">
-                    <span class="text-green-600 text-sm font-semibold">মোট</span>
+                    <div class="flex justify-between items-start">
+                        <div class="space-y-4">
+                            <div class="flex items-baseline space-x-2">
+                                <span class="text-green-600 text-sm font-semibold">{{ studentStats.totalStudents }} জন</span>
+                            </div>
+                            <p class="text-green-900 font-medium">মোট নিবন্ধিত শিক্ষার্থী সংখ্যা</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v6m-4 4h16M4 14l8-8 8 8M4 20h16"/>
+                            </svg>
+                        </div>
+                    </div>
                 </div>
-                <p class="text-green-900 font-medium">মোট নিবন্ধিত শিক্ষার্থী সংখ্যা</p>
-            </div>
-            <div class="bg-green-100 p-3 rounded-xl">
-                <!-- Mosque Icon -->
-                <svg class="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4v6m-4 4h16M4 14l8-8 8 8M4 20h16"/>
-                </svg>
-            </div>
-        </div>
-    </div>
 
     <!-- Board Return Students Card -->
     <div class="bg-gradient-to-br from-teal-50 to-white rounded-md p-6 border border-teal-100 hover:shadow-lg transition-all duration-300">
         <div class="flex justify-between items-start">
             <div class="space-y-4">
                 <div class="flex items-baseline space-x-2">
-                    <span class="text-teal-600 text-sm font-semibold">জন</span>
+                    <span class="text-teal-600 text-sm font-semibold"> {{ studentStats.boardReturnedStudents }}  জন</span>
                 </div>
                 <p class="text-teal-900 font-medium">বোর্ড ফেরত শিক্ষার্থী সংখ্যা</p>
             </div>
@@ -48,9 +69,9 @@ import { ref } from 'vue';
         <div class="flex justify-between items-start">
             <div class="space-y-4">
                 <div class="flex items-baseline space-x-2">
-                    <span class="text-emerald-600 text-sm font-semibold">জন</span>
+                    <span class="text-emerald-600 text-sm font-semibold">{{ studentStats.boardSubmittedStudents }} জন</span>
                 </div>
-                <p class="text-emerald-900 font-medium">ছাত্রী সংখ্যা</p>
+                <p class="text-emerald-900 font-medium"> বোর্ড দাখিল শিক্ষার্থীর সংখ্যা </p>
             </div>
             <div class="bg-emerald-100 p-3 rounded-xl">
                 <!-- Quran Icon -->
@@ -66,9 +87,9 @@ import { ref } from 'vue';
         <div class="flex justify-between items-start">
             <div class="space-y-4">
                 <div class="flex items-baseline space-x-2">
-                    <span class="text-green-600 text-sm font-semibold">জন</span>
+                    <span class="text-green-600 text-sm font-semibold"> {{ studentStats.approvedStudents }} জন</span>
                 </div>
-                <p class="text-green-900 font-medium">{{ selectedYear }} সালের মোট</p>
+                <p class="text-green-900 font-medium">বোর্ড অনুমদিত ছাত্র সংখ্যা </p>
             </div>
             <div class="bg-green-100 p-3 rounded-xl">
                 <!-- Minaret Icon -->

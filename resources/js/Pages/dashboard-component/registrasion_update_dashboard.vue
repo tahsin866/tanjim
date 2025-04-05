@@ -57,30 +57,146 @@
     </div>
 
     <!-- Statistics Grid -->
-    <div class="p-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <!-- Attendance Statistics -->
-      <div class="space-y-4 md:col-span-2">
+    <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Registration Statistics -->
+      <div class="space-y-4">
         <h3 class="font-semibold text-[#116D45] flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
           </svg>
-          হাজিরার উপাত্ত
+          নিবন্ধন উপাত্ত
         </h3>
-        <!-- Add statistics items here -->
+        
+        <div class="bg-gray-50 p-4 rounded-md space-y-3">
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">সর্বমোট নিবন্ধনের সংখ্যা</span>
+            <span class="font-semibold">{{ studentStats.totalStudents }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">পেমেন্ট সম্পন্নকৃত নিবন্ধনের সংখ্যা</span>
+            <span class="font-semibold">২৮৩০৫</span>
+          </div>
+          
+          
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">বোর্ডে দাখিলকৃত নিবন্ধন সংখ্যা</span>
+            <span class="font-semibold">{{ studentStats.boardSubmittedStudents }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">অনুমোদিত নিবন্ধন সংখ্যা</span>
+            <span class="font-semibold">{{ studentStats.approvedStudents }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">সংশোধনের জন্য ফেরত পাঠানো নিবন্ধন সংখ্যা</span>
+            <span class="font-semibold">{{ studentStats.boardReturnedStudents }}</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">স্থগিত নিবন্ধন সংখ্যা</span>
+            <span class="font-semibold">৪</span>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-gray-700">প্রত্যাখ্যাত নিবন্ধন সংখ্যা</span>
+            <span class="font-semibold">৯</span>
+          </div>
+        </div>
       </div>
 
-      <!-- Qirat Statistics -->
-      <div class="space-y-4 md:col-span-2">
+      <!-- Payment Statistics -->
+      <div class="space-y-4">
         <h3 class="font-semibold text-[#116D45] flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
           </svg>
-          কিরআতের উপাত্ত
+          পেমেন্টের উপাত্ত
         </h3>
-        <!-- Add Qirat statistics here -->
+        
+        <div class="bg-gray-50 p-4 rounded-md space-y-3">
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">সর্বমোট পেমেন্ট</span>
+            <span class="font-semibold">১৭২৫২৯০০ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">বোর্ডের প্রাপ্য পেমেন্ট</span>
+            <span class="font-semibold">২,১৫৬,৬১২.৫০ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">নিয়মিত পরীক্ষার্থীর পেমেন্ট (নিয়মিত)</span>
+            <span class="font-semibold">১৫৪৯১৪০০ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">অনিয়মিত পরীক্ষার্থীর পেমেন্ট (নিয়মিত)</span>
+            <span class="font-semibold">৪৭০৪০০ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">নিয়মিত পরীক্ষার্থীর পেমেন্ট (বিলম্বিত)</span>
+            <span class="font-semibold">১১২০৭০০ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">অনিয়মিত পরীক্ষার্থীর পেমেন্ট (বিলম্বিত)</span>
+            <span class="font-semibold">১৭০৪০০ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">নগদ এর মাধ্যমে পেমেন্ট</span>
+            <span class="font-semibold">১৬৭৬০৫৪৬ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">আইপেসেফ এর মাধ্যমে পেমেন্ট</span>
+            <span class="font-semibold">৬৫৪৬৪০ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center border-b pb-2">
+            <span class="text-gray-700">পেমেন্ট গেটওয়ে চার্জ</span>
+            <span class="font-semibold">১৭৩৭৮৬ টাকা</span>
+          </div>
+          
+          <div class="flex justify-between items-center">
+            <span class="text-gray-700">ক্যাশ পেমেন্ট</span>
+            <span class="font-semibold">২৫০০০ টাকা</span>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </div>
     </div>
 </template>
+
+<script setup>
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+
+const studentStats = ref({
+    totalStudents: 0,
+    boardSubmittedStudents: 0,
+    approvedStudents: 0,
+    boardReturnedStudents: 0
+});
+
+const loading = ref(true);
+const error = ref(null);
+
+onMounted(async () => {
+    try {
+        const response = await axios.get('/api/dashboard/student-stats');
+        studentStats.value = response.data;
+        loading.value = false;
+    } catch (err) {
+        error.value = 'ডাটা লোড করতে সমস্যা হয়েছে';
+        loading.value = false;
+        console.error(err);
+    }
+});
+</script>

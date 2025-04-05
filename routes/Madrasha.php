@@ -3,6 +3,7 @@
 use App\Http\Controllers\MarhalaController;
 use App\Http\Controllers\ExamRegistrationController;
 use App\Http\Controllers\MarkazAgreementController;
+use App\Http\Controllers\dashboardController;
 use App\Http\Controllers\StudentRegistrationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -217,3 +218,5 @@ Route::get('/students/registration/{id}', [StudentRegistrationController::class,
     
     
 Route::delete('/students/delete/{id}', [StudentRegistrationController::class, 'studentRegistrationDelete'])->name('students.delete');
+
+// Route::get('/Dashboard', [dashboardController::class, 'dashboard'])->name('Dashboard');

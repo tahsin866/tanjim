@@ -259,11 +259,13 @@
     </button>
     
     <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition flex items-center">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-      </svg>
-      ফেরত দিন
-    </button>
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" />
+  </svg>
+  স্থগিত করুন
+</button>
+
   </div>
 
   <div class="flex space-x-3">
@@ -397,15 +399,11 @@
   <!-- ফুটারে ফেরত কারণ লেখার অপশন - নরমালি হাইড থাকবে -->
   <div v-if="showReturnReason" class="mt-6 bg-yellow-50 p-4 rounded-md border border-yellow-200">
     <h5 class="text-sm font-semibold text-yellow-800 mb-2">ফেরত দেওয়ার কারণ</h5>
-    <textarea 
-      v-model="returnReason" 
-      class="w-full p-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
-      rows="3"
-      placeholder="ফেরত দেওয়ার কারণ লিখুন..."
-    ></textarea>
+    <textarea v-model="returnReason" placeholder="ফেরতের কারণ লিখুন..."
+    class="w-full h-36 p-4 border text-2xl border-emerald-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"></textarea>
     <div class="mt-3 flex justify-end space-x-2">
       <button 
-        @click="submitReturn" 
+      @click="submitReturn" 
         class="bg-red-600 text-white px-3 py-1 rounded-md text-sm hover:bg-red-700 transition"
       >
         ফেরত নিশ্চিত করুন
@@ -459,6 +457,8 @@ import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
 import { ref } from 'vue';
 import { router } from '@inertiajs/vue3'
 
+const showToast = ref(false);
+
 const showModal = ref(false);
 const openApprovalModal = () => {
   showModal.value = true;
@@ -496,12 +496,8 @@ const returnReason = ref('');
 
 // ফেরত সাবমিট করার ফাংশন
 const submitReturn = () => {
-  // ফেরত দেওয়ার লজিক এখানে লিখুন
-  // এখানে আপনি returnReason.value ব্যবহার করতে পারেন
-  
-  // উদাহরণস্বরূপ, আপনি একটি API কল করতে পারেন:
   router.post(route('student.return', { id: props.student.id }), {
-    reason: returnReason.value
+    message: returnReason.value  // Changed from 'reason' to 'message'
   }, {
     preserveScroll: true,
     onSuccess: () => {
@@ -517,6 +513,19 @@ const submitReturn = () => {
     }
   });
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 </script>
 
 <style>
