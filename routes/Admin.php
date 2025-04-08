@@ -148,6 +148,14 @@ Route::get('user_create_for_admin/user_create_for_admin', function () {
     return Inertia::render('user_create_for_admin/user_create_for_admin');
 })->name('user_create_for_admin.user_create_for_admin');
 
+Route::get('user_create_for_admin/new_user_for_admin', function () {
+    return Inertia::render('user_create_for_admin/new_user_for_admin');
+})->name('user_create_for_admin.new_user_for_admin');
+
+Route::get('user_create_for_admin/admin_user_edit', function () {
+    return Inertia::render('user_create_for_admin/admin_user_edit');
+})->name('user_create_for_admin.admin_user_edit');
+
 
 
 
@@ -214,7 +222,7 @@ Route::get('/subject-settings', [SubjectSettingsController::class, 'index'])->na
     ->name('nibondon_for_admin.student_detiles_For_nibondon');
 
 
-    
+
     Route::post('/student/approve/{id}', [StudentRegistrationController::class, 'StuApproveApplication'])->name('student.approve');
     Route::post('/student/reject/{id}', [StudentRegistrationController::class, 'studentReturn'])->name('student.return');
 
@@ -224,3 +232,6 @@ Route::get('/subject-settings', [SubjectSettingsController::class, 'index'])->na
 Route::get('user_create_for_admin/user_create_for_admin', [AdminRegisteredUserController::class, 'create'])->name('user_create_for_admin.user_create_for_admin');
 Route::post('user_create_for_admin/user_create_for_admin', [AdminRegisteredUserController::class, 'store'])->name('user_create_for_admin.store');
 
+Route::get('/admin/users/{id}/edit', [AdminRegisteredUserController::class, 'adminEdit'])->name('user_create_for_admin.admin_user_edit');
+Route::put('/admin/users/{id}', [AdminRegisteredUserController::class, 'adminUpdate'])->name('user_create_for_admin.update');
+Route::delete('/admin/users/{id}', [AdminRegisteredUserController::class, 'adminDestroy'])->name('user_create_for_admin.destroy');

@@ -8,7 +8,7 @@ use App\Http\Controllers\Auth\EmailVerificationPromptController;
 // use App\Http\Controllers\Auth\PasswordController;
 // use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\admin\Auth\AdminRegisteredUserController;
-
+use App\Http\Controllers\dashboardController;
 // use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -57,6 +57,9 @@ Route::prefix('admin')->middleware('auth:admin')->group(function () {
     // Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
 
     // Route::put('password', [PasswordController::class, 'update'])->name('password.update');
+
+    Route::get('admin/admin_Dashboard', [dashboardController::class, 'permission'])->name('admin.admin_Dashboard');
+
 
     Route::get('/admin_Dashboard', function () {
         return Inertia::render('admin/admin_Dashboard');

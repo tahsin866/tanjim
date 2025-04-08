@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Storage;
 
 class AdminRegisteredUserController extends Controller
 {
@@ -47,6 +48,14 @@ class AdminRegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        if ($request->hasFile('profile_image')) {
+            $path = $request->file('profile_image')->store('profile-images', 'public');
+            $admin->profile_image = $path;
+            $admin->save();
+        }
+
+
 
         // Create permissions in admin_permissions table
         $permissionData = [
@@ -143,4 +152,191 @@ class AdminRegisteredUserController extends Controller
         // সফল রেজিস্ট্রেশন মেসেজ সহ রেজিস্ট্রেশন পেজে ফিরে যাওয়া
         return redirect()->route('user_create_for_admin.user_create_for_admin')->with('success', 'অ্যাডমিন সফলভাবে তৈরি করা হয়েছে।');
     }
+
+
+
+
+
+
+
+    public function adminEdit($id)
+    {
+        // Get admin data
+        $admin = Admin::findOrFail($id);
+
+        // Get permissions data
+        $permissions = admin_permission::where('admin_id', $id)->first();
+
+        return Inertia::render('user_create_for_admin/admin_user_edit', [
+            'admin' => $admin,
+            'permissions' => $permissions
+        ]);
+    }
+
+    public function adminUpdate(Request $request, $id)
+    {
+        $admin = Admin::findOrFail($id);
+
+        // Validate admin data
+        $validatedAdmin = $request->validate([
+            'name' => '|string|max:255',
+            'email' => '|string|email|max:255|unique:admins,email,'.$id,
+            'phone' => 'nullable|string|max:20',
+            'nid' => 'nullable|string|max:50',
+            'brn' => 'nullable|string|max:50',
+            'address' => 'nullable|string',
+            'designation' => '|string',
+            'profile_image' => 'nullable|image|max:2048',
+        ]);
+
+        // Handle profile image upload if provided
+        if ($request->hasFile('profile_image')) {
+            // Delete old image if exists
+            if ($admin->profile_image) {
+                Storage::delete('public/' . $admin->profile_image);
+            }
+
+            $path = $request->file('profile_image')->store('profile-images', 'public');
+            $validatedAdmin['profile_image'] = $path;
+        }
+
+        // Update admin data
+        $admin->update($validatedAdmin);
+
+        // Validate permissions data
+        $validatedPermissions = $request->validate([
+            'setup_access' => 'boolean',
+            'marhala_setup' => 'boolean',
+            'subject_setup' => 'boolean',
+            'central_exam_setup' => 'boolean',
+            'user_setup' => 'boolean',
+            'instruction' => 'boolean',
+            'bill_access' => 'boolean',
+            'negran_bill' => 'boolean',
+            'mumtahin_bill' => 'boolean',
+            'markaz_admin_bill' => 'boolean',
+            'zonal_bill' => 'boolean',
+            'madrasa_access' => 'boolean',
+            'madrasa_list' => 'boolean',
+            'madrasa_misc' => 'boolean',
+            'madrasa_admin' => 'boolean',
+            'draft_soft_delete' => 'boolean',
+            'madrasa_payment' => 'boolean',
+            'markaz_access' => 'boolean',
+            'markaz_application_list' => 'boolean',
+            'proposed_markaz' => 'boolean',
+            'markaz_list' => 'boolean',
+            'markaz_change_application' => 'boolean',
+            'markaz_admin' => 'boolean',
+            'markaz_admin_training' => 'boolean',
+            'markaz_group' => 'boolean',
+            'answer_sheet_group_setup' => 'boolean',
+            'mumtahin_group' => 'boolean',
+            'exam_routine_access' => 'boolean',
+            'exam_routine_group' => 'boolean',
+            'exam_routine' => 'boolean',
+            'oral_exam_mumtahin' => 'boolean',
+            'registration_access' => 'boolean',
+            'madrasa_list_reg' => 'boolean',
+            'registration_list' => 'boolean',
+            'cancelled_registration_list' => 'boolean',
+            'payment_list' => 'boolean',
+            'board_return_list' => 'boolean',
+            'registration_card_create' => 'boolean',
+            'inclusion_access' => 'boolean',
+            'inclusion_list' => 'boolean',
+            'roll_generate' => 'boolean',
+            'admit_card_create' => 'boolean',
+            'inclusion_payment' => 'boolean',
+            'cancelled_inclusion_list' => 'boolean',
+            'khata_loose_access' => 'boolean',
+            'khata_loose_setup' => 'boolean',
+            'khata_loose_generate' => 'boolean',
+            'khata_loose_account' => 'boolean',
+            'khata_loose_others' => 'boolean',
+            'negran_access' => 'boolean',
+            'negran_application_list' => 'boolean',
+            'negran_proposed_list' => 'boolean',
+            'negran_pending_list' => 'boolean',
+            'negran_cancelled_list' => 'boolean',
+            'negran_mumtahin_list' => 'boolean',
+            'negran_report' => 'boolean',
+            'negran_allowance' => 'boolean',
+            'mumtahin_access' => 'boolean',
+            'mumtahin_application_list' => 'boolean',
+            'mumtahin_proposed_list' => 'boolean',
+            'inspector_setup' => 'boolean',
+            'mumtahin_list' => 'boolean',
+            'darsiyat_mumtahin' => 'boolean',
+            'hifz_mumtahin_selection' => 'boolean',
+            'kirat_mumtahin_selection' => 'boolean',
+            'mumtahin_training' => 'boolean',
+            'zone_access' => 'boolean',
+            'zone_setup' => 'boolean',
+            'zonal_selection' => 'boolean',
+            'sub_zone_setup' => 'boolean',
+            'zone_wise_markaz_setup' => 'boolean',
+            'attendance_access' => 'boolean',
+            'examinee_attendance' => 'boolean',
+            'negran_attendance' => 'boolean',
+            'result_access' => 'boolean',
+            'result_condition' => 'boolean',
+            'merit_condition' => 'boolean',
+            'inspection_formula' => 'boolean',
+            'darsiyat_result' => 'boolean',
+            'oral_result' => 'boolean',
+            'result_correction' => 'boolean',
+            'result_review' => 'boolean',
+            'review_result_correction' => 'boolean',
+            'messaging' => 'boolean',
+            'notice' => 'boolean',
+        ]);
+
+        // Update or create permissions
+        admin_permission::updateOrCreate(
+            ['admin_id' => $id],
+            $validatedPermissions
+        );
+
+        return back()->with('success', 'Admin user updated successfully');
+
+    }
+
+
+
+
+
+    public function adminDestroy($id)
+    {
+        try {
+            // প্রথমে এডমিন আইডি দিয়ে এডমিন খুঁজে বের করি
+            $admin = Admin::findOrFail($id);
+
+            // এডমিন পারমিশন ডিলিট করি
+            // এখানে আমরা ম্যানুয়ালি ডিলিট করছি, কিন্তু আপনি মডেলে cascade ডিলিট সেট করতে পারেন
+            admin_permission::where('admin_id', $id)->delete();
+
+            // এডমিন ডিলিট করি
+            $admin->delete();
+
+            return redirect()->route('user_create_for_admin.index')
+                ->with('success', 'এডমিন সফলভাবে মুছে ফেলা হয়েছে।');
+
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'এডমিন মুছে ফেলতে সমস্যা হয়েছে: ' . $e->getMessage());
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 }

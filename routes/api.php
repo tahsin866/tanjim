@@ -3,6 +3,7 @@
 use App\Http\Controllers\MarhalaController;
 use App\Http\Controllers\SubjectSettingsController;
 use App\Http\Controllers\ExamSetupController;
+// use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleSetupController;
 use App\Http\Controllers\ExamRegistrationController;
 use Illuminate\Support\Facades\Route;
@@ -150,6 +151,15 @@ Route::post('/store-payment', [dashboardController::class, 'storePayment']);
 
 Route::get('/check-payment-status', [dashboardController::class, 'checkPaymentStatus']);
 Route::get('/unpaid-students-count', [dashboardController::class, 'getUnpaidStudentsCount']);
+
+
+
+// Route::get('/api/admins', [ProfileController::class, 'getAdmins'])->name('api.admins');
+
+
+
+
+
 
 
 });

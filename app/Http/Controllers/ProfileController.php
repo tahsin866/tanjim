@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\admin;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -60,4 +60,17 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+
+
+
+    public function getAdmins()
+    {
+        $admins = Admin::all();
+        return response()->json($admins);
+    }
+
+
+
+
 }

@@ -37,11 +37,6 @@ Route::prefix('api')->group(function () {
     Route::get('/subject-marhala-counts', [MarhalaController::class, 'getSubjectMarhalaStats']);
 });
 
-
-
-
-
-
 Route::get('Mrahala_for_Admin/marhala_edit/{marhala}', [MarhalaController::class, 'edit'])
     ->name('Mrahala_for_Admin.marhala_edit');
 
@@ -84,6 +79,9 @@ Route::get('Mrahala_for_Admin/marhala_edit/{marhala}', [MarhalaController::class
 
     Route::get('/nibondon/abandon-stu-list/{markaz_id}', [StudentRegistrationController::class, 'abandonStuList'])
     ->name('nibondon_for_admin.abandon_stu_list');
+
+
+    Route::get('/api/admins', [ProfileController::class, 'getAdmins'])->name('api.admins');
 
 
 

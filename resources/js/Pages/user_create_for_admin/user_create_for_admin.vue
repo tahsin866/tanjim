@@ -1,1015 +1,270 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import { Head, useForm } from '@inertiajs/vue3';
-import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
+<template>
+<AuthenticatedLayout>
+    <div class="bg-white mx-5 mt-5 dark:bg-gray-900 rounded-lg shadow-lg p-6 border border-emerald-100 dark:border-emerald-900">
+      <!-- Header with Islamic pattern -->
+      <div class="relative mb-6 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-4 overflow-hidden">
+        <div class="absolute inset-0 opacity-10"></div>
+        <h2 class="text-2xl  text-emerald-800 dark:text-emerald-200 text-center relative z-10">
+          ইউজার ম্যানেজমেন্ট সিস্টেম
+        </h2>
+      </div>
 
-const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    nid: '',
-    brn: '',
-    phone: '',
-    address: '',
-    designation: '',
-    profile_image: null,
-    
-    // Setup related permissions
-    setup_access: false,
-    marhala_setup: false,
-    subject_setup: false,
-    central_exam_setup: false,
-    user_setup: false,
-    instruction: false,
-    
-    // Bill related permissions
-    bill_access: false,
-    negran_bill: false,
-    mumtahin_bill: false,
-    markaz_admin_bill: false,
-    zonal_bill: false,
-    
-    // Madrasa related permissions
-    madrasa_access: false,
-    madrasa_list: false,
-    madrasa_misc: false,
-    madrasa_admin: false,
-    draft_soft_delete: false,
-    madrasa_payment: false,
-    
-    // Markaz related permissions
-    markaz_access: false,
-    markaz_application_list: false,
-    proposed_markaz: false,
-    markaz_list: false,
-    markaz_change_application: false,
-    markaz_admin: false,
-    markaz_admin_training: false,
-    markaz_group: false,
-    answer_sheet_group_setup: false,
-    mumtahin_group: false,
-    
-    // Exam routine permissions
-    exam_routine_access: false,
-    exam_routine_group: false,
-    exam_routine: false,
-    oral_exam_mumtahin: false,
-    
-    // Registration related permissions
-    registration_access: false,
-    madrasa_list_reg: false,
-    registration_list: false,
-    cancelled_registration_list: false,
-    payment_list: false,
-    board_return_list: false,
-    registration_card_create: false,
-    
-    // Inclusion related permissions
-    inclusion_access: false,
-    inclusion_list: false,
-    roll_generate: false,
-    admit_card_create: false,
-    inclusion_payment: false,
-    cancelled_inclusion_list: false,
-    
-    // Khata and Loose related permissions
-    khata_loose_access: false,
-    khata_loose_setup: false,
-    khata_loose_generate: false,
-    khata_loose_account: false,
-    khata_loose_others: false,
-    
-    // Negran related permissions
-    negran_access: false,
-    negran_application_list: false,
-    negran_proposed_list: false,
-    negran_pending_list: false,
-    negran_cancelled_list: false,
-    negran_mumtahin_list: false,
-    negran_report: false,
-    negran_allowance: false,
-    
-    // Mumtahin related permissions
-    mumtahin_access: false,
-    mumtahin_application_list: false,
-    mumtahin_proposed_list: false,
-    inspector_setup: false,
-    mumtahin_list: false,
-    darsiyat_mumtahin: false,
-    hifz_mumtahin_selection: false,
-    kirat_mumtahin_selection: false,
-    mumtahin_training: false,
-    
-    // Zone related permissions
-    zone_access: false,
-    zone_setup: false,
-    zonal_selection: false,
-    sub_zone_setup: false,
-    zone_wise_markaz_setup: false,
-    
-    // Attendance related permissions
-    attendance_access: false,
-    examinee_attendance: false,
-    negran_attendance: false,
-    
-    // Result related permissions
-    result_access: false,
-    result_condition: false,
-    merit_condition: false,
-    inspection_formula: false,
-    darsiyat_result: false,
-    oral_result: false,
-    result_correction: false,
-    result_review: false,
-    review_result_correction: false,
-    
-    // Other permissions
-    messaging: false,
-    notice: false,
+      <!-- Search and Filter Section -->
+      <div class="flex flex-col md:flex-row gap-4 mb-6">
+        <div class="flex-1">
+          <div class="relative">
+            <input
+              type="text"
+              placeholder="ফোন নম্বর দিয়ে সার্চ করুন"
+              class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-200"
+            />
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full md:w-48">
+          <select
+            class="w-full py-2 px-3 border border-gray-300 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-200"
+          >
+            <option value="">সকল ইউজার</option>
+            <option value="super_admin">সুপার এডমিন</option>
+            <option value="board_admin">বোর্ড এডমিন</option>
+            <option value="admin">এডমিন</option>
+            <option value="user">সাধারণ ইউজার</option>
+          </select>
+        </div>
+
+        <div>
+          <Link
+          :href="route('user_create_for_admin.new_user_for_admin')"
+            class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition-colors duration-200 flex items-center justify-center gap-2 shadow-md"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+            নতুন ইউজার
+          </Link>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+      <thead class="bg-emerald-50 dark:bg-emerald-900/30">
+        <tr>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">ছবি</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">নাম</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">ফোন নম্বর</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">ইমেইল</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">পদবি</th>
+          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">একশন</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
+        <tr v-for="admin in admins" :key="admin.id" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="h-10 w-10 rounded-full overflow-hidden border-2 border-emerald-200 dark:border-emerald-700">
+              <img :src="admin.profile_image ? '/storage/' + admin.profile_image : 'https://randomuser.me/api/portraits/men/1.jpg'"
+                   :alt="admin.name" class="h-full w-full object-cover" />
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ admin.name }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-700 dark:text-gray-300">{{ admin.phone }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-700 dark:text-gray-300">{{ admin.email }}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                  :class="getDesignationClass(admin.designation)">
+              {{ getDesignationText(admin.designation) }}
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+            <div class="flex space-x-2">
+                <Link
+    :href="route('user_create_for_admin.admin_user_edit', admin.id)"
+    class="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300"
+>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+    </svg>
+</Link>
+
+
+<div>
+    <!-- ডিলিট বাটন -->
+    <button
+      @click="confirmDelete(admin.id)"
+      class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+      </svg>
+    </button>
+
+    <!-- কনফার্মেশন মডাল -->
+    <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto">
+      <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 transition-opacity" @click="showModal = false">
+          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        </div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+            <div class="sm:flex sm:items-start">
+              <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                <h3 class="text-lg leading-6 font-medium text-gray-900">
+                  এডমিন ডিলিট করুন
+                </h3>
+                <div class="mt-2">
+                  <p class="text-sm text-gray-500">
+                    আপনি কি নিশ্চিত যে আপনি এই এডমিন ডিলিট করতে চান? এই কাজটি অপরিবর্তনীয়।
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+            <button
+              @click="deleteAdmin"
+              type="button"
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+              ডিলিট করুন
+            </button>
+            <button
+              @click="showModal = false"
+              type="button"
+              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+              বাতিল করুন
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+    <!-- Pagination -->
+    <div class="flex items-center justify-between mt-6">
+      <div class="flex items-center">
+        <span class="text-sm text-gray-700 dark:text-gray-300">
+          মোট <span class="font-medium">৫০</span> জন ইউজারের মধ্যে <span class="font-medium">১-৫</span> দেখাচ্ছে
+        </span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <button class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+          আগের পেজ
+        </button>
+        <button class="px-3 py-1 rounded-md bg-emerald-600 text-white hover:bg-emerald-700">
+          ১
+        </button>
+        <button class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+          ২
+        </button>
+        <button class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+          ৩
+        </button>
+        <button class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
+          পরের পেজ
+        </button>
+      </div>
+    </div>
+  </div>
+</AuthenticatedLayout>
+</template>
+
+<script setup>
+import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
+import { Link } from '@inertiajs/vue3';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { router } from '@inertiajs/vue3';
+
+const admins = ref([]);
+
+onMounted(() => {
+  fetchAdmins();
 });
 
-const errors = ref({});
-const imagePreview = ref(null);
-const activeTab = ref('basic');
-
-const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        form.profile_image = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imagePreview.value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
+const fetchAdmins = async () => {
+  try {
+    const response = await axios.get('/api/admins');
+    admins.value = response.data;
+  } catch (error) {
+    console.error('Error fetching admins:', error);
+  }
 };
 
-const toggleAllPermissions = (section, value) => {
-    Object.keys(form).forEach(key => {
-        if (key.startsWith(section) && key !== section + '_access') {
-            form[key] = value;
-        }
-    });
+const getDesignationText = (designation) => {
+  if (designation == 1) {
+    return 'সুপার এডমিন';
+  } else if (designation == 2) {
+    return 'সহ সুপার এডমিন';
+  } else {
+    return 'বোর্ড এডমিন';
+  }
 };
 
-const submit = () => {
-    form.post(route('user_create_for_admin.store'), {
-        onFinish: () => form.reset('password', 'password_confirmation'),
-        onError: (e) => {
-            errors.value = e;
-        }
-    });
+const getDesignationClass = (designation) => {
+  if (designation == 1) {
+    return 'bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200';
+  } else if (designation == 2) {
+    return 'bg-emerald-100 dark:bg-emerald-900 text-emerald-800 dark:text-emerald-200';
+  } else {
+    return 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200';
+  }
 };
+
+
+
+const showModal = ref(false);
+const adminIdToDelete = ref(null);
+
+const confirmDelete = (id) => {
+  adminIdToDelete.value = id;
+  showModal.value = true;
+};
+
+const deleteAdmin = () => {
+  // Inertia.js ব্যবহার করে ডিলিট রিকোয়েস্ট পাঠানো
+  router.delete(route('user_create_for_admin.destroy', adminIdToDelete.value));
+  showModal.value = false;
+};
+
+
+
+
+
+
+// আপনি এখানে ডাটা যোগ করতে পারেন
 </script>
 
-<template>
-    <AuthenticatedLayout>
-        <Head title="Create Admin User" />
-        
-        <div class="py-12">
-            <div class=" mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                    <div class="p-6 bg-white border-b border-gray-200">
-                        <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">এডমিন সেটাপ</h2>
-                        
-                        <!-- Tabs -->
-                        <div class="mb-6 border-b">
-                            <div class="flex">
-                                <button 
-                                    @click="activeTab = 'basic'" 
-                                    :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'basic'}"
-                                    class="px-4 py-2 text-xl"
-                                >
-                               বেসিক তথ্য
-                                </button>
-                                <button 
-                                    @click="activeTab = 'permissions'" 
-                                    :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'permissions'}"
-                                     class="px-4 py-2 text-xl"
-                                >
-                                   পারমিশন সেটিং
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <form @submit.prevent="submit">
-                            <!-- Basic Information Tab -->
-                            <div v-if="activeTab === 'basic'">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div class="col-span-1 md:col-span-2 flex justify-center">
-                                        <div class="mb-4 text-center">
-    <div class="w-32 h-40 mx-auto mb-2 overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center border border-gray-300">
-        <img v-if="imagePreview" :src="imagePreview" class="w-full h-full object-cover" />
-        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
-    </div>
-    <p class="text-xs text-gray-500 mb-2">পাসপোর্ট সাইজের ছবি (3.5 × 4.5 সেমি)</p>
-    <label class="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded-md">
-        <span>Upload Photo</span>
-        <input type="file" class="hidden" @change="handleImageUpload" accept="image/*" />
-    </label>
-    <div v-if="form.errors.profile_image" class="text-red-500 text-xs mt-1">{{ form.errors.profile_image }}</div>
-</div>
+<style scoped>
+.font-arabic {
+  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+}
 
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="name">
-                                        নাম
-                                        </label>
-                                        <input
-                                            id="name"
-                                            type="text"
-                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-xl text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.name"
-                                            required
-                                            autofocus
-                                            autocomplete="name"
-                                        />
-                                        <div v-if="form.errors.name" class="text-red-500 text-xs mt-1">{{ form.errors.name }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="email">
-                                      ইমেইল
-                                        </label>
-                                        <input
-                                            id="email"
-                                            type="email"
-                                            class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.email"
-                                            required
-                                            autocomplete="username"
-                                        />
-                                        <div v-if="form.errors.email" class="text-red-500 text-xs mt-1">{{ form.errors.email }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="phone">
-                                          ফোন নম্বর
-                                        </label>
-                                        <input
-                                            id="phone"
-                                            type="text"
-                                            class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.phone"
-                                        />
-                                        <div v-if="form.errors.phone" class="text-red-500 text-xs mt-1">{{ form.errors.phone }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-    <label class="block text-gray-700 text-xl font-bold mb-2" for="designation">
-       পদবি
-    </label>
-    <select
-        id="designation"
-        class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        v-model="form.designation"
-    >
-        <option value="">পদবি সিলেক্ট করুন</option>
-        <option value="1">সুপার এডমিন</option>
-        <option value="2">সহ সুপার এডমিন</option>
-        <option value="3">বোর্ড এডমিন</option>
-    </select>
-    <div v-if="form.errors.designation" class="text-red-500 text-xs mt-1">{{ form.errors.designation }}</div>
-</div>
-
-                                    
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="nid">
-                                       এন আই ডি  নম্বর
-                                        </label>
-                                        <input
-                                            id="nid"
-                                            type="text"
-                                            class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.nid"
-                                        />
-                                        <div v-if="form.errors.nid" class="text-red-500 text-xs mt-1">{{ form.errors.nid }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="brn">
-                                        জন্ম-নিবন্ধন নম্বর
-                                        </label>
-                                        <input
-                                            id="brn"
-                                            type="text"
-                                            class="shadow appearance-none text-xl  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.brn"
-                                        />
-                                        <div v-if="form.errors.brn" class="text-red-500 text-xs mt-1">{{ form.errors.brn }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-4 col-span-1 md:col-span-2">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="address">
-                                 ঠিকানা
-                                        </label>
-                                        <textarea
-                                            id="address"
-                                            class="shadow appearance-none text-xl  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.address"
-                                            rows="3"
-                                        ></textarea>
-                                        <div v-if="form.errors.address" class="text-red-500 text-xs mt-1">{{ form.errors.address }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700  text-xl font-bold mb-2" for="password">
-                                           পাসওয়ার্ড
-                                        </label>
-                                        <input
-                                            id="password"
-                                            type="password"
-                                    
-                                  
-                                            class="shadow appearance-none text-xl border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.password"
-                                            required
-                                            autocomplete="new-password"
-                                        />
-                                        <div v-if="form.errors.password" class="text-red-500 text-xs mt-1">{{ form.errors.password }}</div>
-                                    </div>
-                                    
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="password_confirmation">
-                                     পাসওয়ার্ড নিশ্চিতকরণ
-                                        </label>
-                                        <input
-                                            id="password_confirmation"
-                                            type="password"
-                                            class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.password_confirmation"
-                                            required
-                                            autocomplete="new-password"
-                                        />
-                                        <div v-if="form.errors.password_confirmation" class="text-red-500 text-xs mt-1">{{ form.errors.password_confirmation }}</div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex justify-between mt-6">
-                                    <div></div>
-                                    <button
-                                        type="button"
-                                        @click="activeTab = 'permissions'"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                    >
-                                        Next: Set Permissions
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <!-- Permissions Tab -->
-                            <div v-if="activeTab === 'permissions'" class="space-y-8">
-                                <!-- Setup Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="setup_access" 
-                                                v-model="form.setup_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('setup', form.setup_access)"
-                                            >
-                                            <label for="setup_access" class="font-medium text-gray-700 text-xl font-semibold">সেটাপ সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.setup_access = !form.setup_access; toggleAllPermissions('setup', form.setup_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.setup_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="marhala_setup" v-model="form.marhala_setup" class="mr-2">
-                                            <label for="marhala_setup" class="text-xl">মারহালা সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="subject_setup" v-model="form.subject_setup" class="mr-2">
-                                            <label for="subject_setup">বিষয় সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="central_exam_setup" v-model="form.central_exam_setup" class="mr-2">
-                                            <label for="central_exam_setup">কেন্দ্রীয় পরীক্ষা সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="user_setup" v-model="form.user_setup" class="mr-2">
-                                            <label for="user_setup">ব্যবহারকারী সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="instruction" v-model="form.instruction" class="mr-2">
-                                            <label for="instruction">নির্দেশনা</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Bill Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="bill_access" 
-                                                v-model="form.bill_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('bill', form.bill_access)"
-                                            >
-                                            <label for="bill_access" class="font-medium text-gray-700 text-xl font-semibold">ভাতা ও বিল</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.bill_access = !form.bill_access; toggleAllPermissions('bill', form.bill_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.bill_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_bill" v-model="form.negran_bill" class="mr-2">
-                                            <label for="negran_bill">নেগরান ভাতা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="mumtahin_bill" v-model="form.mumtahin_bill" class="mr-2">
-                                            <label for="mumtahin_bill">মুমতাহিন ভাতা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="markaz_admin_bill" v-model="form.markaz_admin_bill" class="mr-2">
-                                            <label for="markaz_admin_bill">মারকায এডমিন ভাতা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="zonal_bill" v-model="form.zonal_bill" class="mr-2">
-                                            <label for="zonal_bill">জোনাল ভাতা</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Madrasa Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="madrasa_access" 
-                                                v-model="form.madrasa_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('madrasa', form.madrasa_access)"
-                                            >
-                                            <label for="madrasa_access" class="font-medium text-gray-700 text-xl font-semibold">মাদরাসা সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.madrasa_access = !form.madrasa_access; toggleAllPermissions('madrasa', form.madrasa_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.madrasa_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="madrasa_list" v-model="form.madrasa_list" class="mr-2">
-                                            <label for="madrasa_list">মাদরাসা তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="madrasa_misc" v-model="form.madrasa_misc" class="mr-2">
-                                            <label for="madrasa_misc">বিবিধ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="madrasa_admin" v-model="form.madrasa_admin" class="mr-2">
-                                            <label for="madrasa_admin">মাদরাসা এডমিন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="draft_soft_delete" v-model="form.draft_soft_delete" class="mr-2">
-                                            <label for="draft_soft_delete">ড্রাফ্ট/সফ্ট ডিলিট</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="madrasa_payment" v-model="form.madrasa_payment" class="mr-2">
-                                            <label for="madrasa_payment">পেমেন্ট</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Markaz Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="markaz_access" 
-                                                v-model="form.markaz_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('markaz', form.markaz_access)"
-                                            >
-                                            <label for="markaz_access" class="font-medium text-gray-700 text-xl font-semibold">মারকায সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.markaz_access = !form.markaz_access; toggleAllPermissions('markaz', form.markaz_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.markaz_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="markaz_application_list" v-model="form.markaz_application_list" class="mr-2">
-                                            <label for="markaz_application_list">মারকায আবেদন তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="proposed_markaz" v-model="form.proposed_markaz" class="mr-2">
-                                            <label for="proposed_markaz">প্রস্তাবিত মারকায</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="markaz_list" v-model="form.markaz_list" class="mr-2">
-                                            <label for="markaz_list">মারকায তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="markaz_change_application" v-model="form.markaz_change_application" class="mr-2">
-                                            <label for="markaz_change_application">মারকায পরিবর্তনের আবেদন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="markaz_admin" v-model="form.markaz_admin" class="mr-2">
-                                            <label for="markaz_admin">মারকায এডমিন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="markaz_admin_training" v-model="form.markaz_admin_training" class="mr-2">
-                                            <label for="markaz_admin_training">মারকায এডমিন ট্রেনিং</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="markaz_group" v-model="form.markaz_group" class="mr-2">
-                                            <label for="markaz_group">মারকায গ্রুপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="answer_sheet_group_setup" v-model="form.answer_sheet_group_setup" class="mr-2">
-                                            <label for="answer_sheet_group_setup">উত্তরপ্রত্র গ্রুপ সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="mumtahin_group" v-model="form.mumtahin_group" class="mr-2">
-                                            <label for="mumtahin_group">মুমতাহিন গ্রুপ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Exam Routine Permissions -->
-                                <!-- Exam Routine Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="exam_routine_access" 
-                                                v-model="form.exam_routine_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('exam_routine', form.exam_routine_access)"
-                                            >
-                                            <label for="exam_routine_access" class="font-medium text-gray-700 text-xl font-semibold">পরীক্ষার রুটিন</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.exam_routine_access = !form.exam_routine_access; toggleAllPermissions('exam_routine', form.exam_routine_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.exam_routine_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="exam_routine_group" v-model="form.exam_routine_group" class="mr-2">
-                                            <label for="exam_routine_group">পরীক্ষার রুটিন গ্রুপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="exam_routine" v-model="form.exam_routine" class="mr-2">
-                                            <label for="exam_routine">পরীক্ষার রুটিন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="oral_exam_mumtahin" v-model="form.oral_exam_mumtahin" class="mr-2">
-                                            <label for="oral_exam_mumtahin">মৌখিক পরীক্ষার মুমতাহিন</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Registration Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="registration_access" 
-                                                v-model="form.registration_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('registration', form.registration_access)"
-                                            >
-                                            <label for="registration_access" class="font-medium text-gray-700 text-xl font-semibold">রেজিস্ট্রেশন সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.registration_access = !form.registration_access; toggleAllPermissions('registration', form.registration_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.registration_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="madrasa_list_reg" v-model="form.madrasa_list_reg" class="mr-2">
-                                            <label for="madrasa_list_reg">মাদরাসা তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="registration_list" v-model="form.registration_list" class="mr-2">
-                                            <label for="registration_list">রেজিস্ট্রেশন তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="cancelled_registration_list" v-model="form.cancelled_registration_list" class="mr-2">
-                                            <label for="cancelled_registration_list">বাতিলকৃত রেজিস্ট্রেশন তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="payment_list" v-model="form.payment_list" class="mr-2">
-                                            <label for="payment_list">পেমেন্ট তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="board_return_list" v-model="form.board_return_list" class="mr-2">
-                                            <label for="board_return_list">বোর্ড রিটার্ন তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="registration_card_create" v-model="form.registration_card_create" class="mr-2">
-                                            <label for="registration_card_create">রেজিস্ট্রেশন কার্ড তৈরি</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Inclusion Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="inclusion_access" 
-                                                v-model="form.inclusion_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('inclusion', form.inclusion_access)"
-                                            >
-                                            <label for="inclusion_access" class="font-medium text-gray-700 text-xl font-semibold">অন্তর্ভুক্তি সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.inclusion_access = !form.inclusion_access; toggleAllPermissions('inclusion', form.inclusion_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.inclusion_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="inclusion_list" v-model="form.inclusion_list" class="mr-2">
-                                            <label for="inclusion_list">অন্তর্ভুক্তি তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="roll_generate" v-model="form.roll_generate" class="mr-2">
-                                            <label for="roll_generate">রোল জেনারেট</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="admit_card_create" v-model="form.admit_card_create" class="mr-2">
-                                            <label for="admit_card_create">প্রবেশপত্র তৈরি</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="inclusion_payment" v-model="form.inclusion_payment" class="mr-2">
-                                            <label for="inclusion_payment">অন্তর্ভুক্তি পেমেন্ট</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="cancelled_inclusion_list" v-model="form.cancelled_inclusion_list" class="mr-2">
-                                            <label for="cancelled_inclusion_list">বাতিলকৃত অন্তর্ভুক্তি তালিকা</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Khata and Loose Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="khata_loose_access" 
-                                                v-model="form.khata_loose_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('khata_loose', form.khata_loose_access)"
-                                            >
-                                            <label for="khata_loose_access" class="font-medium text-gray-700 text-xl font-semibold">খাতা ও লুজ সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.khata_loose_access = !form.khata_loose_access; toggleAllPermissions('khata_loose', form.khata_loose_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.khata_loose_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="khata_loose_setup" v-model="form.khata_loose_setup" class="mr-2">
-                                            <label for="khata_loose_setup">খাতা ও লুজ সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="khata_loose_generate" v-model="form.khata_loose_generate" class="mr-2">
-                                            <label for="khata_loose_generate">খাতা ও লুজ জেনারেট</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="khata_loose_account" v-model="form.khata_loose_account" class="mr-2">
-                                            <label for="khata_loose_account">খাতা ও লুজ হিসাব</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="khata_loose_others" v-model="form.khata_loose_others" class="mr-2">
-                                            <label for="khata_loose_others">অন্যান্য</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Negran Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="negran_access" 
-                                                v-model="form.negran_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('negran', form.negran_access)"
-                                            >
-                                            <label for="negran_access" class="font-medium text-gray-700 text-xl font-semibold">নেগরান সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.negran_access = !form.negran_access; toggleAllPermissions('negran', form.negran_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.negran_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_application_list" v-model="form.negran_application_list" class="mr-2">
-                                            <label for="negran_application_list">নেগরান আবেদন তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_proposed_list" v-model="form.negran_proposed_list" class="mr-2">
-                                            <label for="negran_proposed_list">প্রস্তাবিত নেগরান তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_pending_list" v-model="form.negran_pending_list" class="mr-2">
-                                            <label for="negran_pending_list">অনিষ্পন্ন নেগরান তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_cancelled_list" v-model="form.negran_cancelled_list" class="mr-2">
-                                            <label for="negran_cancelled_list">বাতিলকৃত নেগরান তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_mumtahin_list" v-model="form.negran_mumtahin_list" class="mr-2">
-                                            <label for="negran_mumtahin_list">নেগরান-মুমতাহিন তালিকা</label>
-                                        </div>
-                                      
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_report" v-model="form.negran_report" class="mr-2">
-                                            <label for="negran_report">নেগরান রিপোর্ট</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_allowance" v-model="form.negran_allowance" class="mr-2">
-                                            <label for="negran_allowance">নেগরান ভাতা</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Mumtahin Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="mumtahin_access" 
-                                                v-model="form.mumtahin_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('mumtahin', form.mumtahin_access)"
-                                            >
-                                            <label for="mumtahin_access" class="font-medium text-gray-700 text-xl font-semibold">মুমতাহিন সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.mumtahin_access = !form.mumtahin_access; toggleAllPermissions('mumtahin', form.mumtahin_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.mumtahin_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="mumtahin_application_list" v-model="form.mumtahin_application_list" class="mr-2">
-                                            <label for="mumtahin_application_list">মুমতাহিন আবেদন তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="mumtahin_proposed_list" v-model="form.mumtahin_proposed_list" class="mr-2">
-                                            <label for="mumtahin_proposed_list">প্রস্তাবিত মুমতাহিন তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="inspector_setup" v-model="form.inspector_setup" class="mr-2">
-                                            <label for="inspector_setup">পরিদর্শক সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="mumtahin_list" v-model="form.mumtahin_list" class="mr-2">
-                                            <label for="mumtahin_list">মুমতাহিন তালিকা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="darsiyat_mumtahin" v-model="form.darsiyat_mumtahin" class="mr-2">
-                                            <label for="darsiyat_mumtahin">দারসিয়াত মুমতাহিন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hifz_mumtahin_selection" v-model="form.hifz_mumtahin_selection" class="mr-2">
-                                            <label for="hifz_mumtahin_selection">হিফজ মুমতাহিন নির্বাচন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="kirat_mumtahin_selection" v-model="form.kirat_mumtahin_selection" class="mr-2">
-                                            <label for="kirat_mumtahin_selection">কিরাত মুমতাহিন নির্বাচন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="mumtahin_training" v-model="form.mumtahin_training" class="mr-2">
-                                            <label for="mumtahin_training">মুমতাহিন প্রশিক্ষণ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Zone Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="zone_access" 
-                                                v-model="form.zone_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('zone', form.zone_access)"
-                                            >
-                                            <label for="zone_access" class="font-medium text-gray-700 text-xl font-semibold">জোন সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.zone_access = !form.zone_access; toggleAllPermissions('zone', form.zone_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.zone_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="zone_setup" v-model="form.zone_setup" class="mr-2">
-                                            <label for="zone_setup">জোন সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="zonal_selection" v-model="form.zonal_selection" class="mr-2">
-                                            <label for="zonal_selection">জোনাল নির্বাচন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="sub_zone_setup" v-model="form.sub_zone_setup" class="mr-2">
-                                            <label for="sub_zone_setup">সাব-জোন সেটাপ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="zone_wise_markaz_setup" v-model="form.zone_wise_markaz_setup" class="mr-2">
-                                            <label for="zone_wise_markaz_setup">জোন অনুযায়ী মারকায সেটাপ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Attendance Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="attendance_access" 
-                                                v-model="form.attendance_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('attendance', form.attendance_access)"
-                                            >
-                                            <label for="attendance_access" class="font-medium text-gray-700 text-xl font-semibold">হাজিরা সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.attendance_access = !form.attendance_access; toggleAllPermissions('attendance', form.attendance_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.attendance_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="examinee_attendance" v-model="form.examinee_attendance" class="mr-2">
-                                            <label for="examinee_attendance">পরীক্ষার্থী হাজিরা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="negran_attendance" v-model="form.negran_attendance" class="mr-2">
-                                            <label for="negran_attendance">নেগরান হাজিরা</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Result Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
-                                        <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="result_access" 
-                                                v-model="form.result_access"
-                                                class="mr-2"
-                                                @change="toggleAllPermissions('result', form.result_access)"
-                                            >
-                                            <label for="result_access" class="font-medium text-gray-700 text-xl font-semibold">ফলাফল সংক্রান্ত</label>
-                                        </div>
-                                        <button 
-                                            type="button"
-                                            @click="form.result_access = !form.result_access; toggleAllPermissions('result', form.result_access)"
-                                            class="text-xl text-blue-500 hover:text-blue-700"
-                                        >
-                                            {{ form.result_access ? 'Deselect All' : 'Select All' }}
-                                        </button>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="result_condition" v-model="form.result_condition" class="mr-2">
-                                            <label for="result_condition">ফলাফল শর্ত</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="merit_condition" v-model="form.merit_condition" class="mr-2">
-                                            <label for="merit_condition">মেধা শর্ত</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="inspection_formula" v-model="form.inspection_formula" class="mr-2">
-                                            <label for="inspection_formula">পরিদর্শন ফর্মুলা</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="darsiyat_result" v-model="form.darsiyat_result" class="mr-2">
-                                            <label for="darsiyat_result">দারসিয়াত ফলাফল</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="oral_result" v-model="form.oral_result" class="mr-2">
-                                            <label for="oral_result">মৌখিক ফলাফল</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="result_correction" v-model="form.result_correction" class="mr-2">
-                                            <label for="result_correction">ফলাফল সংশোধন</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="result_review" v-model="form.result_review" class="mr-2">
-                                            <label for="result_review">ফলাফল পুনঃনিরীক্ষণ</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="review_result_correction" v-model="form.review_result_correction" class="mr-2">
-                                            <label for="review_result_correction">পুনঃনিরীক্ষণ ফলাফল সংশোধন</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <!-- Other Permissions -->
-                                <div class="border rounded-lg overflow-hidden">
-                                    <div class="bg-gray-50 px-4 py-3 border-b">
-                                        <div class="font-medium text-gray-700 text-xl font-semibold">অন্যান্য</div>
-                                    </div>
-                                    <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="messaging" v-model="form.messaging" class="mr-2">
-                                            <label for="messaging">মেসেজিং</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="notice" v-model="form.notice" class="mr-2">
-                                            <label for="notice">নোটিশ</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="flex justify-between mt-6">
-                                    <button
-                                        type="button"
-                                        @click="activeTab = 'basic'"
-                                        class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                  
-                                    >
-                                        Back to Basic Info
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                        :disabled="form.processing"
-                                    >
-                                        <span v-if="form.processing">Processing...</span>
-                                        <span v-else>Create Admin User</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </AuthenticatedLayout>
-</template>
+.islamic-pattern {
+  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+</style>
