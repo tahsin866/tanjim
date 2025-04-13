@@ -20,8 +20,9 @@ class SubjectSettingsController extends Controller
     {
         $marhala = Marhala::select('id', 'marhala_name_bn')->findOrFail($marhalaId);
 
+        // এখানে subject_code নাম ঠিক করুন
         $subjects = MarhalaSubject::where('marhala_id', $marhalaId)
-            ->select('id', 'name_bangla', 'subject_code')
+            ->select('id', 'name_bangla', 'subject_code') // subject_code as code না লিখে subject_code লিখুন
             ->get();
 
         return response()->json([
@@ -29,6 +30,7 @@ class SubjectSettingsController extends Controller
             'subjects' => $subjects
         ]);
     }
+
 
 
 
@@ -48,62 +50,17 @@ public function subjectStore(Request $request)
         'pass_marks' => 'required',
         'status' => 'required|in:active,inactive'
     ]);
-
-    subject_settings::create($validated);
+ subject_settings::create($validated);
 
     return response()->json([
         'success' => true,
-        'message' => 'Subject settings saved successfully'
-    ]);
+        'message' => 'Subject settings saved successfully',
+
+        ]);
 }
 
 
 
-public function show($id)
-    {
-        $subjectSetting = subject_settings::findOrFail($id);
-
-        return response()->json([
-            'success' => true,
-            'subjectSetting' => $subjectSetting
-        ]);
-    }
-
-    public function subjectupdate(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'marhala_id' => 'required',
-            'subject_id' => 'required',
-            'Marhala_type' => 'required',
-            'Subject_Names' => 'required',
-            'student_type' => 'required',
-            'syllabus_type' => 'required',
-            'markaz_type' => 'required',
-            'subject_type' => 'required',
-            'subject_code' => 'required',
-            'total_marks' => 'required',
-            'pass_marks' => 'required',
-            'status' => 'required|in:active,inactive'
-        ]);
-
-        $subjectSetting = subject_settings::findOrFail($id);
-        $subjectSetting->update($validated);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'বিষয় তথ্য সফলভাবে আপডেট করা হয়েছে'
-        ]);
-    }
-
-
-
-    public function odit($marhala, $id)
-    {
-        return Inertia::render('SubjectSettings/Form', [
-            'marhala' => $marhala,
-            'id' => $id
-        ]);
-    }
 
 
 
@@ -112,29 +69,65 @@ public function show($id)
 
 
 
-public function index()
+public function getSubjectSetting($id)
 {
-    $subjects = subject_settings::with('MarhalaSubject')
-        ->get()
-        ->map(function ($subject) {
-            return [
-
-                'code' => $subject->MarhalaSubject->subject_code ?? 'N/A',
-                'Subject_Names' => $subject->Subject_Names,
-                'Marhala_type' => $subject->Marhala_type,
-                'syllabus_type' => $subject->syllabus_type,
-                'markaz_type' => $subject->markaz_type,
-                'subject_type' => $subject->subject_type,
-                'total_marks' => $subject->total_marks,
-                'pass_marks' => $subject->pass_marks,
-                'status' => $subject->status,
-            ];
-        });
+    $subjectSetting = subject_settings::findOrFail($id);
 
     return response()->json([
+        'success' => true,
+        'subjectSetting' => $subjectSetting
+    ]);
+}
+
+public function getsubjecData($marhalaId)
+{
+    $marhala = Marhala::select('id', 'marhala_name_bn')->findOrFail($marhalaId);
+    $subjects = MarhalaSubject::where('marhala_id', $marhalaId)
+        ->select('id', 'name_bangla', 'subject_code')
+        ->get();
+
+    return response()->json([
+        'marhala' => $marhala,
         'subjects' => $subjects
     ]);
 }
+
+public function updateSubjectSetting(Request $request, $id)
+{
+    $validated = $request->validate([
+        'marhala_id' => 'required',
+        'subject_id' => 'required',
+        'Marhala_type' => 'required',
+        'Subject_Names' => 'required',
+        'student_type' => 'required',
+        'syllabus_type' => 'required',
+        'markaz_type' => 'required',
+        'subject_type' => 'required',
+        // 'subject_code' => 'required',
+        'total_marks' => 'required',
+        'pass_marks' => 'required',
+        'status' => 'required|in:active,inactive'
+    ]);
+
+    $subjectSetting = subject_settings::findOrFail($id);
+    $subjectSetting->update($validated);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Subject settings updated successfully',
+    ]);
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -179,6 +172,7 @@ public function search(Request $request)
 
     $subjects = $query->get()->map(function ($subject) {
         return [
+            'id' => $subject->id,
             'code' => $subject->MarhalaSubject->subject_code ?? 'N/A',
             'Subject_Names' => $subject->Subject_Names,
             'student_type' => $subject->student_type,

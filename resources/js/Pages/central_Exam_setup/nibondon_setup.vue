@@ -1,6 +1,6 @@
 <template>
    <AuthenticatedLayout>
-    <div class="p-8 bg-[#f8f9fa] min-h-screen">
+    <div class="p-8 bg-[#f8f9fa] min-h-screen mt-10">
       <div class="bg-white rounded-sm shadow-md border border-emerald-100">
         <!-- Header Section -->
         <div class="bg-emerald-50 p-6 rounded-t-sm border-b border-emerald-100">
@@ -15,120 +15,121 @@
 
         <!-- Table Section -->
         <div class="p-6 overflow-x-auto">
-       <table class="w-full border-collapse">
-    <thead>
-        <tr class="bg-emerald-100 text-emerald-800">
-            <th class="border border-emerald-300 p-3 font-semibold">ক্রমিক</th>
-            <th class="border border-emerald-300 p-3 font-semibold">পরীক্ষা (মারহালা)</th>
-            <th class="border border-emerald-300 p-3 font-semibold text-center" colspan="6">নিবন্ধন ফি</th>
-            <th class="border border-emerald-300 p-3 font-semibold text-center" colspan="6">বিলম্ব ফি</th>
-        </tr>
-        <tr class="bg-emerald-50 text-emerald-800">
-            <th class="border border-emerald-300 p-3" colspan="2"></th>
-            <th class="border border-emerald-300 p-3">সময় সীমা</th>
-            <th class="border border-emerald-300 p-3">নিয়মিত</th>
-            <th class="border border-emerald-300 p-3">অনিয়মিত (যেমনি)</th>
-            <th class="border border-emerald-300 p-3">অনিয়মিত (মানোন্নয়ন)</th>
-            <th class="border border-emerald-300 p-3">অনিয়মিত (অন্যান্য)</th>
-            <th class="border border-emerald-300 p-3">সময় সীমা</th>
-            <th class="border border-emerald-300 p-3">নিয়মিত</th>
-            <th class="border border-emerald-300 p-3">অনিয়মিত (যেমনি)</th>
-            <th class="border border-emerald-300 p-3">অনিয়মিত (মানোন্নয়ন)</th>
-            <th class="border border-emerald-300 p-3">অনিয়মিত (অন্যান্য)</th>
-        </tr>
-    </thead>
+    <table class="w-full border-collapse">
+        <thead>
+            <tr class="bg-emerald-100 text-emerald-800">
+                <th class="border border-emerald-300 p-3 font-semibold" style="min-width: 60px;">ক্রমিক</th>
+                <th class="border border-emerald-300 p-3 font-semibold" style="min-width: 150px;">পরীক্ষা (মারহালা)</th>
+                <th class="border border-emerald-300 p-3 font-semibold text-center" colspan="6">নিবন্ধন ফি</th>
+                <th class="border border-emerald-300 p-3 font-semibold text-center" colspan="6">বিলম্ব ফি</th>
+            </tr>
+            <tr class="bg-emerald-50 text-emerald-800">
+                <th class="border border-emerald-300 p-3" colspan="2"></th>
+                <th class="border border-emerald-300 p-3" style="min-width: 300px;">সময় সীমা</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">নিয়মিত</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (যেমনি)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (মানোন্নয়ন)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (অন্যান্য)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 300px;">সময় সীমা</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">নিয়মিত</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (যেমনি)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (মানোন্নয়ন)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (অন্যান্য)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(row, index) in rows" :key="index" class="hover:bg-emerald-50 transition">
+                <td class="border border-emerald-300 p-3 text-center font-medium">{{ index + 1 }}</td>
+                <td class="border border-emerald-300 p-3 font-medium text-emerald-900">{{ row.examName }}</td>
 
-    <tbody>
-        <tr v-for="(row, index) in rows" :key="index" class="hover:bg-emerald-50 transition">
-            <td class="border border-emerald-300 p-3 text-center font-medium">{{ index + 1 }}</td>
-            <td class="border border-emerald-300 p-3 font-medium text-emerald-900">{{ row.examName }}</td>
-
-            <!-- নিবন্ধন ফি - সময় সীমা -->
-            <td class="border border-emerald-300 p-3">
+                <!-- নিবন্ধন ফি - সময় সীমা -->
                 <td class="border border-emerald-300 p-3">
-    <div class="flex items-center gap-3">
-        <input
-            type="date"
-            v-model="row.dateFrom1"
-            class="w-40 border border-emerald-200 p-2.5 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        >
-        <span class="whitespace-nowrap font-medium">থেকে</span>
-        <input
-            type="date"
-            v-model="row.dateTo1"
-            class="w-40 border border-emerald-200 p-2.5 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-        >
-    </div>
-</td>
-            </td>
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="date"
+                            v-model="row.dateFrom1"
+                            class="w-full border border-emerald-200 p-2 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            style="min-width: 120px;"
+                        >
+                        <span class="whitespace-nowrap font-medium px-1">থেকে</span>
+                        <input
+                            type="date"
+                            v-model="row.dateTo1"
+                            class="w-full border border-emerald-200 p-2 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            style="min-width: 120px;"
+                        >
+                    </div>
+                </td>
 
-            <!-- নিয়মিত ফি -->
-            <td class="border border-emerald-300 p-3">
-                <input type="number" v-model="row.fee1"
-                       class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500">
-            </td>
-
-            <!-- অন্যান্য ফি -->
-            <td class="border border-emerald-300 p-3">
-                <input type="number" v-model="row.invest1Men"
-                       class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500">
-            </td>
-            <td class="border border-emerald-300 p-3">
-                <input type="number" v-model="row.invest1Madan"
-                       class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500">
-            </td>
-            <td class="border border-emerald-300 p-3">
-                <input type="number" v-model="row.invest1Others"
-                       class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500">
-            </td>
-
-            <!-- বিলম্ব ফি - সময় সীমা -->
-            <td class="border border-emerald-300 p-3">
+                <!-- নিয়মিত ফি -->
                 <td class="border border-emerald-300 p-3">
-    <div class="flex items-center gap-3">
-        <div class="relative">
+                    <input type="number" v-model="row.fee1"
+                        class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500"
+                        style="min-width: 80px;">
+                </td>
 
-            <input
-                type="date"
-                v-model="row.dateFrom2"
-                class="w-44 border-2 border-emerald-200 p-3 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
-            >
-        </div>
-        <span class="whitespace-nowrap font-medium text-emerald-700">থেকে</span>
-        <div class="relative">
+                <!-- অন্যান্য ফি -->
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="row.invest1Men"
+                        class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500"
+                        style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="row.invest1Madan"
+                        class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500"
+                        style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="row.invest1Others"
+                        class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500"
+                        style="min-width: 80px;">
+                </td>
 
-            <input
-                type="date"
-                v-model="row.dateTo2"
-                class="w-44 border-2 border-emerald-200 p-3 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
-            >
-        </div>
-    </div>
-</td>
-            </td>
+                <!-- বিলম্ব ফি - সময় সীমা -->
+                <td class="border border-emerald-300 p-3">
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="date"
+                            v-model="row.dateFrom2"
+                            class="w-full border border-emerald-200 p-2 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            style="min-width: 120px;"
+                        >
+                        <span class="whitespace-nowrap font-medium px-1">থেকে</span>
+                        <input
+                            type="date"
+                            v-model="row.dateTo2"
+                            class="w-full border border-emerald-200 p-2 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                            style="min-width: 120px;"
+                        >
+                    </div>
+                </td>
 
-            <!-- বিলম্ব ফি - অন্যান্য ফি -->
-            <td class="border border-emerald-300 p-3">
-                <input type="number" v-model="row.fee2"
-                       class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500">
-            </td>
-            <td class="border border-emerald-300 p-3">
-                <input type="number" v-model="row.invest2Men"
-                       class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500">
-            </td>
-            <td class="border border-emerald-300 p-3">
-                <input type="number" v-model="row.invest2Madan"
-                       class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500">
-            </td>
-            <td class="border border-emerald-300 p-3">
-                <input type="number" v-model="row.invest2Others"
-                       class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500">
-            </td>
-        </tr>
-    </tbody>
-</table>
+                <!-- বিলম্ব ফি - অন্যান্য ফি -->
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="row.fee2"
+                        class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500"
+                        style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="row.invest2Men"
+                        class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500"
+                        style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="row.invest2Madan"
+                        class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500"
+                        style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="row.invest2Others"
+                        class="w-full border border-emerald-300 p-2 rounded-sm focus:ring-emerald-500"
+                        style="min-width: 80px;">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-        </div>
 
         <!-- Action Buttons -->
         <div class="bg-gray-50 p-6 rounded-b-xl border-t border-gray-100 flex justify-between items-center">

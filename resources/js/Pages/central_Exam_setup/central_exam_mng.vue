@@ -96,10 +96,11 @@
                     <td class="px-2 md:px-4 lg:px-6 py-2 md:py-4 font-md font-semibold whitespace-nowrap">{{ exam.hijri }}</td>
                     <td class="px-2 md:px-4 lg:px-6 py-2 md:py-4">
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <Link :href="route('central_Exam_setup.central_exam_edit', exam.exam_setup_id)"
-                                class="bg-amber-500 text-white px-2 md:px-3 lg:px-4 py-1 md:py-2 rounded-sm hover:bg-amber-600 transition-colors duration-200 text-xs md:text-sm lg:text-md text-center">
-                                সংশোধনী
-                            </Link>
+                            <Link :href="route('central_Exam_setup.central_exam_name', { id: exam.id })"
+    class="bg-amber-500 text-white px-2 md:px-3 lg:px-4 py-1 md:py-2 rounded-sm hover:bg-amber-600 transition-colors duration-200 text-xs md:text-sm lg:text-md text-center">
+    সংশোধনী
+</Link>
+
                         </div>
                     </td>
                     <td class="px-2 md:px-4 lg:px-6 py-2 md:py-4">
@@ -128,10 +129,11 @@
                     </td>
                     <td class="px-2 md:px-4 lg:px-6 py-2 md:py-4">
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <Link :href="route('central_Exam_setup.nibondon_setup', exam.id)"
-                                class="bg-emerald-500 text-white px-2 md:px-3 lg:px-4 py-1 md:py-2 rounded-sm hover:bg-emerald-600 transition-colors duration-200 text-xs md:text-sm lg:text-md text-center">
-                                সংশোধনী
-                            </Link>
+                            <Link :href="route('central_Exam_setup.others_setup_edit', { id: exam.id })"
+    class="bg-emerald-500 text-white px-2 md:px-3 lg:px-4 py-1 md:py-2 rounded-sm hover:bg-emerald-600 transition-colors duration-200 text-xs md:text-sm lg:text-md text-center">
+    সংশোধনী
+</Link>
+
                             <Link :href="route('central_Exam_setup.others_setup')"
                                 class="bg-indigo-500 text-white px-2 md:px-3 lg:px-4 py-1 md:py-2 rounded-sm hover:bg-indigo-600 transition-colors duration-200 text-xs md:text-sm lg:text-md text-center">
                                 অন্যান্য সেটআপ

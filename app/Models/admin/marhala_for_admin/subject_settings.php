@@ -9,6 +9,8 @@ class subject_settings extends Model
 {
 
     protected $table = 'subject_settings';
+    // protected $hidden = [];
+
 
     protected $fillable = [
         'marhala_id',
@@ -21,7 +23,8 @@ class subject_settings extends Model
         'subject_type',
         'total_marks',
         'pass_marks',
-        'status'
+        'status',
+        'subject_code'
     ];
 
     protected $casts = [

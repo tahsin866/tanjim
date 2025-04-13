@@ -26,7 +26,7 @@ const submit = () => {
 
 <template>
     <Head title="Login to WEMS" />
-    
+
     <!-- Main container with centered content -->
     <div class="min-h-screen flex flex-col justify-center items-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
         <div class="w-full max-w-md bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden p-8">
@@ -36,16 +36,16 @@ const submit = () => {
                 class="text-center mb-8"
             >
                 <div class="arabic-pattern h-16 mb-4"></div>
-                <h2 class="text-2xl text-gray-700 dark:text-gray-300 font-semibold">মাদরাসা পেনেল</h2>
+                <h2 class="text-2xl text-gray-700 dark:text-gray-300 font-semibold">এডমিন পেনেল</h2>
             </div>
-            
+
             <!-- Status Message -->
             <div v-if="status" class="mb-4 p-4 bg-emerald-50/80 dark:bg-emerald-900/80 rounded-lg text-emerald-700 dark:text-emerald-300">
                 {{ status }}
             </div>
-            
+
             <!-- Form Content -->
-            <form 
+            <form
                 @submit.prevent="submit"
                 style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
                 class="space-y-6"
@@ -64,7 +64,7 @@ const submit = () => {
                     />
                     <InputError class="mt-2" :message="form.errors.email" />
                 </div>
-                
+
                 <!-- Password Field -->
                 <div>
                     <InputLabel for="password" value="পাসওয়ার্ড" class="text-gray-700 dark:text-gray-300" />
@@ -78,7 +78,7 @@ const submit = () => {
                     />
                     <InputError class="mt-2" :message="form.errors.password" />
                 </div>
-                
+
                 <!-- Remember Me & Forgot Password -->
                 <div class="flex items-center justify-between">
                     <label class="flex items-center">
@@ -93,7 +93,7 @@ const submit = () => {
                         পাসওয়ার্ড ভুলে গেছেন?
                     </Link>
                 </div>
-                
+
                 <!-- Submit Button & Register Link -->
                 <div class="flex flex-col space-y-4">
                     <PrimaryButton

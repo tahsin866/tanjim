@@ -37,6 +37,7 @@ class ExamSetupController extends Controller
 
 
 
+
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
@@ -63,4 +64,49 @@ class ExamSetupController extends Controller
             'data' => $examFee
         ]);
     }
+
+
+
+
+
+
+
+
+
+    public function getExamSetup($id)
+    {
+        $examSetup = ExamSetup::findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'examSetup' => $examSetup
+        ]);
+    }
+
+    public function updateExamSetup(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'exam_name' => 'required|string',
+            'arabic_year' => 'required|string',
+            'bangla_year' => 'required|string',
+            'english_year' => 'required|string',
+        ]);
+
+        $examSetup = ExamSetup::findOrFail($id);
+        $examSetup->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'পরীক্ষা সেটাপ সফলভাবে আপডেট করা হয়েছে!',
+        ]);
+    }
+
+
+
+
+
+
+
+
+
 }

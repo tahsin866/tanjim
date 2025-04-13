@@ -11,8 +11,8 @@
             <h4 class="text-xl font-bold mb-4 text-emerald-400">যোগাযোগ</h4>
             <div class="space-y-2 text-gray-300">
               <p>বেফাকুল মাদারিসিল আরাবিয়া বাংলাদেশ</p>
-              <p>লালবাগ, ঢাকা-১২১১</p>
-              <p>ফোন: +৮৮-০২-XXXXXXXX</p>
+              <p>কাজলা</p>
+              <p>ফোন: +৮-০২-XXXXXXXX</p>
               <p>ইমেইল: info@befaq.edu.bd</p>
             </div>
           </div>

@@ -17,127 +17,116 @@
 
                 <!-- Table Section -->
                 <div class="p-6 overflow-x-auto">
-                    <table class="w-full border-collapse">
-                        <thead>
-                            <tr class="bg-emerald-100 text-emerald-800">
-                                <th class="border border-emerald-300 p-3 font-semibold">ক্রমিক</th>
-                                <th class="border border-emerald-300 p-3 font-semibold">পরীক্ষা (মারহালা)</th>
-                                <th class="border border-emerald-300 p-3 font-semibold text-center" colspan="6">নিবন্ধন
-                                    ফি</th>
-                                <th class="border border-emerald-300 p-3 font-semibold text-center" colspan="6">বিলম্ব
-                                    ফি</th>
-                            </tr>
-                            <tr class="bg-emerald-50 text-emerald-800">
-                                <th class="border border-emerald-300 p-3" colspan="2"></th>
-                                <th class="border border-emerald-300 p-3">সময় সীমা</th>
-                                <th class="border border-emerald-300 p-3">নিয়মিত</th>
-                                <th class="border border-emerald-300 p-3">অনিয়মিত (যেমনি)</th>
-                                <th class="border border-emerald-300 p-3">অনিয়মিত (মানোন্নয়ন)</th>
-                                <th class="border border-emerald-300 p-3">অনিয়মিত (অন্যান্য)</th>
-                                <th class="border border-emerald-300 p-3">সময় সীমা</th>
-                                <th class="border border-emerald-300 p-3">নিয়মিত</th>
-                                <th class="border border-emerald-300 p-3">অনিয়মিত (যেমনি)</th>
-                                <th class="border border-emerald-300 p-3">অনিয়মিত (মানোন্নয়ন)</th>
-                                <th class="border border-emerald-300 p-3">অনিয়মিত (অন্যান্য)</th>
-                            </tr>
-                        </thead>
+    <table class="w-full border-collapse">
+        <thead>
+            <tr class="bg-emerald-100 text-emerald-800">
+                <th class="border border-emerald-300 p-3 font-semibold" style="min-width: 60px;">ক্রমিক</th>
+                <th class="border border-emerald-300 p-3 font-semibold" style="min-width: 150px;">পরীক্ষা (মারহালা)</th>
+                <th class="border border-emerald-300 p-3 font-semibold text-center" colspan="6">নিবন্ধন ফি</th>
+                <th class="border border-emerald-300 p-3 font-semibold text-center" colspan="6">বিলম্ব ফি</th>
+            </tr>
+            <tr class="bg-emerald-50 text-emerald-800">
+                <th class="border border-emerald-300 p-3" colspan="2"></th>
+                <th class="border border-emerald-300 p-3" style="min-width: 300px;">সময় সীমা</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">নিয়মিত</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (যেমনি)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (মানোন্নয়ন)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (অন্যান্য)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 300px;">সময় সীমা</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">নিয়মিত</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (যেমনি)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (মানোন্নয়ন)</th>
+                <th class="border border-emerald-300 p-3" style="min-width: 100px;">অনিয়মিত (অন্যান্য)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(examFee, index) in examFeesData" :key="index" class="hover:bg-emerald-50 transition">
+                <td class="border border-emerald-300 p-3 text-center font-medium">{{ index + 1 }}</td>
+                <td class="border border-emerald-300 p-3 font-medium text-emerald-900">
+                    {{ examFee.exam_name }}
+                </td>
+                <!-- Registration Fee Section -->
+                <td class="border border-emerald-300 p-3">
+                    <div class="flex items-center gap-1">
+                        <div class="relative" style="width: 48%;">
+                            <label class="absolute -top-2 left-2 bg-white px-1 text-xs text-emerald-600">শুরু</label>
+                            <input
+                                type="date"
+                                v-model="examFeesData[index].reg_date_from"
+                                class="w-full border-2 border-emerald-200 p-2 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
+                            >
+                        </div>
+                        <span class="whitespace-nowrap font-medium text-emerald-700 px-1">থেকে</span>
+                        <div class="relative" style="width: 48%;">
+                            <label class="absolute -top-2 left-2 bg-white px-1 text-xs text-emerald-600">শেষ</label>
+                            <input
+                                type="date"
+                                v-model="examFeesData[index].reg_date_to"
+                                class="w-full border-2 border-emerald-200 p-2 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
+                            >
+                        </div>
+                    </div>
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="examFeesData[index].reg_regular_fee"
+                        class="w-full border border-emerald-300 p-2 rounded-sm" style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="examFeesData[index].reg_irregular_jemni"
+                        class="w-full border border-emerald-300 p-2 rounded-sm" style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="examFeesData[index].reg_irregular_manonnoyon"
+                        class="w-full border border-emerald-300 p-2 rounded-sm" style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="examFeesData[index].reg_irregular_others"
+                        class="w-full border border-emerald-300 p-2 rounded-sm" style="min-width: 80px;">
+                </td>
+                <!-- Late Fee Section -->
+                <td class="border border-emerald-300 p-3">
+                    <div class="flex items-center gap-1">
+                        <div class="relative" style="width: 48%;">
+                            <label class="absolute -top-2 left-2 bg-white px-1 text-xs text-emerald-600">শুরু</label>
+                            <input
+                                type="date"
+                                v-model="examFeesData[index].late_date_from"
+                                class="w-full border-2 border-emerald-200 p-2 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
+                            >
+                        </div>
+                        <span class="whitespace-nowrap font-medium text-emerald-700 px-1">থেকে</span>
+                        <div class="relative" style="width: 48%;">
+                            <label class="absolute -top-2 left-2 bg-white px-1 text-xs text-emerald-600">শেষ</label>
+                            <input
+                                type="date"
+                                v-model="examFeesData[index].late_date_to"
+                                class="w-full border-2 border-emerald-200 p-2 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
+                            >
+                        </div>
+                    </div>
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="examFeesData[index].late_regular_fee"
+                        class="w-full border border-emerald-300 p-2 rounded-sm" style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="examFeesData[index].late_irregular_jemni"
+                        class="w-full border border-emerald-300 p-2 rounded-sm" style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="examFeesData[index].late_irregular_manonnoyon"
+                        class="w-full border border-emerald-300 p-2 rounded-sm" style="min-width: 80px;">
+                </td>
+                <td class="border border-emerald-300 p-3">
+                    <input type="number" v-model="examFeesData[index].late_irregular_others"
+                        class="w-full border border-emerald-300 p-2 rounded-sm" style="min-width: 80px;">
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-                        <tbody>
-                            <tr v-for="(examFee, index) in examFeesData" :key="index" class="hover:bg-emerald-50 transition">
-                                <td class="border border-emerald-300 p-3 text-center font-medium">{{ index + 1 }}</td>
-                                <td class="border border-emerald-300 p-3 font-medium text-emerald-900">
-                                    {{ examFee.exam_name }}
-                                </td>
 
-                                <!-- Registration Fee Section -->
-                                <td class="border border-emerald-300 p-3">
-    <div class="flex items-center gap-3">
-        <div class="relative">
-            <label class="absolute -top-2 left-2 bg-white px-1 text-xs text-emerald-600">শুরু</label>
-            <input
-                type="date"
-                v-model="examFeesData[index].reg_date_from"
-                class="w-44 border-2 border-emerald-200 p-3 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
-            >
-        </div>
-        <span class="whitespace-nowrap font-medium text-emerald-700">থেকে</span>
-        <div class="relative">
-            <label class="absolute -top-2 left-2 bg-white px-1 text-xs text-emerald-600">শেষ</label>
-            <input
-                type="date"
-                v-model="examFeesData[index].reg_date_to"
-                class="w-44 border-2 border-emerald-200 p-3 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
-            >
-        </div>
-    </div>
-</td>
-                                <td class="border border-emerald-300 p-3">
-                                    <input type="number" v-model="examFeesData[index].reg_regular_fee"
-                                        class="w-full border border-emerald-300 p-2 rounded-sm">
-                                </td>
-
-                                <td class="border border-emerald-300 p-3">
-                                    <input type="number" v-model="examFeesData[index].reg_irregular_jemni"
-                                        class="w-full border border-emerald-300 p-2 rounded-sm">
-                                </td>
-
-                                <td class="border border-emerald-300 p-3">
-                                    <input type="number" v-model="examFeesData[index].reg_irregular_manonnoyon"
-                                        class="w-full border border-emerald-300 p-2 rounded-sm">
-                                </td>
-
-                                <td class="border border-emerald-300 p-3">
-                                    <input type="number" v-model="examFeesData[index].reg_irregular_others"
-                                        class="w-full border border-emerald-300 p-2 rounded-sm">
-                                </td>
-
-                                <!-- Late Fee Section -->
-                                <td class="border border-emerald-300 p-3">
-    <div class="flex items-center gap-3">
-        <div class="relative">
-            <label class="absolute -top-2 left-2 bg-white px-1 text-xs text-emerald-600">শুরু</label>
-            <input
-                type="date"
-                v-model="examFeesData[index].late_date_from"
-                class="w-44 border-2 border-emerald-200 p-3 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
-            >
-        </div>
-        <span class="whitespace-nowrap font-medium text-emerald-700">থেকে</span>
-        <div class="relative">
-            <label class="absolute -top-2 left-2 bg-white px-1 text-xs text-emerald-600">শেষ</label>
-            <input
-                type="date"
-                v-model="examFeesData[index].late_date_to"
-                class="w-44 border-2 border-emerald-200 p-3 rounded focus:ring-2 focus:ring-emerald-500 focus:border-transparent shadow-sm"
-            >
-        </div>
-    </div>
-</td>
-
-                                <td class="border border-emerald-300 p-3">
-                                    <input type="number" v-model="examFeesData[index].late_regular_fee"
-                                        class="w-full border border-emerald-300 p-2 rounded-sm">
-                                </td>
-
-                                <td class="border border-emerald-300 p-3">
-                                    <input type="number" v-model="examFeesData[index].late_irregular_jemni"
-                                        class="w-full border border-emerald-300 p-2 rounded-sm">
-                                </td>
-
-                                <td class="border border-emerald-300 p-3">
-                                    <input type="number" v-model="examFeesData[index].late_irregular_manonnoyon"
-                                        class="w-full border border-emerald-300 p-2 rounded-sm">
-                                </td>
-
-                                <td class="border border-emerald-300 p-3">
-                                    <input type="number" v-model="examFeesData[index].late_irregular_others"
-                                        class="w-full border border-emerald-300 p-2 rounded-sm">
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
 
                 <!-- Action Buttons -->
                 <div class="bg-gray-50 p-6 rounded-b-xl border-t border-gray-100 flex justify-between items-center">

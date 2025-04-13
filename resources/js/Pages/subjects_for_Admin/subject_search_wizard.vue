@@ -102,36 +102,38 @@
                                 <th class="border border-emerald-200 p-3 font-semibold">কর্মসূচী</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr v-for="(subject, index) in subjects" :key="index" class="border-b border-emerald-200 hover:bg-emerald-50 text-xl">
 
-    <td class="border border-emerald-200 p-3">{{ subject.code }}</td>
-    <td class="border border-emerald-200 p-3">{{ subject.Subject_Names }}</td>
-    <td class="border border-emerald-200 p-3">{{ subject.Marhala_type }}</td>
-    <td class="border border-emerald-200 p-3">{{ subject.student_type }}</td>
-    <td class="border border-emerald-200 p-3">{{ subject.syllabus_type }}</td>
-    <td class="border border-emerald-200 p-3">{{ subject.markaz_type }}</td>
-    <td class="border border-emerald-200 p-3">{{ subject.subject_type }}</td>
-    <td class="border border-emerald-200 p-3">{{ subject.total_marks }}</td>
-    <td class="border border-emerald-200 p-3">{{ subject.pass_marks }}</td>
-    <td class="border border-emerald-200 p-3">
-        <span :class="subject.status === 'active' ? 'bg-emerald-500' : 'bg-red-500'" class="px-3 py-1 text-white rounded-sm">
-            {{ subject.status === 'active' ? 'সক্রিয়' : 'নিষ্ক্রিয়' }}
-        </span>
-    </td>
-    <td class="border border-emerald-200 p-3">
-        <button
-    @click="editSubject(subject)"
-    class="px-4 py-1.5 bg-amber-500 text-white rounded-sm hover:bg-amber-600 transition-colors duration-200 flex items-center gap-1">
-    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-    </svg>
-    সংশোধন
-</button>
-    </td>
-</tr>
-            </tbody>
+
+      <tbody>
+    <tr v-for="(subject, index) in subjects" :key="index" class="border-b border-emerald-200 hover:bg-emerald-50 text-xl">
+        <td class="border border-emerald-200 p-3">{{ subject.code }}</td>
+        <td class="border border-emerald-200 p-3">{{ subject.Subject_Names }}</td>
+        <td class="border border-emerald-200 p-3">{{ subject.Marhala_type }}</td>
+        <td class="border border-emerald-200 p-3">{{ subject.student_type }}</td>
+        <td class="border border-emerald-200 p-3">{{ subject.syllabus_type }}</td>
+        <td class="border border-emerald-200 p-3">{{ subject.markaz_type }}</td>
+        <td class="border border-emerald-200 p-3">{{ subject.subject_type }}</td>
+        <td class="border border-emerald-200 p-3">{{ subject.total_marks }}</td>
+        <td class="border border-emerald-200 p-3">{{ subject.pass_marks }}</td>
+        <td class="border border-emerald-200 p-3">
+            <span :class="subject.status === 'active' ? 'bg-emerald-500' : 'bg-red-500'" class="px-3 py-1 text-white rounded-sm">
+                {{ subject.status === 'active' ? 'সক্রিয়' : 'নিষ্ক্রিয়' }}
+            </span>
+        </td>
+        <td class="border border-emerald-200 p-3">
+            <Link :href="route('subjects_for_Admin.subject_setings_edit', { marhala: subject.id })"
+                class="px-4 py-1.5 bg-amber-500 text-white rounded-sm hover:bg-amber-600 transition-colors duration-200 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                সংশোধন
+            </Link>
+        </td>
+    </tr>
+</tbody>
+
+
                     </table>
                 </div>
             </div>
@@ -200,21 +202,21 @@ const resetFilters = () => {
 };
 
 
-const editSubject = (subject) => {
-    console.log('Editing subject:', subject);
+// const editSubject = (subject) => {
+//     console.log('Editing subject:', subject);
 
-    // Make sure subject.marhala_id and subject.id are defined
-    if (!subject.marhala_id || !subject.id) {
-        console.error('Missing required parameters:', subject);
-        return;
-    }
+//     // Make sure subject.marhala_id and subject.id are defined
+//     if (!subject.marhala_id || !subject.id) {
+//         console.error('Missing required parameters:', subject);
+//         return;
+//     }
 
-    // Use the correct route name and parameters
-    window.location.href = route('subjects_for_Admin.subject_setings_edit', {
-        marhala: subject.marhala_id,
-        id: subject.id
-    });
-};
+//     // Use the correct route name and parameters
+//     window.location.href = route('subjects_for_Admin.subject_setings_edit', {
+//         marhala: subject.marhala_id,
+//         id: subject.id
+//     });
+// };
 
 
 // Watch for changes in filter values

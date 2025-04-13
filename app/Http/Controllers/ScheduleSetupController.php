@@ -44,4 +44,40 @@ class ScheduleSetupController extends Controller
         ]);
     }
 
+
+
+
+
+
+
+    public function getScheduleSetup($id)
+    {
+        $scheduleSetup = schedule_setups::findOrFail($id);
+
+        return response()->json([
+            'success' => true,
+            'scheduleSetup' => $scheduleSetup
+        ]);
+    }
+
+    public function updateScheduleSetup(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date',
+            'is_active' => 'required|boolean'
+        ]);
+
+        $scheduleSetup = schedule_setups::findOrFail($id);
+        $scheduleSetup->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'পরীক্ষার সময়সূচী সফলভাবে আপডেট করা হয়েছে!',
+        ]);
+    }
+
+
+
+
 }

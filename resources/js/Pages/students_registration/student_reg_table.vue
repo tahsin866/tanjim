@@ -426,6 +426,7 @@ const closeDeleteToast = () => {
     alt="Student"
     class="w-20 h-20 rounded-sm mx-auto object-cover"
   />
+
   <div v-else class="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center mx-auto">
     <span class="text-gray-500 text-xs">No Image</span>
   </div>
@@ -525,7 +526,7 @@ const closeDeleteToast = () => {
                         <i class="fas fa-trash-alt mr-3 text-gray-400 group-hover:text-red-700"></i>
                         মুছে ফেলুন
                     </a>
-        
+
 
 
       </div>

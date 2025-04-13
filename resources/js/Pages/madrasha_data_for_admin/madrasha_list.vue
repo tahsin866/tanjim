@@ -52,8 +52,8 @@
                                 <select v-model="filters.type"
                                     class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]">
                                     <option value="">সকল</option>
-                                    <option value="boy">ছাত্র</option>
-                                    <option value="girl">ছাত্রী</option>
+                                    <option value="ছাত্র">ছাত্র</option>
+                                    <option value="ছাত্রী">ছাত্রী</option>
                                 </select>
                             </div>
 
@@ -63,24 +63,34 @@
 
                                     মাদরাসার স্তর
                                 </label>
-                                <select v-model="filters.level"
-                                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]">
-                                    <option value="">সকল</option>
-
-                                </select>
+                                <select v-model="filters.level" class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]">
+    <option value="">সকল</option>
+    <option value="takmil">তাকমিল</option>
+    <option value="fazilat">ফযিলত</option>
+    <option value="sanabiya_uliya">সানাবিয়া উলইয়া</option>
+    <option value="sanabiya">সানাবিয়া</option>
+    <option value="mutawassita">মুতাওয়াসসিতা</option>
+    <option value="ibtedaiya">ইবতেদাইয়া</option>
+    <option value="hifzul_quran">হিফজুল কোরআন</option>
+    <option value="ilmul_qiraat">ইলমুল কিরাআত</option>
+</select>
                             </div>
 
                             <!-- মাদরাসার ধরন নির্বাচন -->
                             <div class="bg-gray-50 p-4 rounded-sm hover:shadow-md transition-all duration-300">
                                 <label class="text-xl  font-semibold text-gray-700 mb-2 flex items-center gap-2">
 
-                                    মাদরাসার ধরন নির্বাচন
+                                    মারকাযের ধরন নির্বাচন
                                 </label>
-                                <select v-model="filters.status"
-                                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]">
-                                    <option value="">সকল</option>
+                             <!-- মারকাযের ধরন নির্বাচন -->
+<select v-model="filters.status" class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]">
+    <option value="">সকল</option>
+    <option value="darsiyat">দরসিয়াত</option>
+    <option value="hifzul_quran">হিফজুল কুরআন</option>
+    <option value="ilmul_qiraat">ইলমুল কিরাআত</option>
+    <option value="all">সকল মারকাজ</option>
+</select>
 
-                                </select>
                             </div>
 
                             <!-- বিভাগ -->
@@ -110,7 +120,7 @@
     <label class="text-xl font-semibold text-gray-700 mb-2">থানা/উপজেলা</label>
     <select v-model="filters.thana" class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f]">
       <option value="">সকল</option>
-      <option v-for="thana in thanas" :key="thana.TID" :value="thana.TID">
+      <option v-for="thana in thanas" :key="thana.Thana_ID" :value="thana.Thana_ID">
         {{ thana.Thana }}
       </option>
     </select>
@@ -254,7 +264,9 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
 import { ref, reactive, onMounted, computed } from 'vue';
+
 import axios from 'axios';
+import { Link } from '@inertiajs/vue3';
 
 // State Management
 const applications = ref({
@@ -266,6 +278,7 @@ const applications = ref({
     to: 0
 });
 
+const loading = ref(false);
 const perPage = ref(10);
 const jumpToPage = ref('');
 const divisions = ref([]);
@@ -273,7 +286,7 @@ const districts = ref([]);
 const thanas = ref([]);
 
 // Filters
-const filters = reactive({
+const filters = ref({
     madrasahName: '',
     type: '',
     level: '',
@@ -282,6 +295,9 @@ const filters = reactive({
     district: '',
     thana: ''
 });
+
+
+
 
 // Table Headers
 const tableHeaders = [
@@ -321,47 +337,149 @@ const loadDivisions = async () => {
 };
 
 const handleDivisionChange = async () => {
-    filters.district = '';
-    filters.thana = '';
-    if (filters.division) {
-        const response = await axios.get(`/api/districts/${filters.division}`);
-        districts.value = response.data;
-    } else {
-        districts.value = [];
+    filters.value.district = '';
+    filters.value.thana = '';
+    districts.value = [];
+    thanas.value = [];
+
+    if (filters.value.division) {
+        try {
+            const response = await axios.get(`/api/districts/${filters.value.division}`);
+            districts.value = response.data;
+        } catch (error) {
+            console.error('Error loading districts:', error);
+        }
     }
 };
 
 const handleDistrictChange = async () => {
-    filters.thana = '';
-    if (filters.district) {
-        const response = await axios.get(`/api/thanas/${filters.district}`);
-        thanas.value = response.data;
-    } else {
-        thanas.value = [];
+    filters.value.thana = '';
+    thanas.value = [];
+
+    if (filters.value.district) {
+        try {
+            const response = await axios.get(`/api/thanas/${filters.value.district}`);
+            thanas.value = response.data;
+        } catch (error) {
+            console.error('Error loading thanas:', error);
+        }
     }
 };
 
 const fetchMadrasaData = async () => {
+    loading.value = true;
     try {
-        const response = await axios.get('/api/madrasha-list', {
+        const response = await axios.get('/api/markaz-list', {
             params: {
                 page: applications.value.current_page,
                 per_page: perPage.value,
-                ...filters
+                ...filters.value
             }
         });
         applications.value = response.data;
     } catch (error) {
-        console.log('Error fetching data:', error);
+        console.error('Error fetching data:', error);
+    } finally {
+        loading.value = false;
     }
 };
 
-// Event Handlers
+// Search with filters
+// Search with filters
+// Search with filters
 const search = () => {
     applications.value.current_page = 1;
-    fetchMadrasaData();
+    loading.value = true;
+
+    // সার্চ টার্ম ট্রিম করা
+    if (filters.value.madrasahName) {
+        filters.value.madrasahName = filters.value.madrasahName.trim();
+    }
+
+    axios.get('/api/madrashas/filter', {
+        params: filters.value
+    })
+    .then(response => {
+        const data = response.data;
+
+        // ডাটা ম্যাপিং এবং সাজেশন লজিক
+        let formattedData = data;
+
+        // যদি সার্চ টার্ম থাকে, তাহলে সাজেশন সর্ট করা
+        if (filters.value.madrasahName && formattedData.length > 0) {
+            // সার্চ টার্ম লোয়ারকেস করা
+            const searchTerm = filters.value.madrasahName.toLowerCase();
+
+            // ডাটা সর্ট করা - যেগুলো সার্চ টার্মের সাথে বেশি মিলে সেগুলো আগে আসবে
+            formattedData.sort((a, b) => {
+                // সঠিক ফিল্ড নাম ব্যবহার করা - MName বা name যেটি আছে
+                const aName = ((a.name || a.MName) || '').toLowerCase();
+                const bName = ((b.name || b.MName) || '').toLowerCase();
+
+                // এক্সাক্ট ম্যাচ আগে আসবে
+                if (aName === searchTerm && bName !== searchTerm) return -1;
+                if (bName === searchTerm && aName !== searchTerm) return 1;
+
+                // শুরুতে ম্যাচ হলে দ্বিতীয় অগ্রাধিকার
+                if (aName.startsWith(searchTerm) && !bName.startsWith(searchTerm)) return -1;
+                if (bName.startsWith(searchTerm) && !aName.startsWith(searchTerm)) return 1;
+
+                // কন্টেইনস ম্যাচ তৃতীয় অগ্রাধিকার
+                if (aName.includes(searchTerm) && !bName.includes(searchTerm)) return -1;
+                if (bName.includes(searchTerm) && !aName.includes(searchTerm)) return 1;
+
+                // অন্যথায় আলফাবেটিক সর্ট
+                return aName.localeCompare(bName);
+            });
+        }
+
+        // ডাটা ম্যাপিং - সঠিক ফিল্ড নাম নিশ্চিত করা
+        formattedData = formattedData.map(item => {
+            // কনসোলে ডাটা স্ট্রাকচার দেখা
+            console.log('Item structure:', item);
+
+            return {
+                id: item.id,
+                name: item.name || item.MName, // যেকোনো একটি ফিল্ড ব্যবহার করা
+                Elhaq_no: item.Elhaq_no || item.ElhaqNo, // যেকোনো একটি ফিল্ড ব্যবহার করা
+                type: item.type || item.MType,
+                markaz_serial: item.markaz_serial || item.CenterSL,
+                mobile_no: item.mobile_no || item.Mobile || item.MobileNo,
+                division_name: item.division_name,
+                district_name: item.district_name,
+                thana_name: item.thana_name,
+                // অন্যান্য প্রয়োজনীয় ফিল্ড
+            };
+        });
+
+        // ম্যানুয়ালি পেজিনেশন তৈরি
+        const totalItems = formattedData.length;
+        const startIndex = 0;
+        const endIndex = Math.min(perPage.value, totalItems);
+
+        applications.value = {
+            data: formattedData.slice(startIndex, endIndex),
+            current_page: 1,
+            last_page: Math.ceil(totalItems / perPage.value) || 1,
+            total: totalItems,
+            from: totalItems > 0 ? 1 : 0,
+            to: endIndex
+        };
+
+        // ডিবাগিং
+        console.log(`Found ${totalItems} results for search: "${filters.value.madrasahName}"`);
+    })
+    .catch(error => {
+        console.error('Error filtering madrasas:', error);
+    })
+    .finally(() => {
+        loading.value = false;
+    });
 };
 
+
+
+// Event Handlers
 const handlePageChange = async (page) => {
     applications.value.current_page = page;
     await fetchMadrasaData();
@@ -381,14 +499,18 @@ const handleJumpToPage = () => {
 };
 
 const resetFilters = () => {
-    Object.keys(filters).forEach(key => filters[key] = '');
+    Object.keys(filters.value).forEach(key => {
+        filters.value[key] = '';
+    });
+    districts.value = [];
+    thanas.value = [];
     search();
 };
 
 const exportData = async () => {
     try {
         const response = await axios.get('/api/export-madrasa', {
-            params: filters,
+            params: filters.value,
             responseType: 'blob'
         });
         const url = window.URL.createObjectURL(new Blob([response.data]));

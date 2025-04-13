@@ -22,9 +22,38 @@ Route::prefix('api')->group(function () {
     Route::get('/marhala/{marhala}/subjects', [SubjectSettingsController::class, 'getData']);
 
     Route::get('/subjects', [SubjectSettingsController::class, 'index']);
-    Route::post('/subject-settings', [SubjectSettingsController::class, 'store'])->name('subject-settings.store');
+    Route::post('/subject-settings', [SubjectSettingsController::class, 'subjectStore'])->name('subject-settings.store');
+
+  // routes/api.php
+  Route::get('/subject-settings/{id}', [SubjectSettingsController::class, 'showsubjects']);
+// Route::get('/subject-settings/{marhala}', [SubjectSettingsController::class, 'show']);
+// Route::put('/subject-settings/{marhala}', [SubjectSettingsController::class, 'subjectupdate']);
+
+Route::get('/subject-settings/{id}', [SubjectSettingsController::class, 'getSubjectSetting']);
+Route::get('/marhala/{marhalaId}/subjects', [SubjectSettingsController::class, 'getsubjecData']);
+Route::put('/subject-settings/{id}', [SubjectSettingsController::class, 'updateSubjectSetting']);
+
+
+
+
+
+
+
+
+
+
+
     Route::get('/subjects', [SubjectSettingsController::class, 'search']);
     Route::post('/exam-setups', [SubjectSettingsController::class, 'store_1']);
+
+    Route::get('/exam-setups/{id}', [ExamSetupController::class, 'getExamSetup']);
+    Route::put('/exam-setups/{id}', [ExamSetupController::class, 'updateExamSetup']);
+
+    Route::get('/schedule-setups/{id}', [ScheduleSetupController::class, 'getScheduleSetup']);
+    Route::put('/schedule-setups/{id}', [ScheduleSetupController::class, 'updateScheduleSetup']);
+
+
+
 
     Route::get('/exam-setups/latest', [SubjectSettingsController::class, 'getLatest']);
     Route::get('/marhalas', [SubjectSettingsController::class, 'index_1']);
@@ -43,7 +72,7 @@ Route::prefix('api')->group(function () {
 
 
     Route::get('/madrashas/list', [MarkazAgreementController::class, 'getMadrashas'])->name('madrashas.list');
-    // Route::get('/exam-setups/latest', [MarkazAgreementController::class, 'getLatest'])->name('exam-setups.latest');
+    Route::get('/exam-setups/latest', [MarkazAgreementController::class, 'getLatest'])->name('exam-setups.latest');
     Route::get('/markaz/get-table-data', [MarkazAgreementController::class, 'getTableData']);
 
 
@@ -145,7 +174,7 @@ Route::get('/markaz-madrasa-list/{markaz_id}', [StudentRegistrationController::c
     Route::get('/payment-stats', [dashboardController::class, 'getPaymentStats']);
 
 
-    
+
 Route::get('/payment-stats', [dashboardController::class, 'getPaymentStats']);
 Route::post('/store-payment', [dashboardController::class, 'storePayment']);
 

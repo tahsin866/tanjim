@@ -62,10 +62,6 @@ Route::get('Mrahala_for_Admin/marhala_edit/{marhala}', [MarhalaController::class
 
 
 
-    Route::get('/api/subject-settings/{id}', [MarhalaListController::class, 'getSubjectsettings'])->name('api.subject-settings');
-
-
-
 
 
     Route::get('/students-registration', [StudentRegistrationController::class, 'getStudentdata'])->name('students_registration.index');
@@ -82,6 +78,16 @@ Route::get('Mrahala_for_Admin/marhala_edit/{marhala}', [MarhalaController::class
 
 
     Route::get('/api/admins', [ProfileController::class, 'getAdmins'])->name('api.admins');
+
+
+// রাউট ঠিক করুন - api প্রিফিক্স যোগ করুন
+
+
+
+
+
+
+
 
 
 

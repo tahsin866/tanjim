@@ -123,7 +123,7 @@ class StudentRegistrationController extends Controller
             'student_type',
             'exam_name_Bn'
         )->get();
-        
+
         // প্রতিটি ছাত্রের জন্য status এবং payment_status যোগ করা
         foreach ($students as $student) {
             // রেজিস্ট্রেশন স্ট্যাটাস
@@ -131,17 +131,17 @@ class StudentRegistrationController extends Controller
                 ->latest()
                 ->first();
             $student->status = $log ? $log->status : null;
-            
+
             // পেমেন্ট স্ট্যাটাস
             $payment = DB::table('student_reg_payments')
                 ->where('students_id', $student->id)
                 ->latest()
                 ->first();
-            
+
             $student->payment_status = $payment && $payment->payment_status == 1 ? 'পরিশোধিত' : 'অপরিশোধিত';
             $student->is_paid = $payment && $payment->payment_status == 1;
         }
-        
+
         return response()->json($students);
     }
 
@@ -211,7 +211,7 @@ class StudentRegistrationController extends Controller
 
 
 
-    
+
 
 
 
@@ -220,7 +220,7 @@ class StudentRegistrationController extends Controller
     public function getMarkazStudents()
     {
         $self = $this;
-    
+
         $students = reg_stu_information::select(
             'reg_stu_informations.markaz_id as id',
             'madrasha.MName as madrasha_Name',
@@ -241,7 +241,7 @@ class StudentRegistrationController extends Controller
         ->leftJoin('thana', 'madrasha.TID', '=', 'thana.Thana_ID')
         ->whereNotNull('reg_stu_informations.markaz_id')
         ->groupBy(
-            'reg_stu_informations.markaz_id', 
+            'reg_stu_informations.markaz_id',
             'reg_stu_informations.exam_name_Bn',
             'madrasha.MName',
             'madrasha.ElhaqNo',
@@ -272,11 +272,11 @@ class StudentRegistrationController extends Controller
                 'madrasha_code' => $self->getMadrashaCode($item->id)
             ];
         });
-    
+
         return response()->json($students);
     }
-    
-    
+
+
 
 
 
@@ -291,11 +291,11 @@ class StudentRegistrationController extends Controller
         })
         ->select('custom_code')
         ->first();
-        
+
         return $user ? $user->custom_code : null;
     }
-    
-    
+
+
 
 
 
@@ -381,7 +381,7 @@ class StudentRegistrationController extends Controller
     {
         // মাদরাসা আইডি অনুসারে ছাত্রদের তালিকা পাওয়া
         $students = [];
-    
+
         if ($madrasha_id) {
             // Eloquent ব্যবহার করে ছাত্রদের তথ্য সংগ্রহ করা
             $students = reg_stu_information::with(['latestLog' => function($query) {
@@ -404,14 +404,14 @@ class StudentRegistrationController extends Controller
                     ];
                 });
         }
-    
+
         return Inertia::render('nibondon_for_admin/madrashaWari_stu_nibond_list', [
             'students' => $students,
             'madrasha_id' => $madrasha_id
         ]);
     }
-    
-    
+
+
 
 
 
@@ -634,7 +634,7 @@ public function AdminstudentRegistrationView($id)
 
 
 
-// admin return student registration 
+// admin return student registration
 
 
 public function studentReturn(Request $request, $id)

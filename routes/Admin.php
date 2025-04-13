@@ -7,7 +7,7 @@ use App\Http\Controllers\MarhalaListController;
 use App\Http\Controllers\MadrashaController;
 use App\Http\Controllers\SubjectSettingsController;
 use App\Http\Controllers\StudentRegistrationController;
-use App\Http\Controllers\admin\Auth\AdminRegisteredUserController;
+use App\Http\Controllers\Admin\auth\AdminRegisteredUserController;
 use App\Http\Controllers\ExamSetupController;
 use App\Http\Controllers\MarkazAgreementController;
 // মারহালা সেটাপ
@@ -75,11 +75,13 @@ Route::get('central_Exam_setup/central_exam_name', function () {
     return Inertia::render('central_Exam_setup/central_exam_name');
 })->name('central_Exam_setup.central_exam_name');
 
-// Route::get('central_Exam_setup/central_exam_edit', function () {
-//     return Inertia::render('central_Exam_setup/central_exam_edit');
-// })->name('central_Exam_setup.central_exam_edit');
+Route::get('central_Exam_setup/central_name_eidt', function () {
+    return Inertia::render('central_Exam_setup/central_name_eidt');
+})->name('central_Exam_setup.central_name_eidt');
 
-
+Route::get('central_Exam_setup/others_setup_edit', function () {
+    return Inertia::render('central_Exam_setup/others_setup_edit');
+})->name('central_Exam_setup.others_setup_edit');
 // নেগরান বিল
 
 
@@ -160,7 +162,7 @@ Route::get('user_create_for_admin/admin_user_edit', function () {
 
 
 
-Route::get('/subject-settings', [SubjectSettingsController::class, 'index'])->name('subject-settings.index');
+// Route::get('/subject-settings', [SubjectSettingsController::class, 'index'])->name('subject-settings.index');
 
 
 

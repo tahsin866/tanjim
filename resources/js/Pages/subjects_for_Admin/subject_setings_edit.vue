@@ -3,13 +3,7 @@
         <div class="p-6 bg-white shadow-md rounded-sm border-t-4 border-emerald-600 mx-5 mt-5">
             <div class="mb-6 text-center relative">
                 <div class="absolute inset-0 bg-emerald-50 opacity-25"></div>
-                <h2 class="text-2xl font-bold text-emerald-800 py-3">
-                    {{ isEditMode ? 'বিষয় তথ্য সম্পাদনা' : 'বিষয় তথ্য সংযোজন' }}
-                </h2>
-            </div>
-
-            <div v-if="successMessage" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4">
-                {{ successMessage }}
+                <h2 class="text-2xl font-bold text-emerald-800 py-3">বিষয় তথ্য আপডেট</h2>
             </div>
 
             <form @submit.prevent="submit" class="grid grid-cols-4 gap-6">
@@ -26,8 +20,7 @@
                 <div class="col-span-1">
                     <label class="block text-sm font-semibold text-emerald-800 mb-2">বিষয় নির্বাচন করুন *</label>
                     <select v-model="form.subject_id"
-                            class="w-full border-emerald-200 rounded-sm py-2 px-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-emerald-50 text-gray-700"
-                            :disabled="isEditMode">
+                            class="w-full border-emerald-200 rounded-sm py-2 px-3 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-emerald-50 text-gray-700">
                         <option value="" class="text-gray-700">নির্বাচন করুন</option>
                         <option v-for="subject in subjects"
                                 :key="subject.id"
@@ -117,7 +110,7 @@
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                         </svg>
-                        {{ form.processing ? 'সংরক্ষণ হচ্ছে...' : (isEditMode ? 'আপডেট করুন' : 'সংরক্ষণ করুন') }}
+                        {{ form.processing ? 'আপডেট হচ্ছে...' : 'আপডেট করুন' }}
                     </button>
                 </div>
             </form>
@@ -133,16 +126,49 @@ import { useForm } from '@inertiajs/vue3'
 
 const marhala = ref({})
 const subjects = ref([])
-const loading = ref(true)
-const successMessage = ref('')
-
-// Check if we're in edit mode
-const isEditMode = computed(() => !!route().params.id)
+const subjectSetting = ref({})
 const marhalaName = computed(() => marhala.value?.marhala_name_bn || '')
 
+const fetchSubjectSetting = async (id) => {
+    try {
+        const response = await axios.get(`/api/subject-settings/${id}`);
+        if (response.data.success) {
+            subjectSetting.value = response.data.subjectSetting;
+
+            // Populate the form with existing data
+            form.marhala_id = subjectSetting.value.marhala_id;
+            form.subject_id = subjectSetting.value.subject_id;
+            form.Marhala_type = subjectSetting.value.Marhala_type;
+            form.Subject_Names = subjectSetting.value.Subject_Names;
+            form.student_type = subjectSetting.value.student_type;
+            form.syllabus_type = subjectSetting.value.syllabus_type;
+            form.markaz_type = subjectSetting.value.markaz_type;
+            form.subject_type = subjectSetting.value.subject_type;
+            form.subject_code = subjectSetting.value.subject_code;
+            form.total_marks = subjectSetting.value.total_marks;
+            form.pass_marks = subjectSetting.value.pass_marks;
+            form.status = subjectSetting.value.status;
+
+            // Fetch marhala and subjects data
+            await fetchData(subjectSetting.value.marhala_id);
+        }
+    } catch (error) {
+        console.error('Error fetching subject setting:', error);
+    }
+};
+
+const fetchData = async (marhalaId) => {
+    try {
+        const response = await axios.get(`/api/marhala/${marhalaId}/subjects`);
+        marhala.value = response.data.marhala;
+        subjects.value = response.data.subjects;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+    }
+};
+
 const form = useForm({
-    id: null,
-    marhala_id: route().params.marhala,
+    marhala_id: '',
     subject_id: '',
     Marhala_type: '',
     Subject_Names: '',
@@ -156,81 +182,20 @@ const form = useForm({
     status: 'active'
 });
 
-const fetchData = async () => {
-    try {
-        // সঠিক API এন্ডপয়েন্ট ব্যবহার করুন
-        const response = await axios.get(`/api/subject-settings/${id}`);
-        // ডাটা প্রসেস করুন
-        console.log("API response:", response.data);
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-};
-
-const fetchSubjectSetting = async (id) => {
-    try {
-        const response = await axios.get(`/api/subject-settings/${id}`);
-        const data = response.data.subjectSetting;
-
-        // Populate the form with existing data
-        form.id = data.id;
-        form.marhala_id = data.marhala_id;
-        form.subject_id = data.subject_id;
-        form.Marhala_type = data.Marhala_type;
-        form.Subject_Names = data.Subject_Names;
-        form.student_type = data.student_type;
-        form.syllabus_type = data.syllabus_type;
-        form.markaz_type = data.markaz_type;
-        form.subject_type = data.subject_type;
-        form.subject_code = data.subject_code;
-        form.total_marks = data.total_marks;
-        form.pass_marks = data.pass_marks;
-        form.status = data.status;
-    } catch (error) {
-        console.error('Error fetching subject setting:', error);
-    }
-};
-
 const submit = async () => {
     try {
-        let response;
-
-        if (isEditMode.value) {
-            // Update existing record
-            response = await axios.put(`/api/subject-settings/${form.id}`, form);
-        } else {
-            // Create new record
-            response = await axios.post(route('subject-settings.store'), form);
-        }
-
+        const id = route().params.marhala;
+        const response = await axios.put(`/api/subject-settings/${id}`, form);
         if (response.data.success) {
-            const marhalaId = form.marhala_id;
-
-            if (!isEditMode.value) {
-                // Only reset form for new entries
-                form.reset();
-                form.marhala_id = marhalaId;
-            }
-
             // Show success message
-            successMessage.value = response.data.message;
-
-            // Clear success message after 3 seconds
-            setTimeout(() => {
-                successMessage.value = '';
-            }, 3000);
-
-            // Refresh data if needed
-            if (!isEditMode.value) {
-                await fetchData(marhalaId);
-            }
+            alert(response.data.message);
         }
     } catch (error) {
         if (error.response?.data?.errors) {
             // Handle validation errors
             console.error('Validation errors:', error.response.data.errors);
         } else {
-            console.error('Error saving data:', error);
+            console.error('Error updating data:', error);
         }
     }
 };
@@ -246,16 +211,13 @@ watch(() => form.subject_id, (newValue) => {
     }
 });
 
-onMounted(async () => {
-    const marhalaId = route().params.marhala;
-    await fetchData(marhalaId);
-
-    if (isEditMode.value) {
-        await fetchSubjectSetting(route().params.id);
-    }
+onMounted(() => {
+    const id = route().params.marhala;
+    fetchSubjectSetting(id);
 });
 </script>
 
+
+
 <style scoped>
-/* Your styles here */
 </style>

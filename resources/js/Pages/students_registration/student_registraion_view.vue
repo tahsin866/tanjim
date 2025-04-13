@@ -58,7 +58,7 @@
             <!-- Application Type Section -->
             <div class="bg-emerald-50 p-4 rounded-lg border-r-4 border-emerald-600 mb-6">
               <h2 class="text-lg font-bold text-emerald-800 mb-3 flex items-center">
-                <span class="inline-block w-7 h-7 bg-emerald-700 text-white rounded-full mr-2 flex items-center justify-center text-xs">
+                <span class="w-7 h-7 bg-emerald-700 text-white rounded-full mr-2 flex items-center justify-center text-xs">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                   </svg>
@@ -84,7 +84,7 @@
             <!-- Board Info -->
             <div class="bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
               <h2 class="text-lg font-bold text-emerald-800 mb-3 flex items-center">
-                <span class="inline-block w-7 h-7 bg-emerald-700 text-white rounded-full mr-2 flex items-center justify-center text-xs">
+                <span class=" w-7 h-7 bg-emerald-700 text-white rounded-full mr-2 flex items-center justify-center text-xs">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                   </svg>
@@ -109,7 +109,7 @@
             <!-- Previous Exam Info Section -->
             <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm mb-6">
               <h2 class="text-xl font-bold text-emerald-800 mb-4 flex items-center">
-                <span class="inline-block w-8 h-8 bg-emerald-700 text-white rounded-full mr-2 flex items-center justify-center">
+                <span class=" w-8 h-8 bg-emerald-700 text-white rounded-full mr-2 flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
                   </svg>
@@ -371,5 +371,5 @@ const showIdModal = ref(false);
   }
 
   /* Add font imports for Amiri and Noto Naskh Arabic if needed */
-  @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
+
   </style>

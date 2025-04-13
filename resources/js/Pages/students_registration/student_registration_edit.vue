@@ -329,6 +329,7 @@ watch(permanentFilters, async (newValues) => {
 
 
 onMounted(async () => {
+    console.log('Initial board_name:', form.board_name);
   await loadDivisions();
 
   // কনসোল লগ যোগ করুন
@@ -446,16 +447,19 @@ const presentHandleDistrictChange = async () => {
 
 
 const handleDistrictChange = async () => {
-  permanentFilters.value.Thana = '';
-  thanas.value = [];
-
   if (!permanentFilters.value.district) {
+    permanentFilters.value.Thana = '';
+    thanas.value = [];
     return;
   }
-
   try {
     const response = await axios.get(`/api/thanas/${permanentFilters.value.district}`);
     thanas.value = response.data;
+
+    // যদি আগে থেকে থানা সেট থাকে, তাহলে সেটি বজায় রাখুন
+    if (props.student && props.student.parmanent_TID) {
+      permanentFilters.value.Thana = props.student.parmanent_TID;
+    }
   } catch (error) {
     console.error('Error loading thanas:', error);
   }
