@@ -29,7 +29,9 @@ class User extends Authenticatable
         'madrasha_name',
         'thana',
         'post',
-        'markaz_serial'
+        'markaz_serial',
+            'Stage',
+                'MType'
     ];
 
     /**

@@ -25,7 +25,7 @@ const form = useForm({
     address: props.admin.address || '',
     designation: props.admin.designation || '',
     profile_image: null,
-    
+
     // Setup related permissions
     setup_access: convertToBoolean(props.permissions?.setup_access),
     marhala_setup: convertToBoolean(props.permissions?.marhala_setup),
@@ -33,15 +33,15 @@ const form = useForm({
     central_exam_setup: convertToBoolean(props.permissions?.central_exam_setup),
     user_setup: convertToBoolean(props.permissions?.user_setup),
     instruction: convertToBoolean(props.permissions?.instruction),
-    
-    
+
+
     // Bill related permissions
     bill_access: convertToBoolean (props.permissions?.bill_access),
-    negran_bill: convertToBoolean (props.permissions?.negran_bill), 
+    negran_bill: convertToBoolean (props.permissions?.negran_bill),
     mumtahin_bill: convertToBoolean (props.permissions?.mumtahin_bill),
     // markaz_admin_bill: props.admin.markaz_admin_bill || false,
     // zonal_bill: props.admin.zonal_bill || false,
-    
+
     // Madrasa related permissions
     // madrasa_access:props.admin.madrasa_access || false,
     // madrasa_list:props.admin.madrasa_list || false,
@@ -49,7 +49,7 @@ const form = useForm({
     // madrasa_admin:props.admin.madrasa_admin || false,
     // draft_soft_delete:props.admin.draft_soft_delete || false,
     // madrasa_payment:props.admin.madrasa_payment || false,
-    
+
     // Markaz related permissions
     // markaz_access: false,
     // markaz_application_list: false,
@@ -61,13 +61,13 @@ const form = useForm({
     // markaz_group: false,
     // answer_sheet_group_setup: false,
     // mumtahin_group: false,
-    
+
     // // Exam routine permissions
     // exam_routine_access: false,
     // exam_routine_group: false,
     // exam_routine: false,
     // oral_exam_mumtahin: false,
-    
+
     // // Registration related permissions
     // registration_access: false,
     // madrasa_list_reg: false,
@@ -76,7 +76,7 @@ const form = useForm({
     // payment_list: false,
     // board_return_list: false,
     // registration_card_create: false,
-    
+
     // // Inclusion related permissions
     // inclusion_access: false,
     // inclusion_list: false,
@@ -84,14 +84,14 @@ const form = useForm({
     // admit_card_create: false,
     // inclusion_payment: false,
     // cancelled_inclusion_list: false,
-    
+
     // // Khata and Loose related permissions
     // khata_loose_access: false,
     // khata_loose_setup: false,
     // khata_loose_generate: false,
     // khata_loose_account: false,
     // khata_loose_others: false,
-    
+
     // // Negran related permissions
     // negran_access: false,
     // negran_application_list: false,
@@ -101,7 +101,7 @@ const form = useForm({
     // negran_mumtahin_list: false,
     // negran_report: false,
     // negran_allowance: false,
-    
+
     // // Mumtahin related permissions
     // mumtahin_access: false,
     // mumtahin_application_list: false,
@@ -112,19 +112,19 @@ const form = useForm({
     // hifz_mumtahin_selection: false,
     // kirat_mumtahin_selection: false,
     // mumtahin_training: false,
-    
+
     // // Zone related permissions
     // zone_access: false,
     // zone_setup: false,
     // zonal_selection: false,
     // sub_zone_setup: false,
     // zone_wise_markaz_setup: false,
-    
+
     // // Attendance related permissions
     // attendance_access: false,
     // examinee_attendance: false,
     // negran_attendance: false,
-    
+
     // // Result related permissions
     // result_access: false,
     // result_condition: false,
@@ -135,7 +135,7 @@ const form = useForm({
     // result_correction: false,
     // result_review: false,
     // review_result_correction: false,
-    
+
     // // Other permissions
     // messaging: false,
     // notice: false,
@@ -182,25 +182,25 @@ const submit = () => {
 <template>
     <AuthenticatedLayout>
         <Head title="Create Admin User" />
-        
+
         <div class="py-12">
             <div class=" mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                     <div class="p-6 bg-white border-b border-gray-200">
                         <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">এডমিন সেটাপ</h2>
-                        
+
                         <!-- Tabs -->
                         <div class="mb-6 border-b">
                             <div class="flex">
-                                <button 
-                                    @click="activeTab = 'basic'" 
+                                <button
+                                    @click="activeTab = 'basic'"
                                     :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'basic'}"
                                     class="px-4 py-2 text-xl"
                                 >
                                বেসিক তথ্য
                                 </button>
-                                <button 
-                                    @click="activeTab = 'permissions'" 
+                                <button
+                                    @click="activeTab = 'permissions'"
                                     :class="{'border-b-2 border-blue-500 text-blue-600': activeTab === 'permissions'}"
                                      class="px-4 py-2 text-xl"
                                 >
@@ -208,7 +208,7 @@ const submit = () => {
                                 </button>
                             </div>
                         </div>
-                        
+
                         <form @submit.prevent="submit">
                             <!-- Basic Information Tab -->
                             <div v-if="activeTab === 'basic'">
@@ -216,7 +216,7 @@ const submit = () => {
                                     <div class="col-span-1 md:col-span-2 flex justify-center">
                                         <div class="mb-4 text-center">
     <div class="w-32 h-40 mx-auto mb-2 overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center border border-gray-300">
-        <img :src="admin.profile_image ? '/storage/' + admin.profile_image : 'https://randomuser.me/api/portraits/men/1.jpg'" 
+        <img :src="admin.profile_image ? '/storage/' + admin.profile_image : 'https://randomuser.me/api/portraits/men/1.jpg'"
         :alt="admin.name" class="h-full w-full object-cover" />
         <!-- <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -231,7 +231,7 @@ const submit = () => {
 </div>
 
                                     </div>
-                                    
+
                                     <div class="mb-4">
                                         <label class="block text-gray-700 text-xl font-bold mb-2" for="name">
                                         নাম
@@ -247,7 +247,7 @@ const submit = () => {
                                         />
                                         <div v-if="form.errors.name" class="text-red-500 text-xs mt-1">{{ form.errors.name }}</div>
                                     </div>
-                                    
+
                                     <div class="mb-4">
                                         <label class="block text-gray-700 text-xl font-bold mb-2" for="email">
                                       ইমেইল
@@ -262,7 +262,7 @@ const submit = () => {
                                         />
                                         <div v-if="form.errors.email" class="text-red-500 text-xs mt-1">{{ form.errors.email }}</div>
                                     </div>
-                                    
+
                                     <div class="mb-4">
                                         <label class="block text-gray-700 text-xl font-bold mb-2" for="phone">
                                           ফোন নম্বর
@@ -275,7 +275,7 @@ const submit = () => {
                                         />
                                         <div v-if="form.errors.phone" class="text-red-500 text-xs mt-1">{{ form.errors.phone }}</div>
                                     </div>
-                                    
+
                                     <div class="mb-4">
     <label class="block text-gray-700 text-xl font-bold mb-2" for="designation">
        পদবি
@@ -293,7 +293,7 @@ const submit = () => {
     <div v-if="form.errors.designation" class="text-red-500 text-xs mt-1">{{ form.errors.designation }}</div>
 </div>
 
-                                    
+
                                     <div class="mb-4">
                                         <label class="block text-gray-700 text-xl font-bold mb-2" for="nid">
                                        এন আই ডি  নম্বর
@@ -306,7 +306,7 @@ const submit = () => {
                                         />
                                         <div v-if="form.errors.nid" class="text-red-500 text-xs mt-1">{{ form.errors.nid }}</div>
                                     </div>
-                                    
+
                                     <div class="mb-4">
                                         <label class="block text-gray-700 text-xl font-bold mb-2" for="brn">
                                         জন্ম-নিবন্ধন নম্বর
@@ -319,7 +319,7 @@ const submit = () => {
                                         />
                                         <div v-if="form.errors.brn" class="text-red-500 text-xs mt-1">{{ form.errors.brn }}</div>
                                     </div>
-                                    
+
                                     <div class="mb-4 col-span-1 md:col-span-2">
                                         <label class="block text-gray-700 text-xl font-bold mb-2" for="address">
                                  ঠিকানা
@@ -332,7 +332,7 @@ const submit = () => {
                                         ></textarea>
                                         <div v-if="form.errors.address" class="text-red-500 text-xs mt-1">{{ form.errors.address }}</div>
                                     </div>
-                                    
+
                                     <div class="mb-4">
                                         <label class="block text-gray-700  text-xl font-bold mb-2" for="password">
                                            পাসওয়ার্ড
@@ -340,8 +340,8 @@ const submit = () => {
                                         <input
                                             id="password"
                                             type="password"
-                                    
-                                  
+
+
                                             class="shadow appearance-none text-xl border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                                             v-model="form.password"
                                             required
@@ -349,7 +349,7 @@ const submit = () => {
                                         />
                                         <div v-if="form.errors.password" class="text-red-500 text-xs mt-1">{{ form.errors.password }}</div>
                                     </div>
-                                    
+
                                     <div class="mb-4">
                                         <label class="block text-gray-700 text-xl font-bold mb-2" for="password_confirmation">
                                      পাসওয়ার্ড নিশ্চিতকরণ
@@ -365,7 +365,7 @@ const submit = () => {
                                         <div v-if="form.errors.password_confirmation" class="text-red-500 text-xs mt-1">{{ form.errors.password_confirmation }}</div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="flex justify-between mt-6">
                                     <div></div>
                                     <button
@@ -377,7 +377,7 @@ const submit = () => {
                                     </button>
                                 </div>
                             </div>
-                            
+
                             <!-- Permissions Tab -->
                             <div v-if="activeTab === 'permissions'" class="space-y-8">
                                 <div v-if="activeTab === 'permissions'" class="space-y-8">
@@ -392,7 +392,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('setup', form.setup_access)"
                                             >
-                                            <label for="setup_access" class="font-medium text-gray-700 text-xl font-semibold">সেটাপ সংক্রান্ত</label>
+                                            <label for="setup_access" class=" text-gray-700 text-xl font-semibold">সেটাপ সংক্রান্ত</label>
                                         </div>
                                         <button
                                             type="button"
@@ -432,16 +432,16 @@ const submit = () => {
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="bill_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="bill_access"
                                                 v-model="form.bill_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('bill', form.bill_access)"
                                             >
-                                            <label for="bill_access" class="font-medium text-gray-700 text-xl font-semibold">ভাতা ও বিল</label>
+                                            <label for="bill_access" class=" text-gray-700 text-xl font-semibold">ভাতা ও বিল</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.bill_access = !form.bill_access; toggleAllPermissions('bill', form.bill_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -468,21 +468,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Madrasa Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="madrasa_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="madrasa_access"
                                                 v-model="form.madrasa_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('madrasa', form.madrasa_access)"
                                             >
-                                            <label for="madrasa_access" class="font-medium text-gray-700 text-xl font-semibold">মাদরাসা সংক্রান্ত</label>
+                                            <label for="madrasa_access" class=" text-gray-700 text-xl font-semibold">মাদরাসা সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.madrasa_access = !form.madrasa_access; toggleAllPermissions('madrasa', form.madrasa_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -513,21 +513,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Markaz Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="markaz_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="markaz_access"
                                                 v-model="form.markaz_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('markaz', form.markaz_access)"
                                             >
-                                            <label for="markaz_access" class="font-medium text-gray-700 text-xl font-semibold">মারকায সংক্রান্ত</label>
+                                            <label for="markaz_access" class=" text-gray-700 text-xl font-semibold">মারকায সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.markaz_access = !form.markaz_access; toggleAllPermissions('markaz', form.markaz_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -574,22 +574,22 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Exam Routine Permissions -->
                                 <!-- Exam Routine Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="exam_routine_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="exam_routine_access"
                                                 v-model="form.exam_routine_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('exam_routine', form.exam_routine_access)"
                                             >
-                                            <label for="exam_routine_access" class="font-medium text-gray-700 text-xl font-semibold">পরীক্ষার রুটিন</label>
+                                            <label for="exam_routine_access" class=" text-gray-700 text-xl font-semibold">পরীক্ষার রুটিন</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.exam_routine_access = !form.exam_routine_access; toggleAllPermissions('exam_routine', form.exam_routine_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -612,21 +612,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Registration Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="registration_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="registration_access"
                                                 v-model="form.registration_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('registration', form.registration_access)"
                                             >
-                                            <label for="registration_access" class="font-medium text-gray-700 text-xl font-semibold">রেজিস্ট্রেশন সংক্রান্ত</label>
+                                            <label for="registration_access" class=" text-gray-700 text-xl font-semibold">রেজিস্ট্রেশন সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.registration_access = !form.registration_access; toggleAllPermissions('registration', form.registration_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -661,21 +661,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Inclusion Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="inclusion_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="inclusion_access"
                                                 v-model="form.inclusion_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('inclusion', form.inclusion_access)"
                                             >
-                                            <label for="inclusion_access" class="font-medium text-gray-700 text-xl font-semibold">অন্তর্ভুক্তি সংক্রান্ত</label>
+                                            <label for="inclusion_access" class=" text-gray-700 text-xl font-semibold">অন্তর্ভুক্তি সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.inclusion_access = !form.inclusion_access; toggleAllPermissions('inclusion', form.inclusion_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -706,21 +706,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Khata and Loose Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="khata_loose_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="khata_loose_access"
                                                 v-model="form.khata_loose_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('khata_loose', form.khata_loose_access)"
                                             >
-                                            <label for="khata_loose_access" class="font-medium text-gray-700 text-xl font-semibold">খাতা ও লুজ সংক্রান্ত</label>
+                                            <label for="khata_loose_access" class=" text-gray-700 text-xl font-semibold">খাতা ও লুজ সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.khata_loose_access = !form.khata_loose_access; toggleAllPermissions('khata_loose', form.khata_loose_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -747,21 +747,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Negran Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="negran_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="negran_access"
                                                 v-model="form.negran_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('negran', form.negran_access)"
                                             >
-                                            <label for="negran_access" class="font-medium text-gray-700 text-xl font-semibold">নেগরান সংক্রান্ত</label>
+                                            <label for="negran_access" class=" text-gray-700 text-xl font-semibold">নেগরান সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.negran_access = !form.negran_access; toggleAllPermissions('negran', form.negran_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -790,7 +790,7 @@ const submit = () => {
                                             <input type="checkbox" id="negran_mumtahin_list" v-model="form.negran_mumtahin_list" class="mr-2">
                                             <label for="negran_mumtahin_list">নেগরান-মুমতাহিন তালিকা</label>
                                         </div>
-                                      
+
                                         <div class="flex items-center">
                                             <input type="checkbox" id="negran_report" v-model="form.negran_report" class="mr-2">
                                             <label for="negran_report">নেগরান রিপোর্ট</label>
@@ -801,21 +801,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Mumtahin Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="mumtahin_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="mumtahin_access"
                                                 v-model="form.mumtahin_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('mumtahin', form.mumtahin_access)"
                                             >
-                                            <label for="mumtahin_access" class="font-medium text-gray-700 text-xl font-semibold">মুমতাহিন সংক্রান্ত</label>
+                                            <label for="mumtahin_access" class=" text-gray-700 text-xl font-semibold">মুমতাহিন সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.mumtahin_access = !form.mumtahin_access; toggleAllPermissions('mumtahin', form.mumtahin_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -858,21 +858,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Zone Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="zone_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="zone_access"
                                                 v-model="form.zone_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('zone', form.zone_access)"
                                             >
-                                            <label for="zone_access" class="font-medium text-gray-700 text-xl font-semibold">জোন সংক্রান্ত</label>
+                                            <label for="zone_access" class=" text-gray-700 text-xl font-semibold">জোন সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.zone_access = !form.zone_access; toggleAllPermissions('zone', form.zone_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -899,21 +899,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Attendance Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="attendance_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="attendance_access"
                                                 v-model="form.attendance_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('attendance', form.attendance_access)"
                                             >
-                                            <label for="attendance_access" class="font-medium text-gray-700 text-xl font-semibold">হাজিরা সংক্রান্ত</label>
+                                            <label for="attendance_access" class=" text-gray-700 text-xl font-semibold">হাজিরা সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.attendance_access = !form.attendance_access; toggleAllPermissions('attendance', form.attendance_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -932,21 +932,21 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Result Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b flex justify-between items-center">
                                         <div class="flex items-center">
-                                            <input 
-                                                type="checkbox" 
-                                                id="result_access" 
+                                            <input
+                                                type="checkbox"
+                                                id="result_access"
                                                 v-model="form.result_access"
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('result', form.result_access)"
                                             >
-                                            <label for="result_access" class="font-medium text-gray-700 text-xl font-semibold">ফলাফল সংক্রান্ত</label>
+                                            <label for="result_access" class=" text-gray-700 text-xl font-semibold">ফলাফল সংক্রান্ত</label>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             @click="form.result_access = !form.result_access; toggleAllPermissions('result', form.result_access)"
                                             class="text-xl text-blue-500 hover:text-blue-700"
@@ -989,11 +989,11 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <!-- Other Permissions -->
                                 <div class="border rounded-lg overflow-hidden">
                                     <div class="bg-gray-50 px-4 py-3 border-b">
-                                        <div class="font-medium text-gray-700 text-xl font-semibold">অন্যান্য</div>
+                                        <div class=" text-gray-700 text-xl font-semibold">অন্যান্য</div>
                                     </div>
                                     <div class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                                         <div class="flex items-center">
@@ -1006,13 +1006,13 @@ const submit = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="flex justify-between mt-6">
                                     <button
                                         type="button"
                                         @click="activeTab = 'basic'"
                                         class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                  
+
                                     >
                                         Back to Basic Info
                                     </button>

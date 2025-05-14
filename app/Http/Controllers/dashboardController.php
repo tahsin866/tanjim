@@ -325,6 +325,67 @@ class dashboardController extends Controller
 
 
 
+
+
+
+    public function showUserCenters()
+    {
+        $userId = Auth::id();
+
+        // Get madrasha_id from users table
+        $user = DB::table('users')
+            ->where('id', $userId)
+            ->first();
+
+        if (!$user || !isset($user->madrasha_id)) {
+            return response()->json(['centers' => [], 'error' => 'User or madrasha_id not found']);
+        }
+
+        $madrashaId = $user->madrasha_id;
+
+        // Find record in stu_rledger_p where MRID = madrasha_id
+        $studentRecord = DB::table('stu_rledger_p')
+            ->where('MRID', $madrashaId)
+            ->first();
+
+        if (!$studentRecord || !isset($studentRecord->MDID)) {
+            return response()->json(['centers' => [], 'error' => 'Student record or MDID not found']);
+        }
+
+        $mdid = $studentRecord->MDID;
+
+        // Get madrasha details using MDID
+        $madrashaRecord = DB::table('madrasha')
+            ->where('id', $mdid)
+            ->first();
+
+        if (!$madrashaRecord) {
+            return response()->json(['centers' => [], 'error' => 'Madrasha record not found']);
+        }
+
+        $centers = [];
+
+        // Check for Darsiyat center
+        if ($madrashaRecord->CenterD == 1) {
+            $centers['darsiyat'] = 'দারসিয়াত মারকায: ' . $madrashaRecord->MNName;
+        }
+
+        // Check for Hifz center
+        if ($madrashaRecord->CenterH == 1) {
+            $centers['hifz'] = 'হিফজ মারকায: ' . $madrashaRecord->MNName;
+        }
+
+        // Check for Kirat center
+        if ($madrashaRecord->CenterK == 1) {
+            $centers['kirat'] = 'কিরাত মারকায: ' . $madrashaRecord->MNName;
+        }
+
+        return response()->json(['centers' => $centers]);
+    }
+
+
+
+
 }
 
 

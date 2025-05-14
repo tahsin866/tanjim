@@ -1,8 +1,32 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, watch, onMounted } from 'vue'
-
+import { createToaster } from "@meforma/vue-toaster";
 import { Link, useForm } from '@inertiajs/vue3';
+
+import InputText from 'primevue/inputtext';
+import InputMask from 'primevue/inputmask';
+import Calendar from 'primevue/calendar';
+import Button from 'primevue/button';
+import Dropdown from 'primevue/dropdown';
+import Card from 'primevue/card';
+import FileUpload from 'primevue/fileupload';
+
+
+
+
+
+const boardOptions = [
+  { name: 'বেফাকুল মাদারিসিল আরাবিয়া বাংলাদেশ', value: 'বেফাকুল মাদারিসিল আরাবিয়া বাংলাদেশ' },
+  { name: 'বেফাকুল মাদারিসিল কওমিয়া গওহরডাঙ্গা বাংলাদেশ', value: 'বেফাকুল মাদারিসিল কওমিয়া গওহরডাঙ্গা বাংলাদেশ' },
+  { name: 'আযাদ দ্বীনি এদারায়ে তালীম বাংলাদেশ', value: 'আযাদ দ্বীনি এদারায়ে তালীম বাংলাদেশ' },
+  { name: 'তানযীমুল মাদারিসিদ দ্বীনিয়া বাংলাদেশ', value: 'তানযীমুল মাদারিসিদ দ্বীনিয়া বাংলাদেশ' },
+  { name: 'জাতীয় দ্বীনি মাদরাসা শিক্ষাবোর্ড বাংলাদেশ', value: 'জাতীয় দ্বীনি মাদরাসা শিক্ষাবোর্ড বাংলাদেশ' },
+  { name: 'আঞ্জুমানে ইত্তেহাদুল মাদারিস বাংলাদেশ', value: 'আঞ্জুমানে ইত্তেহাদুল মাদারিস বাংলাদেশ' }
+];
+
+
+
 
 const props = defineProps({
     roll: String,
@@ -11,6 +35,10 @@ const props = defineProps({
     modelValue: Object
 });
 
+const toaster = createToaster({
+  position: "top-right",
+  duration: 3000 // 3 সেকেন্ড দেখাবে
+});
 
 
 const selectedDate = ref('')
@@ -71,7 +99,6 @@ const studentInfoForm = useForm({
 const submitStudentInfo = () => {
     // আগে ঠিকানার ডাটা আপডেট করুন
     updateFormData();
-
     console.log('Form data after update:', studentInfoForm);
 
     // ফাইল যোগ করুন
@@ -88,14 +115,18 @@ const submitStudentInfo = () => {
 
     // ফর্ম সাবমিট করুন - Include marhalaId in the URL
     studentInfoForm.post(`/api/save-student-info_1/${marhalaId}`, {
-        forceFormData: true,
-        onSuccess: () => {
-            alert('Student information saved successfully');
-        },
-        onError: (errors) => {
-            console.error('Error saving student information:', errors);
-        }
-    });
+    forceFormData: true,
+    onSuccess: (page) => {
+        // page.props.flash.success থেকে মেসেজ নিন
+        toaster.success(page.props.flash?.success || 'ছাত্রের তথ্য সফলভাবে সংরক্ষণ করা হয়েছে');
+    },
+    onError: (errors) => {
+        toaster.error('ছাত্রের তথ্য সংরক্ষণ করতে সমস্যা হয়েছে');
+        console.error('Error saving student information:', errors);
+    },
+    preserveScroll: true
+});
+
 };
 
 
@@ -126,20 +157,20 @@ const marksheetPreview = ref(null);
 
 // Handle file upload
 const handleFileUpload = (event, fileType) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  const file = event.files[0]; // PrimeVue FileUpload provides files array
+  if (!file) return;
 
-    // Set the file reference based on type
-    if (fileType === 'studentPhoto') {
-        studentPhotoFile.value = file;
-        createFilePreview(file, 'studentPhoto');
-    } else if (fileType === 'birthCertificate') {
-        birthCertificateFile.value = file;
-        createFilePreview(file, 'birthCertificate');
-    } else if (fileType === 'marksheet') {
-        marksheetFile.value = file;
-        createFilePreview(file, 'marksheet');
-    }
+  // Set the file reference based on type
+  if (fileType === 'studentPhoto') {
+    studentPhotoFile.value = file;
+    createFilePreview(file, 'studentPhoto');
+  } else if (fileType === 'birthCertificate') {
+    birthCertificateFile.value = file;
+    createFilePreview(file, 'birthCertificate');
+  } else if (fileType === 'marksheet') {
+    marksheetFile.value = file;
+    createFilePreview(file, 'marksheet');
+  }
 };
 
 // Create preview URL for the file
@@ -566,497 +597,394 @@ const currentMarhalaId = ref(null);
         <div class="mb-5 mt-5 mx-5 space-y-6 text-xl">
             <!-- Personal Information Card -->
             <div class="bg-white rounded-sm shadow-md">
-                <div
-                    class="flex bg-gradient-to-r rounded-t-md from-emerald-800 gap-3 items-center px-6 py-3 to-emerald-600">
-                    <i class="text-2xl text-white fa-user-circle fas"></i>
-                    <h5 class="text-white text-xl font-arabic">ব্যক্তিগত তথ্য - {{ marhalaName }}</h5>
-                </div>
-                <div class="p-6">
-                    <form class="space-y-6">
-                        <!-- Name Fields -->
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম
-                                    (বাংলা)</label>
-                                <div class="relative">
-                                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
+  <div class="flex bg-gradient-to-r rounded-t-md from-emerald-800 gap-3 items-center px-6 py-3 to-emerald-600">
+    <i class="text-2xl text-white fa-user-circle fas"></i>
+    <h5 class="text-white text-xl font-arabic">ব্যক্তিগত তথ্য - {{ marhalaName }}</h5>
+  </div>
+  <div class="p-6">
+    <form class="space-y-6">
+      <!-- Name Fields -->
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম (বাংলা)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.name_bn" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম (ইংরেজি)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.name_en" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম (আরবি)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.name_ar" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+      </div>
 
-                                    </span>
-                                    <input v-model="studentInfoForm.name_bn" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl  w-full  focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
+      <!-- Mother's Name Fields -->
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">মাতার নাম (বাংলা)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user-edit text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.mother_name_bn" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">মাতার নাম (ইংরেজি)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user-edit text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.mother_name_en" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">মাতার নাম (আরবি)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user-edit text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.mother_name_ar" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+      </div>
 
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম
-                                    (ইংরেজি)</label>
-                                <div class="relative">
-                                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
+      <!-- Father's Name Fields -->
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">পিতার নাম (বাংলা)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user-edit text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.father_name_bn" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">পিতার নাম (ইংরেজি)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user-edit text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.father_name_en" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">পিতার নাম (আরবি)</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user-edit text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.father_name_ar" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+      </div>
 
-                                    </span>
-                                    <input v-model="studentInfoForm.name_en" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম
-                                    (আরবি)</label>
-                                <div class="relative">
-                                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
-
-                                    </span>
-                                    <input v-model="studentInfoForm.name_ar" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Mother's Name Fields -->
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">মাতার নাম
-                                    (বাংলা)</label>
-                                <div>
-
-                                    <input v-model="studentInfoForm.mother_name_bn" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">মাতার নাম
-                                    (ইংরেজি)</label>
-                                <div class="relative">
-
-                                    <input v-model="studentInfoForm.mother_name_en" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">মাতার নাম
-                                    (আরবি)</label>
-                                <div class="relative">
-
-                                    <input v-model="studentInfoForm.mother_name_ar" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">পিতার নাম
-                                    (বাংলা)</label>
-                                <div>
-
-                                    <input v-model="studentInfoForm.father_name_bn" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">পিতার নাম
-                                    (ইংরেজি)</label>
-                                <div class="relative">
-
-                                    <input v-model="studentInfoForm.father_name_en" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">পিতার নাম
-                                    (আরবি)</label>
-                                <div class="relative">
-
-                                    <input v-model="studentInfoForm.father_name_ar" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-                        </div>
+      <!-- Date and Registration Fields -->
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">জন্ম-তারিখ</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-calendar text-emerald-600"></i>
+            <Calendar v-model="studentInfoForm.Date_of_birth" dateFormat="dd/mm/yy" class="w-full" showIcon />
+          </span>
+        </div>
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">জন্ম-নিবন্ধন নম্বর</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-id-card text-emerald-600"></i>
+            <InputText v-model="studentInfoForm.BRN_no" class="w-full text-xl p-inputtext-lg" />
+          </span>
+        </div>
+        <div class="field">
+          <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">জাতীয় পরিচয়পত্র নম্বর</label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-id-card text-emerald-600"></i>
+            <InputMask v-model="studentInfoForm.NID_no" mask="9999-9999-9999-9999" placeholder="0000-0000-0000-0000" class="w-full text-xl" />
+          </span>
+        </div>
+      </div>
 
 
-                        <!-- Date and Registration Fields -->
-                        <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                            <div class="relative">
-                                <label
-                                    class="text-gray-700 text-lg block font-arabic font-medium mb-1">জন্ম-তারিখ</label>
-                                <div class="relative">
-                                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
-                                        <i class="text-emerald-600 fa-calendar-alt fas"></i>
-                                    </span>
-                                    <input v-model="studentInfoForm.Date_of_birth" type="date"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
 
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">জন্ম-নিবন্ধন
-                                    নম্বর</label>
-                                <div class="relative">
-                                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
-                                        <i class="text-emerald-600 fa-id-card fas"></i>
-                                    </span>
-                                    <input v-model="studentInfoForm.BRN_no" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
+    </form>
+  </div>
+</div>
 
-                            <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">জাতীয়
-                                    পরিচয়পত্র নম্বর</label>
-                                <div class="relative">
-                                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
-                                        <i class="text-emerald-600 fa-address-card fas"></i>
-                                    </span>
-                                    <input v-model="studentInfoForm.NID_no" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
-                </div>
-            </div>
 
             <!-- Required Information Card -->
             <div class="bg-white rounded-lg shadow-md">
-                <div
-                    class="bg-gradient-to-r rounded-t-md from-emerald-800 overflow-hidden px-6 py-4 relative to-emerald-600">
-                    <div class="bg-[url( absolute inset-0 opacity-10" imagesslamic-pattern.png></div>
-                    <div class="flex gap-3 items-center relative z-10">
-                        <h5 class="text-white text-xl font-arabic">প্রয়োজনীয় তথ্য</h5>
-                    </div>
-                </div>
+  <div class="bg-gradient-to-r rounded-t-md from-emerald-800 overflow-hidden px-6 py-4 relative to-emerald-600">
+    <div class="bg-[url(images/islamic-pattern.png)] absolute inset-0 opacity-10"></div>
+    <div class="flex gap-3 items-center relative z-10">
+      <h5 class="text-white text-xl font-arabic">প্রয়োজনীয় তথ্য</h5>
+    </div>
+  </div>
+  <div class="p-6">
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div class="field">
+        <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+          পরীক্ষার্থীর ধরন
+        </label>
+        <InputText
+          value="নিয়মিত"
+          disabled
+          class="bg-emerald-50 text-emerald-800 text-xl w-full"
+        />
+      </div>
 
-                <div class="p-6">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <div class="relative">
-                            <label
-                                class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                পরীক্ষার্থীর ধরন
-                            </label>
-                            <div class="relative">
-                                <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
-
-                                </span>
-                                <input type="text" disabled
-                                    class="bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-xl w-full pl-10 pr-3 py-2"
-                                    placeholder="নিয়মিত">
-                            </div>
-                        </div>
-
-                        <div class="relative">
-                            <label
-                                class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                বোর্ড
-                            </label>
-                            <div class="relative">
-                                <span class="flex absolute inset-y-0 items-center left-0 pl-3  pointer-events-none">
-                                </span>
-                                <select v-model="studentInfoForm.board_name"
-                                    class="bg-white border border-emerald-200 rounded-md text-emerald-800 w-full appearance-none text-xl pl-10 pr-3 py-2">
-                                    <option value="">বোর্ড নির্বাচন করুন</option>
-                                    <option value="বেফাকুল মাদারিসিল আরাবিয়া বাংলাদেশ">বেফাকুল মাদারিসিল আরাবিয়া
-                                        বাংলাদেশ</option>
-                                    <option value="বেফাকুল মাদারিসিল কওমিয়া গওহরডাঙ্গা বাংলাদেশ
-">বেফাকুল মাদারিসিল কওমিয়া গওহরডাঙ্গা বাংলাদেশ
-                                    </option>
-                                    <option value="আযাদ দ্বীনি এদারায়ে তালীম বাংলাদেশ
-">আযাদ দ্বীনি এদারায়ে তালীম বাংলাদেশ
-                                    </option>
-                                    <option value="তানযীমুল মাদারিসিদ দ্বীনিয়া বাংলাদেশ
-">তানযীমুল মাদারিসিদ দ্বীনিয়া বাংলাদেশ
-                                    </option>
-                                    <option value="জাতীয় দ্বীনি মাদরাসা শিক্ষাবোর্ড বাংলাদেশ
-">জাতীয় দ্বীনি মাদরাসা শিক্ষাবোর্ড বাংলাদেশ
-                                    </option>
-                                    <option value="আঞ্জুমানে ইত্তেহাদুল মাদারিস বাংলাদেশ
-
-">আঞ্জুমানে ইত্তেহাদুল মাদারিস বাংলাদেশ
-
-                                    </option>
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <h4 class="flex text-emerald-700 font-arabic font-medium gap-2 items-center mb-4">
-                            <i class="text-emerald-600 fa-book fas"></i>
-                            নির্বাচনি কিতাব সিলেক্ট করুন
-                        </h4>
-                        <div class="flex flex-wrap gap-6">
-                            <label class="flex cursor-pointer group items-center space-x-2">
-                                <div class="relative">
-                                    <input type="checkbox"
-                                        class="form-checkbox border-emerald-300 rounded-md text-emerald-600 focus:ring-emerald-500">
-                                    <div
-                                        class="bg-emerald-100 rounded-md absolute group-hover:opacity-20 inset-0 opacity-0 transition-opacity">
-                                    </div>
-                                </div>
-                                <span
-                                    class="text-emerald-800 font-arabic group-hover:text-emerald-600 transition-colors">হিদায়া
-                                    ১ম খন্ড</span>
-                            </label>
-
-                            <label class="flex cursor-pointer group items-center space-x-2">
-                                <div class="relative">
-                                    <input type="checkbox"
-                                        class="form-checkbox border-emerald-300 rounded-md text-emerald-600 focus:ring-emerald-500">
-                                    <div
-                                        class="bg-emerald-100 rounded-md absolute group-hover:opacity-20 inset-0 opacity-0 transition-opacity">
-                                    </div>
-                                </div>
-                                <span
-                                    class="text-emerald-800 font-arabic group-hover:text-emerald-600 transition-colors">হিদায়া
-                                    ২য় খন্ড</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Address Card -->
-            <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <!-- Present Address -->
-                <div class="bg-white border border-emerald-100 rounded-md shadow">
-                    <div
-                        class="bg-gradient-to-r rounded-t-md from-emerald-800 overflow-hidden px-6 py-3 relative to-emerald-600">
-                        <div class="bg-pattern absolute inset-0 opacity-10"></div>
-                        <div class="flex gap-3 items-center relative z-10">
-                            <i class="text-2xl text-white fa-map-marker-alt fas"></i>
-                            <h5 class="text-white text-xl font-arabic">বর্তমান ঠিকানা</h5>
-                        </div>
-                    </div>
-
-                    <div class="bg-opacity-5 bg-white p-6">
-                        <div class="grid grid-cols-1 gap-4">
-                            <div class="relative">
-                                <label
-                                    class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                    বিভাগ
-                                </label>
-                                <div class="relative">
-                                    <select v-model="presentFilters.division" @change="presentHandleDivisionChange"
-                                        class="bg-white border border-gray-200 rounded-sm w-full block focus:ring-[#2d6a4f] focus:ring-2 px-4 py-2">
-                                        <option value="">সকল</option>
-                                        <option v-for="division in divisions" :key="division.id" :value="division.id">
-                                            {{ division.Division }}
-                                        </option>
-                                    </select>
-                                    <div class="flex absolute inset-y-0 items-center pointer-events-none px-2 right-0">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="relative">
-                                <label
-                                    class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                    জেলা
-                                </label>
-                                <div class="relative">
-                                    <select v-model="presentFilters.district" @change="presentHandleDistrictChange"
-                                        class="bg-white border border-gray-200 rounded-sm w-full block focus:ring-[#2d6a4f] focus:ring-2 px-4 py-2">
-                                        <option value="">সকল</option>
-                                        <option v-for="district in presentDistricts" :key="district.DesID"
-                                            :value="district.DesID">
-                                            {{ district.District }}
-                                        </option>
-                                    </select>
-                                    <div class="flex absolute inset-y-0 items-center pointer-events-none px-2 right-0">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="relative">
-                                <label
-                                    class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                    থানা/উপজেলা
-                                </label>
-                                <div class="relative">
-                                    <select v-model="presentFilters.Thana"
-                                        class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f]">
-                                        <option value="">সকল</option>
-                                        <option v-for="Thana in presentThanas" :key="Thana.Thana_ID"
-                                            :value="Thana.Thana_ID">
-                                            {{ Thana.Thana }}
-                                        </option>
-                                    </select>
+      <div class="field">
+        <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+          বোর্ড
+        </label>
+        <Dropdown
+          v-model="studentInfoForm.board_name"
+          :options="boardOptions"
+          optionLabel="name"
+          optionValue="value"
+          placeholder="বোর্ড নির্বাচন করুন"
+          class="w-full text-xl"
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
 
-                                    <div class="flex absolute inset-y-0 items-center pointer-events-none px-2 right-0">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+  <!-- Present Address -->
+  <Card class="border border-emerald-100">
+    <template #header>
+      <div class="bg-gradient-to-r from-emerald-800 to-emerald-600 px-6 py-3 relative">
+        <div class="bg-pattern absolute inset-0 opacity-10"></div>
+        <div class="flex gap-3 items-center relative z-10">
+          <i class="text-2xl text-white pi pi-map-marker"></i>
+          <h5 class="text-white text-xl font-arabic">বর্তমান ঠিকানা</h5>
+        </div>
+      </div>
+    </template>
+    <template #content>
+      <div class="grid grid-cols-1 gap-4">
+        <div class="field">
+          <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+            বিভাগ
+          </label>
+          <Dropdown
+            v-model="presentFilters.division"
+            :options="divisions"
+            optionLabel="Division"
+            optionValue="id"
+            placeholder="সকল"
+            class="w-full"
+            @change="presentHandleDivisionChange"
+          />
+        </div>
+        <div class="field">
+          <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+            জেলা
+          </label>
+          <Dropdown
+            v-model="presentFilters.district"
+            :options="presentDistricts"
+            optionLabel="District"
+            optionValue="DesID"
+            placeholder="সকল"
+            class="w-full"
+            @change="presentHandleDistrictChange"
+          />
+        </div>
+        <div class="field">
+          <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+            থানা/উপজেলা
+          </label>
+          <Dropdown
+            v-model="presentFilters.Thana"
+            :options="presentThanas"
+            optionLabel="Thana"
+            optionValue="Thana_ID"
+            placeholder="সকল"
+            class="w-full"
+          />
+        </div>
+      </div>
+    </template>
+  </Card>
 
-                <!-- Permanent Address -->
-                <div class="bg-white border border-emerald-100 rounded-md shadow">
-                    <div
-                        class="bg-gradient-to-r rounded-t-md from-emerald-800 overflow-hidden px-6 py-3 relative to-emerald-600">
-                        <div class="bg-pattern absolute inset-0 opacity-10"></div>
-                        <div class="flex gap-3 items-center relative z-10">
-                            <i class="text-2xl text-white fa-home fas"></i>
-                            <h5 class="text-white text-xl font-arabic">স্থায়ী ঠিকানা</h5>
-                        </div>
-                    </div>
+  <!-- Permanent Address -->
+  <Card class="border border-emerald-100">
+    <template #header>
+      <div class="bg-gradient-to-r from-emerald-800 to-emerald-600 px-6 py-3 relative">
+        <div class="bg-pattern absolute inset-0 opacity-10"></div>
+        <div class="flex gap-3 items-center relative z-10">
+          <i class="text-2xl text-white pi pi-home"></i>
+          <h5 class="text-white text-xl font-arabic">স্থায়ী ঠিকানা</h5>
+        </div>
+      </div>
+    </template>
+    <template #content>
+      <div class="grid grid-cols-1 gap-4">
+        <div class="field">
+          <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+            বিভাগ
+          </label>
+          <Dropdown
+            v-model="permanentFilters.division"
+            :options="divisions"
+            optionLabel="Division"
+            optionValue="id"
+            placeholder="সকল"
+            class="w-full"
+            @change="handleDivisionChange"
+          />
+        </div>
+        <div class="field">
+          <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+            জেলা
+          </label>
+          <Dropdown
+            v-model="permanentFilters.district"
+            :options="districts"
+            optionLabel="District"
+            optionValue="DesID"
+            placeholder="সকল"
+            class="w-full"
+            @change="handleDistrictChange"
+          />
+        </div>
+        <div class="field">
+          <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+            থানা/উপজেলা
+          </label>
+          <Dropdown
+            v-model="permanentFilters.Thana"
+            :options="thanas"
+            optionLabel="Thana"
+            optionValue="Thana_ID"
+            placeholder="সকল"
+            class="w-full"
+          />
+        </div>
+      </div>
+    </template>
+  </Card>
+</div>
 
-                    <div class="bg-opacity-5 bg-white p-6">
-                        <div class="grid grid-cols-1 gap-4">
-                            <div class="relative">
-                                <label
-                                    class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                    বিভাগ
-                                </label>
-                                <div class="relative">
-                                    <select v-model="permanentFilters.division" @change="handleDivisionChange"
-                                        class="bg-white border border-gray-200 rounded-sm w-full block focus:ring-[#2d6a4f] focus:ring-2 px-4 py-2">
-                                        <option value="">সকল</option>
-                                        <option v-for="division in divisions" :key="division.id" :value="division.id">
-                                            {{ division.Division }}
-                                        </option>
-                                    </select>
-                                    <div class="flex absolute inset-y-0 items-center pointer-events-none px-2 right-0">
-                                    </div>
-                                </div>
-                            </div>
+<!-- Attachment Card -->
+<Card class="mt-6">
+  <template #content>
+    <h3 class="text-emerald-800 text-xl arabic-font font-bold mb-6">সংযুক্তি</h3>
+    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+      <!-- Student Photo -->
+      <div class="space-y-3">
+  <label class="text-emerald-700 text-lg arabic-font block font-medium">
+    ছাত্রের ছবি (পাসপোর্ট সাইজ এবং নীল ব্যাকগ্রাইন্ড হতে হবে)
+  </label>
+  <div class="relative">
+    <FileUpload
+      mode="basic"
+      :customUpload="true"
+      @uploader="(event) => handleFileUpload(event, 'studentPhoto')"
+      accept="image/*,.pdf"
+      :auto="true"
+      chooseLabel="ফাইল আপলোড করুন"
+      class="w-full"
+    />
+    <div v-if="studentPhotoFile" class="flex justify-between items-center mt-2 p-2 bg-emerald-50 border border-emerald-200 rounded">
+      <span class="text-emerald-600 arabic-font">{{ studentPhotoFile.name }}</span>
+      <div class="flex gap-2">
+        <Button
+          v-if="studentPhotoPreview"
+          icon="pi pi-eye"
+          class="p-button-text p-button-sm p-button-success"
+          @click="() => window.open(studentPhotoPreview, '_blank')"
+        />
+        <Button
+          icon="pi pi-trash"
+          class="p-button-text p-button-sm p-button-danger"
+          @click="removeFile('studentPhoto')"
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
-                            <div class="relative">
-                                <label
-                                    class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                    জেলা
-                                </label>
-                                <div class="relative">
-                                    <select v-model="permanentFilters.district" @change="handleDistrictChange"
-                                        class="bg-white border border-gray-200 rounded-sm w-full block focus:ring-[#2d6a4f] focus:ring-2 px-4 py-2">
-                                        <option value="">সকল</option>
-                                        <option v-for="district in districts" :key="district.DesID"
-                                            :value="district.DesID">
-                                            {{ district.District }}
-                                        </option>
-                                    </select>
-                                    <div class="flex absolute inset-y-0 items-center pointer-events-none px-2 right-0">
-                                    </div>
-                                </div>
-                            </div>
+<!-- Birth Certificate/NID -->
+<div class="space-y-3">
+  <label class="text-emerald-700 text-lg arabic-font block font-medium">
+    জন্ম নিবন্ধন/এন আইডি সংযুক্তি করুন
+  </label>
+  <div class="relative">
+    <FileUpload
+      mode="basic"
+      :customUpload="true"
+      @uploader="(event) => handleFileUpload(event, 'birthCertificate')"
+      accept="image/*,.pdf,.doc,.docx"
+      :auto="true"
+      chooseLabel="ফাইল আপলোড করুন"
+      class="w-full"
+    />
+    <div v-if="birthCertificateFile" class="flex justify-between items-center mt-2 p-2 bg-emerald-50 border border-emerald-200 rounded">
+      <span class="text-emerald-600 arabic-font">{{ birthCertificateFile.name }}</span>
+      <div class="flex gap-2">
+        <Button
+          v-if="birthCertificatePreview"
+          icon="pi pi-eye"
+          class="p-button-text p-button-sm p-button-success"
+          @click="() => window.open(birthCertificatePreview, '_blank')"
+        />
+        <Button
+          icon="pi pi-trash"
+          class="p-button-text p-button-sm p-button-danger"
+          @click="removeFile('birthCertificate')"
+        />
+      </div>
+    </div>
+  </div>
+</div>
 
-                            <div class="relative">
-                                <label
-                                    class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                    থানা/উপজেলা
-                                </label>
+<!-- Marksheet Upload - Conditional -->
+<div v-if="studentInfoForm.board_name && studentInfoForm.board_name !== 'বেফাকুল মাদারিসিল আরাবিয়া বাংলাদেশ'" class="space-y-3">
+  <label class="text-emerald-700 text-lg arabic-font block font-medium">
+    মার্কশীট সংযুক্ত করুন
+  </label>
+  <div class="relative">
+    <FileUpload
+      mode="basic"
+      :customUpload="true"
+      @uploader="(event) => handleFileUpload(event, 'marksheet')"
+      accept="image/*,.pdf,.doc,.docx"
+      :auto="true"
+      chooseLabel="ফাইল আপলোড করুন"
+      class="w-full"
+    />
+    <div v-if="marksheetFile" class="flex justify-between items-center mt-2 p-2 bg-emerald-50 border border-emerald-200 rounded">
+      <span class="text-emerald-600 arabic-font">{{ marksheetFile.name }}</span>
+      <div class="flex gap-2">
+        <Button
+          v-if="marksheetPreview"
+          icon="pi pi-eye"
+          class="p-button-text p-button-sm p-button-success"
+          @click="() => window.open(marksheetPreview, '_blank')"
+        />
+        <Button
+          icon="pi pi-trash"
+          class="p-button-text p-button-sm p-button-danger"
+          @click="removeFile('marksheet')"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+    </div>
+    <div class="mt-6">
+      <Button
+        icon="pi pi-save"
+        label="সংরক্ষণ করুন"
+        class="p-button-success"
+        @click="submitStudentInfo"
+      />
+    </div>
+  </template>
+</Card>
 
-
-                                <select v-model="permanentFilters.Thana"
-                                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f]">
-                                    <option value="">সকল</option>
-                                    <option v-for="Thana in thanas" :key="Thana.Thana_ID" :value="Thana.Thana_ID">
-                                        {{ Thana.Thana }}
-                                    </option>
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <!-- Attachment Card -->
-            <div class="bg-white rounded-lg shadow">
-                <div class="bg-white border border-emerald-200 p-6 rounded-md shadow-md">
-                    <h3 class="text-emerald-800 text-xl arabic-font font-bold mb-6">সংযুক্তি</h3>
-
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
-                        <!-- Student Photo -->
-                        <div class="space-y-3">
-                            <label class="text-emerald-700 text-lg arabic-font block font-medium">ছাত্রের ছবি (পাসপোর্ট
-                                সাইজ এবং নীল ব্যাকগ্রাইন্ড হতে হবে)</label>
-                            <div class="relative">
-                                <div
-                                    class="flex bg-emerald-50 border-2 border-dashed border-emerald-300 justify-between p-4 rounded-md duration-200 hover:border-emerald-500 items-center transition-colors">
-                                    <span class="text-emerald-600 arabic-font">
-                                        {{ studentPhotoFile ? studentPhotoFile.name : 'ফাইল আপলোড করুন' }}
-                                    </span>
-                                    <div v-if="studentPhotoPreview"
-                                        class="flex items-center pointer-events-auto relative space-x-2 z-10">
-                                        <a :href="studentPhotoPreview" target="_blank"
-                                            class="text-emerald-600 hover:text-emerald-800">প্রিভিউ</a>
-                                        <button @click.stop="removeFile('studentPhoto')"
-                                            class="text-red-600 hover:text-red-800">মুছুন</button>
-                                    </div>
-                                </div>
-                                <input type="file" @change="handleFileUpload($event, 'studentPhoto')"
-                                    class="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-0"
-                                    accept="image/*,.pdf" />
-                            </div>
-                        </div>
-
-                        <!-- Birth Certificate/NID -->
-                        <div class="space-y-3">
-                            <label class="text-emerald-700 text-lg arabic-font block font-medium">জন্ম নিবন্ধন/এন আইডি
-                                সংযুক্তি করুন</label>
-                            <div class="relative">
-                                <div
-                                    class="flex bg-emerald-50 border-2 border-dashed border-emerald-300 justify-between p-4 rounded-md duration-200 hover:border-emerald-500 items-center transition-colors">
-                                    <span class="text-emerald-600 arabic-font">
-                                        {{ birthCertificateFile ? birthCertificateFile.name : 'ফাইল আপলোড করুন' }}
-                                    </span>
-                                    <div v-if="birthCertificatePreview"
-                                        class="flex items-center pointer-events-auto relative space-x-2 z-10">
-                                        <a :href="birthCertificatePreview" target="_blank"
-                                            class="text-emerald-600 hover:text-emerald-800">প্রিভিউ</a>
-                                        <button @click.stop="removeFile('birthCertificate')"
-                                            class="text-red-600 hover:text-red-800">মুছুন</button>
-                                    </div>
-                                </div>
-                                <input type="file" @change="handleFileUpload($event, 'birthCertificate')"
-                                    class="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-0"
-                                    accept="image/*,.pdf,.doc,.docx" />
-                            </div>
-                        </div>
-
-                        <!-- Marksheet -->
-                        <div class="space-y-3">
-                            <label class="text-emerald-700 text-lg arabic-font block font-medium">মার্কশীট সংযুক্ত
-                                করুন</label>
-                            <div class="relative">
-                                <div
-                                    class="flex bg-emerald-50 border-2 border-dashed border-emerald-300 justify-between p-4 rounded-md duration-200 hover:border-emerald-500 items-center transition-colors">
-                                    <span class="text-emerald-600 arabic-font">
-                                        {{ marksheetFile ? marksheetFile.name : 'ফাইল আপলোড করুন' }}
-                                    </span>
-                                    <div v-if="marksheetPreview"
-                                        class="flex items-center pointer-events-auto relative space-x-2 z-10">
-                                        <a :href="marksheetPreview" target="_blank"
-                                            class="text-emerald-600 hover:text-emerald-800">প্রিভিউ</a>
-                                        <button @click.stop="removeFile('marksheet')"
-                                            class="text-red-600 hover:text-red-800">মুছুন</button>
-                                    </div>
-                                </div>
-                                <input type="file" @change="handleFileUpload($event, 'marksheet')"
-                                    class="h-full w-full absolute cursor-pointer inset-0 opacity-0 z-0"
-                                    accept="image/*,.pdf,.doc,.docx" />
-                            </div>
-                        </div>
-
-                        <div class="mt-6">
-                            <button @click.prevent="submitStudentInfo"
-                                class="bg-emerald-600 rounded-md shadow-md text-white font-bold hover:bg-emerald-700 px-6 py-2">
-                                <i class="fa-save fas mr-2"></i> সংরক্ষণ করুন
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
     </AuthenticatedLayout>
 </template>

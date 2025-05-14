@@ -10,141 +10,213 @@
           <div class="grid grid-cols-5 gap-4 mb-6">
             <div>
               <label class="block text-emerald-800 text-xl font-semibold mb-2">মারহালা নাম (বাংলা)</label>
-              <input type="text" v-model="form.marhalaNameBn" class="w-full px-2 py-1.5 border-emerald-200 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-emerald-50">
+              <InputText v-model="form.marhalaNameBn" class="w-full text-xl bg-emerald-50" />
             </div>
             <div>
               <label class="block text-emerald-800 text-xl font-semibold mb-2">মারহালা নাম (ইংরেজি)</label>
-              <input type="text" v-model="form.marhalaNameEn" class="w-full px-2 py-1.5 border border-emerald-200 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-emerald-50">
+              <InputText v-model="form.marhalaNameEn" class="w-full text-xl bg-emerald-50" />
             </div>
             <div>
               <label class="block text-emerald-800 text-xl font-semibold mb-2">মারহালা নাম (আরবি)</label>
-              <input type="text" v-model="form.marhalaNameAr" class="w-full px-2 py-1.5 border border-emerald-200 rounded-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-emerald-50">
+              <InputText v-model="form.marhalaNameAr" class="w-full text-xl bg-emerald-50 arabic-font" />
             </div>
-
             <div class="col-span-5">
-              <button type="button" @click="addNewRow" class="bg-emerald-500 text-white px-4 py-2  text-xl rounded-sm hover:bg-emerald-600">
+              <Button
+                type="button"
+                @click="addNewRow"
+                class="bg-emerald-500 text-white px-4 py-2 text-xl rounded-sm hover:bg-emerald-600 border-0"
+              >
                 <i class="fas fa-plus mr-2"></i> নতুন সাবজেক্ট যোগ করুন
-              </button>
+              </Button>
             </div>
           </div>
 
           <!-- Subjects Table -->
-          <div class="overflow-x-auto">
-            <table class="w-full border-collapse text-xl">
-              <thead>
-                <tr class="bg-emerald-50">
-                  <th class="border p-2 text-emerald-800">সাবজেক্ট কোড</th>
-                  <th class="border p-2 text-emerald-800">কিতাব নাম (বাংলা)</th>
-                  <th class="border p-2 text-emerald-800">কিতাব নাম (ইংরেজি)</th>
-                  <th class="border p-2 text-emerald-800">কিতাব নাম (আরবি)</th>
-                  <th class="border p-2 text-emerald-800">স্ট্যাটাস</th>
-                  <th class="border p-2 text-emerald-800">অ্যাকশন</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(subject, index) in form.subjects" :key="index" class="hover:bg-emerald-50 ">
-                  <td class="border p-2">
-                    <input type="text" v-model="subject.code" class="w-full px-2 py-1 border rounded text-xl">
-                  </td>
-                  <td class="border p-2">
-                    <input type="text" v-model="subject.nameBangla" class="w-full px-2 py-1 border rounded text-xl">
-                  </td>
-                  <td class="border p-2">
-                    <input type="text" v-model="subject.nameEnglish" class="w-full px-2 py-1 border rounded text-xl">
-                  </td>
-                  <td class="border p-2">
-                    <input type="text" v-model="subject.nameArabic" class="w-full px-2 py-1 border rounded text-xl">
-                  </td>
-                  <td class="border p-2">
-                    <div class="flex justify-center gap-4">
-                      <label class="inline-flex items-center">
-                        <input type="radio" v-model="subject.status" value="SRtype_1" class="text-emerald-600 text-xl">
-                        <span class="ml-1">ছাত্র</span>
-                      </label>
-                      <label class="inline-flex items-center">
-                        <input type="radio" v-model="subject.status" value="SRtype_0" class="text-emerald-600 text-xl">
-                        <span class="ml-1">ছাত্রী</span>
-                      </label>
-                      <label class="inline-flex items-center">
-                        <input type="radio" v-model="subject.status" value="Both" class="text-emerald-600 text-xl">
-                        <span class="ml-1">উভয়</span>
-                      </label>
-                    </div>
-                  </td>
-                  <td class="border p-2">
-                    <button type="button" @click="removeRow(index)" class="bg-red-500 text-white px-3 py-1 text-xl rounded hover:bg-red-600">
-                      <i class="fas fa-trash"></i>
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <DataTable :value="form.subjects" class="text-xl">
+            <Column field="code" header="সাবজেক্ট কোড">
+              <template #body="{data, index}">
+                <InputText v-model="form.subjects[index].code" class="w-full text-xl" />
+              </template>
+              <template #header>
+
+              </template>
+            </Column>
+
+            <Column field="nameBangla" header="কিতাব নাম (বাংলা)">
+              <template #body="{data, index}">
+                <InputText v-model="form.subjects[index].nameBangla" class="w-full text-xl" />
+              </template>
+              <template #header>
+
+              </template>
+            </Column>
+
+            <Column field="nameEnglish" header="কিতাব নাম (ইংরেজি)">
+              <template #body="{data, index}">
+                <InputText v-model="form.subjects[index].nameEnglish" class="w-full text-xl" />
+              </template>
+              <template #header>
+
+              </template>
+            </Column>
+
+            <Column field="nameArabic" header="কিতাব নাম (আরবি)">
+              <template #body="{data, index}">
+                <InputText v-model="form.subjects[index].nameArabic" class="w-full text-xl arabic-font" />
+              </template>
+              <template #header>
+
+              </template>
+            </Column>
+
+            <Column field="status" header="স্ট্যাটাস">
+              <template #body="{data, index}">
+                <div class="flex justify-center gap-4">
+                  <div class="field-radiobutton">
+                    <RadioButton v-model="form.subjects[index].status" value="SRtype_1" :inputId="'status1_'+index" />
+                    <label :for="'status1_'+index" class="ml-1 text-xl">ছাত্র</label>
+                  </div>
+                  <div class="field-radiobutton">
+                    <RadioButton v-model="form.subjects[index].status" value="SRtype_0" :inputId="'status2_'+index" />
+                    <label :for="'status2_'+index" class="ml-1 text-xl">ছাত্রী</label>
+                  </div>
+                  <div class="field-radiobutton">
+                    <RadioButton v-model="form.subjects[index].status" value="Both" :inputId="'status3_'+index" />
+                    <label :for="'status3_'+index" class="ml-1 text-xl">উভয়</label>
+                  </div>
+                </div>
+              </template>
+
+            </Column>
+
+            <Column header="অ্যাকশন">
+              <template #body="{data, index}">
+                <button
+                  type="button"
+                  @click="removeRow(index)"
+                  class="bg-red-500 text-white px-3 py-1 text-xl rounded hover:bg-red-600"
+                >
+                  <i class="fas fa-trash"></i>
+                </button>
+              </template>
+              <template #header>
+
+              </template>
+            </Column>
+          </DataTable>
 
           <div class="flex justify-end mt-6">
-            <button type="submit" class="bg-emerald-600 text-white px-6 py-2 text-xl rounded-md hover:bg-emerald-700 transition-colors duration-200 font-semibold shadow-md">
+            <Button
+              type="submit"
+              class="bg-emerald-600 text-white px-6 py-2 text-xl rounded-md hover:bg-emerald-700 transition-colors duration-200 font-semibold shadow-md border-0"
+            >
               সংশোধন করুন
-            </button>
+            </Button>
           </div>
         </form>
       </div>
     </AuthenticatedLayout>
   </template>
 
-<script setup>
-import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue'
-import { ref, onMounted } from 'vue'
-import axios from 'axios'
-import { router } from '@inertiajs/vue3'
+  <script setup>
+  import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
+  import { ref, onMounted } from 'vue';
+  import axios from 'axios';
+  import { router } from '@inertiajs/vue3';
+  import Button from 'primevue/button';
+  import InputText from 'primevue/inputtext';
+  import DataTable from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import RadioButton from 'primevue/radiobutton';
 
-const props = defineProps({
+  const props = defineProps({
     marhala: {
-        type: Object,
-        required: true
+      type: Object,
+      required: true
     }
-})
+  });
 
-const marhalaId = props.marhala.id
-// URL থেকে id নেওয়া
+  const marhalaId = props.marhala.id;
 
-const form = ref({
+  const form = ref({
     marhalaNameBn: props.marhala.marhala_name_bn,
     marhalaNameEn: props.marhala.marhala_name_en,
     marhalaNameAr: props.marhala.marhala_name_ar,
     subjects: props.marhala.subjects.map(subject => ({
-        code: subject.subject_code,
-        nameBangla: subject.name_bangla,
-        nameEnglish: subject.name_english,
-        nameArabic: subject.name_arabic,
-        status: subject.status || 'Both'
+      code: subject.subject_code,
+      nameBangla: subject.name_bangla,
+      nameEnglish: subject.name_english,
+      nameArabic: subject.name_arabic,
+      status: subject.status || 'Both'
     }))
-})
+  });
 
-// নতুন সারি যোগ করা
-const addNewRow = () => {
+  // নতুন সারি যোগ করা
+  const addNewRow = () => {
     form.value.subjects.push({
-        code: '',
-        nameBangla: '',
-        nameEnglish: '',
-        nameArabic: '',
-        status: 'Both'
-    })
-}
+      code: '',
+      nameBangla: '',
+      nameEnglish: '',
+      nameArabic: '',
+      status: 'Both'
+    });
+  };
 
-// সারি রিমুভ করা
-const removeRow = (index) => {
-    form.value.subjects.splice(index, 1)
-}
+  // সারি রিমুভ করা
+  const removeRow = (index) => {
+    form.value.subjects.splice(index, 1);
+  };
 
-
-// ফর্ম সাবমিট
-const handleSubmit = () => {
-    router.put(`/marhalas/${marhalaId}`, form.value)
-}
-</script>
+  // ফর্ম সাবমিট
+  const handleSubmit = () => {
+    router.put(`/marhalas/${marhalaId}`, form.value);
+  };
+  </script>
 
   <style scoped>
   .arabic-font {
-      font-family: 'Amiri', 'Scheherazade New', serif;
+    font-family: 'Amiri', 'Scheherazade New', serif;
+  }
+
+  :deep(.p-datatable-thead > tr > th) {
+    background-color: #ecfdf5;
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+  }
+
+  :deep(.p-datatable-tbody > tr > td) {
+    border: 1px solid #e5e7eb;
+    padding: 0.5rem;
+  }
+
+  :deep(.p-datatable-tbody > tr:hover) {
+    background-color: #ecfdf5;
+  }
+
+  :deep(.p-inputtext) {
+    padding: 0.25rem 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.125rem;
+  }
+
+  :deep(.p-inputtext:enabled:focus) {
+    outline: 0 none;
+    outline-offset: 0;
+    box-shadow: 0 0 0 2px #10b981;
+    border-color: #10b981;
+  }
+
+  :deep(.p-radiobutton .p-radiobutton-box.p-highlight) {
+    border-color: #059669;
+    background: #059669;
+  }
+
+  :deep(.p-radiobutton .p-radiobutton-box) {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  :deep(.p-button) {
+    font-size: 1.25rem;
   }
   </style>

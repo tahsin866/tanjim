@@ -98,8 +98,7 @@ const updateStudent = () => {
 
 
 
-
-
+const marhalaName = ref('');
 
 
 
@@ -488,16 +487,23 @@ const handleDistrictChange = async () => {
                         <!-- Name Fields -->
                         <div class="grid grid-cols-1 gap-6 md:grid-cols-3">
                             <div class="relative">
-                                <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম
-                                    (বাংলা)</label>
-                                <div class="relative">
-                                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
+    <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম (বাংলা)</label>
+    <div class="relative">
+        <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
+        </span>
+        <input
+    v-model="form.name_bn"
+    type="text"
+    :disabled="props.student.is_old_student === 1"
+    :class="[
+        'border border-emerald-200 rounded-sm text-xl w-full pl-10 pr-3 py-2',
+        'focus:outline-none focus:ring-2 focus:ring-emerald-500',
+        props.student.is_old_student === 1 ? 'bg-gray-100 cursor-not-allowed' : ''
+    ]"
+>
+    </div>
+</div>
 
-                                    </span>
-                                    <input v-model="form.name_bn" type="text"
-                                        class="border border-emerald-200 rounded-sm text-xl  w-full  focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
-                                </div>
-                            </div>
 
                             <div class="relative">
                                 <label class="text-gray-700 text-lg block font-arabic font-medium mb-1">নাম
@@ -531,7 +537,7 @@ const handleDistrictChange = async () => {
                                     (বাংলা)</label>
                                 <div>
 
-                                    <input v-model="form.father_name_bn" type="text"
+                                    <input v-model="form.mother_name_bn" type="text"
                                         class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
                                 </div>
                             </div>
@@ -541,7 +547,7 @@ const handleDistrictChange = async () => {
                                     (ইংরেজি)</label>
                                 <div class="relative">
 
-                                    <input v-model="form.father_name_en" type="text"
+                                    <input v-model="form.mother_name_en" type="text"
                                         class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
                                 </div>
                             </div>
@@ -551,7 +557,7 @@ const handleDistrictChange = async () => {
                                     (আরবি)</label>
                                 <div class="relative">
 
-                                    <input v-model="form.father_name_ar" type="text"
+                                    <input v-model="form.mother_name_ar" type="text"
                                         class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
                                 </div>
                             </div>
@@ -564,7 +570,13 @@ const handleDistrictChange = async () => {
                                     (বাংলা)</label>
                                 <div>
 
-                                    <input v-model="form.mother_name_bn" type="text"
+                                    <input v-model="form.father_name_bn" type="text"
+                                    :disabled="props.student.is_old_student === 1"
+    :class="[
+        'border border-emerald-200 rounded-sm text-xl w-full pl-10 pr-3 py-2',
+        'focus:outline-none focus:ring-2 focus:ring-emerald-500',
+        props.student.is_old_student === 1 ? 'bg-gray-100 cursor-not-allowed' : ''
+    ]"
                                         class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
                                 </div>
                             </div>
@@ -574,7 +586,7 @@ const handleDistrictChange = async () => {
                                     (ইংরেজি)</label>
                                 <div class="relative">
 
-                                    <input v-model="form.mother_name_en" type="text"
+                                    <input v-model="form.father_name_en" type="text"
                                         class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
                                 </div>
                             </div>
@@ -584,7 +596,7 @@ const handleDistrictChange = async () => {
                                     (আরবি)</label>
                                 <div class="relative">
 
-                                    <input v-model="form.mother_name_ar" type="text"
+                                    <input v-model="form.father_name_ar" type="text"
                                         class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
                                 </div>
                             </div>
@@ -601,6 +613,12 @@ const handleDistrictChange = async () => {
                                         <i class="text-emerald-600 fa-calendar-alt fas"></i>
                                     </span>
                                     <input v-model="form.Date_of_birth"   type="date"
+                                    :disabled="props.student.is_old_student === 1"
+    :class="[
+        'border border-emerald-200 rounded-sm text-xl w-full pl-10 pr-3 py-2',
+        'focus:outline-none focus:ring-2 focus:ring-emerald-500',
+        props.student.is_old_student === 1 ? 'bg-gray-100 cursor-not-allowed' : ''
+    ]"
                                         class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
                                 </div>
                             </div>
@@ -613,6 +631,7 @@ const handleDistrictChange = async () => {
                                         <i class="text-emerald-600 fa-id-card fas"></i>
                                     </span>
                                     <input v-model="form.BRN_no"  type="text"
+
                                         class="border border-emerald-200 rounded-sm text-xl w-full focus:outline-none focus:ring-2 focus:ring-emerald-500 pl-10 pr-3 py-2">
                                 </div>
                             </div>
@@ -634,90 +653,75 @@ const handleDistrictChange = async () => {
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md">
-                <div
-                    class="bg-gradient-to-r rounded-t-md from-emerald-800 overflow-hidden px-6 py-4 relative to-emerald-600">
-                    <div class="bg-[url( absolute inset-0 opacity-10" imagesslamic-pattern.png></div>
-                    <div class="flex gap-3 items-center relative z-10">
-                        <h5 class="text-white text-xl font-arabic">প্রয়োজনীয় তথ্য</h5>
-                    </div>
-                </div>
-
-                <div class="p-6">
-                    <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
-                        <div class="relative">
-                            <label
-                                class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                পরীক্ষার্থীর ধরন
-                            </label>
-                            <div class="relative">
-                                <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
-
-                                </span>
-                                <input type="text" disabled
-                                    class="bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-xl w-full pl-10 pr-3 py-2"
-                                    placeholder="নিয়মিত">
-                            </div>
-                        </div>
-
-                        <div class="relative">
-                            <label
-                                class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
-                                বোর্ড
-                            </label>
-                            <div class="relative">
-                                <span class="flex absolute inset-y-0 items-center left-0 pl-3  pointer-events-none">
-                                </span>
-                                <select v-model="form.board_name"
-
-                                    class="bg-white border border-emerald-200 rounded-md text-emerald-800 w-full appearance-none text-xl pl-10 pr-3 py-2">
-                                    <option value="">বোর্ড নির্বাচন করুন</option>
-                                    <option value="বেফাকুল মাদারিসিল কওমিয়া গওহরডাঙ্গা বাংলাদেশ">বেফাকুল মাদারিসিল কওমিয়া গওহরডাঙ্গা বাংলাদেশ</option>
-<option value="আযাদ দ্বীনি এদারায়ে তালীম বাংলাদেশ">আযাদ দ্বীনি এদারায়ে তালীম বাংলাদেশ</option>
-<option value="তানযীমুল মাদারিসিদ দ্বীনিয়া বাংলাদেশ">তানযীমুল মাদারিসিদ দ্বীনিয়া বাংলাদেশ</option>
-<option value="জাতীয় দ্বীনি মাদরাসা শিক্ষাবোর্ড বাংলাদেশ">জাতীয় দ্বীনি মাদরাসা শিক্ষাবোর্ড বাংলাদেশ</option>
-<option value="আঞ্জুমানে ইত্তেহাদুল মাদারিস বাংলাদেশ">আঞ্জুমানে ইত্তেহাদুল মাদারিস বাংলাদেশ</option>
-                                </select>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="mt-6">
-                        <h4 class="flex text-emerald-700 font-arabic font-medium gap-2 items-center mb-4">
-                            <i class="text-emerald-600 fa-book fas"></i>
-                            নির্বাচনি কিতাব সিলেক্ট করুন
-                        </h4>
-                        <div class="flex flex-wrap gap-6">
-                            <label class="flex cursor-pointer group items-center space-x-2">
-                                <div class="relative">
-                                    <input type="checkbox"
-                                        class="form-checkbox border-emerald-300 rounded-md text-emerald-600 focus:ring-emerald-500">
-                                    <div
-                                        class="bg-emerald-100 rounded-md absolute group-hover:opacity-20 inset-0 opacity-0 transition-opacity">
-                                    </div>
-                                </div>
-                                <span
-                                    class="text-emerald-800 font-arabic group-hover:text-emerald-600 transition-colors">হিদায়া
-                                    ১ম খন্ড</span>
-                            </label>
-
-                            <label class="flex cursor-pointer group items-center space-x-2">
-                                <div class="relative">
-                                    <input type="checkbox"
-                                        class="form-checkbox border-emerald-300 rounded-md text-emerald-600 focus:ring-emerald-500">
-                                    <div
-                                        class="bg-emerald-100 rounded-md absolute group-hover:opacity-20 inset-0 opacity-0 transition-opacity">
-                                    </div>
-                                </div>
-                                <span
-                                    class="text-emerald-800 font-arabic group-hover:text-emerald-600 transition-colors">হিদায়া
-                                    ২য় খন্ড</span>
-                            </label>
-                        </div>
-                    </div>
+            <div class="bg-white rounded-lg shadow-md" v-if="!props.student.is_old_student">
+    <div class="bg-gradient-to-r rounded-t-md from-emerald-800 overflow-hidden px-6 py-4 relative to-emerald-600">
+        <div class="bg-[url( absolute inset-0 opacity-10" imagesslamic-pattern.png></div>
+        <div class="flex gap-3 items-center relative z-10">
+            <h5 class="text-white text-xl font-arabic">প্রয়োজনীয় তথ্য</h5>
+        </div>
+    </div>
+    <div class="p-6">
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div class="relative">
+                <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+                    পরীক্ষার্থীর ধরন
+                </label>
+                <div class="relative">
+                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
+                    </span>
+                    <input type="text" disabled
+                        class="bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 text-xl w-full pl-10 pr-3 py-2"
+                        placeholder="নিয়মিত">
                 </div>
             </div>
+            <div class="relative">
+                <label class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+                    বোর্ড
+                </label>
+                <div class="relative">
+                    <span class="flex absolute inset-y-0 items-center left-0 pl-3 pointer-events-none">
+                    </span>
+                    <select v-model="form.board_name"
+                        class="bg-white border border-emerald-200 rounded-md text-emerald-800 w-full appearance-none text-xl pl-10 pr-3 py-2">
+                        <option value="">বোর্ড নির্বাচন করুন</option>
+                        <option value="বেফাকুল মাদারিসিল কওমিয়া গওহরডাঙ্গা বাংলাদেশ">বেফাকুল মাদারিসিল কওমিয়া গওহরডাঙ্গা বাংলাদেশ</option>
+                        <option value="আযাদ দ্বীনি এদারায়ে তালীম বাংলাদেশ">আযাদ দ্বীনি এদারায়ে তালীম বাংলাদেশ</option>
+                        <option value="তানযীমুল মাদারিসিদ দ্বীনিয়া বাংলাদেশ">তানযীমুল মাদারিসিদ দ্বীনিয়া বাংলাদেশ</option>
+                        <option value="জাতীয় দ্বীনি মাদরাসা শিক্ষাবোর্ড বাংলাদেশ">জাতীয় দ্বীনি মাদরাসা শিক্ষাবোর্ড বাংলাদেশ</option>
+                        <option value="আঞ্জুমানে ইত্তেহাদুল মাদারিস বাংলাদেশ">আঞ্জুমানে ইত্তেহাদুল মাদারিস বাংলাদেশ</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="mt-6">
+            <h4 class="flex text-emerald-700 font-arabic font-medium gap-2 items-center mb-4">
+                <i class="text-emerald-600 fa-book fas"></i>
+                নির্বাচনি কিতাব সিলেক্ট করুন
+            </h4>
+            <div class="flex flex-wrap gap-6">
+                <label class="flex cursor-pointer group items-center space-x-2">
+                    <div class="relative">
+                        <input type="checkbox"
+                            class="form-checkbox border-emerald-300 rounded-md text-emerald-600 focus:ring-emerald-500">
+                        <div class="bg-emerald-100 rounded-md absolute group-hover:opacity-20 inset-0 opacity-0 transition-opacity">
+                        </div>
+                    </div>
+                    <span class="text-emerald-800 font-arabic group-hover:text-emerald-600 transition-colors">হিদায়া ১ম খন্ড</span>
+                </label>
+                <label class="flex cursor-pointer group items-center space-x-2">
+                    <div class="relative">
+                        <input type="checkbox"
+                            class="form-checkbox border-emerald-300 rounded-md text-emerald-600 focus:ring-emerald-500">
+                        <div class="bg-emerald-100 rounded-md absolute group-hover:opacity-20 inset-0 opacity-0 transition-opacity">
+                        </div>
+                    </div>
+                    <span class="text-emerald-800 font-arabic group-hover:text-emerald-600 transition-colors">হিদায়া ২য় খন্ড</span>
+                </label>
+            </div>
+        </div>
+    </div>
+</div>
+
 
             <!-- Address Card -->
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2">

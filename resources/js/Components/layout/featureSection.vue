@@ -43,7 +43,7 @@
 
             <Link
 
-:href="route('madrasha')"
+:href="route('madrasha_check_for_user')"
             class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 px-8 rounded-md transition-colors duration-300 flex items-center justify-center group">
               সাইন-আপ করুন
               <svg class="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">

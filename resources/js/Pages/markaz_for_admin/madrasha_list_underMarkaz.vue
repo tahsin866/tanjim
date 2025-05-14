@@ -1,105 +1,191 @@
 <template>
     <AuthenticatedLayout>
-        <div class="p-6 bg-[#f8f9fa] min-h-screen mx-5 mt-5">
-            <div class=" mx-auto">
-                <!-- Header Section -->
-                <div class="mb-6">
-                    <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+      <div class="p-6 bg-[#f8f9fa] min-h-screen mx-5 mt-5">
+        <div class="mx-auto">
+          <!-- Header Section -->
+          <div class="mb-6">
+            <h1 class="text-2xl font-bold text-gray-800 flex items-center gap-3">
+              মারকাজ ভিত্তিক মাদরাসার তালিকা
+            </h1>
+          </div>
 
-                  মারকাজ ভিত্তিক মাদরাসার তালিকা
-                    </h1>
-
-                </div>
-
-                <!-- Search Panel -->
-
-
-                <!-- Results Table -->
-                <div class="mt-8 bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="bg-[#2d6a4f] p-4 flex justify-between items-center">
-                        <h2 class="text-white text-lg font-semibold flex items-center gap-2">
-                            <i class="fas fa-list"></i>
-                            মাদরাসা তালিকা
-                        </h2>
-                        <!-- <div class="text-white">মোট উপাত্ত: {{ applications.data?.length || 0 }}</div> -->
-
-                    </div>
-
-                    <div class="p-6 overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead>
-                                <tr>
-                                    <th v-for="header in tableHeaders" :key="header.id"
-                                        class="px-6 py-3 bg-gray-50 text-left text-xl font-medium text-gray-500 uppercase tracking-wider">
-                                        {{ header.label }}
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-<tr v-for="(madrasha, index) in madrashas" :key="madrasha.id"
-        class="hover:bg-gray-50">
-        <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">{{ index + 1 }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">{{ madrasha.name }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">{{ madrasha.Elhaq_no }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">{{ madrasha.id }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-md text-gray-900">{{ madrasha.mobile_no }}</td>
-
-        <td class="px-6 py-4 whitespace-nowrap text-md text-gray-500">
-            <div class="flex gap-2">
-                <button @click="viewApplication(madrasha)"
-                    class="text-blue-600 hover:text-blue-800">
-                    <i class="fas fa-eye"></i>
-                </button>
-                <button @click="editApplication(madrasha)"
-                    class="text-green-600 hover:text-green-800 flex items-center gap-2">
-                    <i class="fas fa-envelope"></i>
-                </button>
+          <!-- Results Table -->
+          <div class="mt-8 bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden">
+            <div class="bg-[#2d6a4f] p-4 flex justify-between items-center">
+              <h2 class="text-white text-lg font-semibold flex items-center gap-2">
+                <i class="fas fa-list"></i>
+                মাদরাসা তালিকা
+              </h2>
+              <div class="text-white">মোট উপাত্ত: {{ madrashas?.length || 0 }}</div>
             </div>
-        </td>
-    </tr>
-</tbody>
-                        </table>
+            <div class="p-4">
+              <DataTable
+                :value="madrashas"
+                v-model:filters="filters"
+                filterDisplay="menu"
+                :paginator="true"
+                :rows="10"
+                :rowsPerPageOptions="[10, 20, 50, 100]"
+                paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+                currentPageReportTemplate="দেখানো হচ্ছে {first} থেকে {last} মোট {totalRecords} এর মধ্যে"
+                responsiveLayout="stack"
+                breakpoint="960px"
+                class="p-datatable-sm"
+                showGridlines
+                stripedRows
+                :globalFilterFields="['name', 'Elhaq_no', 'id', 'Mobile_no']"
+                dataKey="id"
+              >
+                <template #header>
+                  <div class="flex justify-between items-center">
+                    <div>
+                      <span class="p-input-icon-left">
+                        <i class="pi pi-search" />
+                        <InputText v-model="filters['global'].value" placeholder="সার্চ করুন..." />
+                      </span>
                     </div>
+                  </div>
+                </template>
 
+                <Column field="id" header="ক্রমিক" sortable style="min-width: 5rem">
+                  <template #body="{ index }">
+                    {{ index + 1 }}
+                  </template>
+                </Column>
 
+                <Column field="name" header="মাদরাসার নাম" sortable style="min-width: 12rem">
+                  <template #filter="{ filterModel }">
+                    <InputText
+                      v-model="filterModel.value"
+                      type="text"
+                      class="p-column-filter"
+                      placeholder="সার্চ করুন..."
+                    />
+                  </template>
+                </Column>
 
-                </div>
+                <Column field="Elhaq_no" header="এলহাক নম্বর" sortable style="min-width: 10rem">
+                  <template #filter="{ filterModel }">
+                    <InputText
+                      v-model="filterModel.value"
+                      type="text"
+                      class="p-column-filter"
+                      placeholder="সার্চ করুন..."
+                    />
+                  </template>
+                </Column>
+
+                <Column field="id" header="আইডি" sortable style="min-width: 8rem">
+                  <template #filter="{ filterModel }">
+                    <InputText
+                      v-model="filterModel.value"
+                      type="text"
+                      class="p-column-filter"
+                      placeholder="সার্চ করুন..."
+                    />
+                  </template>
+                </Column>
+
+                <Column field="Mobile_no" header="মোবাইল নম্বর" sortable style="min-width: 10rem">
+                  <template #filter="{ filterModel }">
+                    <InputText
+                      v-model="filterModel.value"
+                      type="text"
+                      class="p-column-filter"
+                      placeholder="সার্চ করুন..."
+                    />
+                  </template>
+                </Column>
+
+             <Column header="করনীয়" style="min-width: 10rem">
+  <template #body="{ data }">
+    <SplitButton
+      label="বিস্তারিত"
+      icon="fas fa-eye"
+      size="small"
+      class="p-button-sm p-button-text p-button-info"
+      @click="viewApplication(data)"
+      :model="getActionOptions(data)"
+    />
+  </template>
+</Column>
+              </DataTable>
             </div>
+          </div>
         </div>
+      </div>
     </AuthenticatedLayout>
-</template>
+  </template>
 
-<script setup>
-import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
-import { ref, reactive, onMounted, computed } from 'vue';
-import axios from 'axios';
+  <script setup>
+  import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
+  import { ref, reactive, onMounted } from 'vue';
 
-// State Management
+  import DataTable from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import InputText from 'primevue/inputtext';
+import SplitButton from 'primevue/splitbutton';
 
 
 
 
+  const FilterMatchMode = {
+  STARTS_WITH: 'startswith',
+  CONTAINS: 'contains',
+  EQUALS: 'equals',
+  DATE_IS: 'dateIs'
+};
+  // Initialize filters correctly
+  const filters = ref({
+    'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'name': { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'Elhaq_no': { value: null, matchMode: FilterMatchMode.CONTAINS },
+    'id': { value: null, matchMode: FilterMatchMode.EQUALS },
+    'Mobile_no': { value: null, matchMode: FilterMatchMode.CONTAINS }
+  });
 
-// Table Headers
-const tableHeaders = [
+  // Table Headers
+  const tableHeaders = [
     { id: 1, label: "ক্রমিক" },
     { id: 2, label: "মাদরাসার নাম" },
     { id: 3, label: "এলহাক নম্বর" },
-
     { id: 6, label: "আইডি" },
     { id: 7, label: "মোবাইল নম্বর" },
-
     { id: 11, label: "অ্যাকশন" }
-];
+  ];
 
-// Computed Properties
-
-const props = defineProps({
-    madrashas: Array,
+  // Props
+  const props = defineProps({
+    madrashas: {
+      type: Array,
+      required: true
+    },
     markazId: Number
-});
+  });
 
 
-
-</script>
-
+const getActionOptions = (data) => {
+  return [
+    {
+      label: 'মেসেজিং',
+      icon: 'fas fa-envelope',
+      command: () => editApplication(data)
+    },
+    {
+      label: 'স্থগিত',
+      icon: 'fas fa-pause-circle',
+      command: () => suspendApplication(data)
+    },
+    {
+      label: 'এলার্ট মেসেজ',
+      icon: 'fas fa-exclamation-triangle',
+      command: () => sendAlertMessage(data)
+    },
+    {
+      label: 'বাতিল',
+      icon: 'fas fa-times-circle',
+      command: () => cancelApplication(data)
+    }
+  ];
+};
+  </script>

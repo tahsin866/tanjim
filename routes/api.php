@@ -2,193 +2,128 @@
 
 use App\Http\Controllers\MarhalaController;
 use App\Http\Controllers\SubjectSettingsController;
+use App\Http\Controllers\markazChangeController;
 use App\Http\Controllers\ExamSetupController;
-// use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ScheduleSetupController;
 use App\Http\Controllers\ExamRegistrationController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MarkazAgreementController;
 use App\Http\Controllers\MadrashaController;
 use App\Http\Controllers\MarhalaListController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\dashboardController;
+use App\Http\Controllers\teacherController;
+use Illuminate\Support\Facades\Route;
 
-
-
+// Marhala Controller Routes
 Route::get('/marhalas/{id}/edit', [MarhalaController::class, 'edit']);
 Route::put('/marhalas/{id}', [MarhalaController::class, 'update']);
 
 Route::prefix('api')->group(function () {
+    // MarhalaController Routes
+
+    // SubjectSettingsController Routes
     Route::get('/marhala/{marhala}/subjects', [SubjectSettingsController::class, 'getData']);
-
     Route::get('/subjects', [SubjectSettingsController::class, 'index']);
-    Route::post('/subject-settings', [SubjectSettingsController::class, 'subjectStore'])->name('subject-settings.store');
-
-  // routes/api.php
-  Route::get('/subject-settings/{id}', [SubjectSettingsController::class, 'showsubjects']);
-// Route::get('/subject-settings/{marhala}', [SubjectSettingsController::class, 'show']);
-// Route::put('/subject-settings/{marhala}', [SubjectSettingsController::class, 'subjectupdate']);
-
-Route::get('/subject-settings/{id}', [SubjectSettingsController::class, 'getSubjectSetting']);
-Route::get('/marhala/{marhalaId}/subjects', [SubjectSettingsController::class, 'getsubjecData']);
-Route::put('/subject-settings/{id}', [SubjectSettingsController::class, 'updateSubjectSetting']);
-
-
-
-
-
-
-
-
-
-
-
     Route::get('/subjects', [SubjectSettingsController::class, 'search']);
+    Route::post('/subject-settings', [SubjectSettingsController::class, 'subjectStore'])->name('subject-settings.store');
+    Route::get('/subject-settings/{id}', [SubjectSettingsController::class, 'showsubjects']);
+    Route::get('/subject-settings/{id}', [SubjectSettingsController::class, 'getSubjectSetting']);
+    Route::put('/subject-settings/{id}', [SubjectSettingsController::class, 'updateSubjectSetting']);
+    Route::get('/marhala/{marhalaId}/subjects', [SubjectSettingsController::class, 'getsubjecData']);
     Route::post('/exam-setups', [SubjectSettingsController::class, 'store_1']);
-
-    Route::get('/exam-setups/{id}', [ExamSetupController::class, 'getExamSetup']);
-    Route::put('/exam-setups/{id}', [ExamSetupController::class, 'updateExamSetup']);
-
-    Route::get('/schedule-setups/{id}', [ScheduleSetupController::class, 'getScheduleSetup']);
-    Route::put('/schedule-setups/{id}', [ScheduleSetupController::class, 'updateScheduleSetup']);
-
-
-
-
     Route::get('/exam-setups/latest', [SubjectSettingsController::class, 'getLatest']);
     Route::get('/marhalas', [SubjectSettingsController::class, 'index_1']);
-
     Route::post('/exam-fees', [SubjectSettingsController::class, 'store_2']);
 
+    // ExamSetupController Routes
+    Route::get('/exam-setups/{id}', [ExamSetupController::class, 'getExamSetup']);
+    Route::put('/exam-setups/{id}', [ExamSetupController::class, 'updateExamSetup']);
     Route::get('/exam-setups_1', [ExamSetupController::class, 'index_2']);
+    Route::put('/central-exam-setup/{id}', [ExamSetupController::class, 'update'])->name('central_Exam_setup.update');
+    Route::get('/central-exam-setup', [ExamSetupController::class, 'index'])->name('central_Exam_setup.index');
 
-    Route::put('/central-exam-setup/{id}', [ExamSetupController::class, 'update'])
-        ->name('central_Exam_setup.update');
-
-    Route::get('/central-exam-setup', [ExamSetupController::class, 'index'])
-        ->name('central_Exam_setup.index');
-
+    // ScheduleSetupController Routes
+    Route::get('/schedule-setups/{id}', [ScheduleSetupController::class, 'getScheduleSetup']);
+    Route::put('/schedule-setups/{id}', [ScheduleSetupController::class, 'updateScheduleSetup']);
+    Route::post('/schedule-setups', [ScheduleSetupController::class, 'store']);
 
 
-
+    // MarkazAgreementController Routes
     Route::get('/madrashas/list', [MarkazAgreementController::class, 'getMadrashas'])->name('madrashas.list');
-    Route::get('/exam-setups/latest', [MarkazAgreementController::class, 'getLatest'])->name('exam-setups.latest');
+    Route::get('/exam-setups/latest', [MarkazAgreementController::class, 'getLatest_1'])->name('exam-setups.latest');
     Route::get('/markaz/get-table-data', [MarkazAgreementController::class, 'getTableData']);
-
-
-
     Route::get('/markaz-agreements', [MarkazAgreementController::class, 'fatch']);
-// Route::get('/markaz-agreement-madrasas/counts', [MarkazAgreementController::class, 'getMadrasaCounts']);
+    Route::get('/markaz-madrashas/list', [MarkazAgreementController::class, 'getMadrashas'])->name('markaz.madrashas.list');
+
+
+
+    // MadrashaController Routes
+    Route::get('/madrasha-list', [MadrashaController::class, 'getMadrashaList']);
+    Route::get('/markaz-list', [MadrashaController::class, 'getMarkazList']);
+    Route::get('/madrashas/filter', [MadrashaController::class, 'filterMadrashas']);
+    Route::get('/filter-markaz-students', [MadrashaController::class, 'filterMarkazStudents']);
+    Route::get('/madrasa-list', [MadrashaController::class, 'index']);
+    Route::get('/divisions', [MadrashaController::class, 'getDivisions']);
+    Route::get('/districts/{division}', [MadrashaController::class, 'getDistricts']);
+    Route::get('/thanas/{district}', [MadrashaController::class, 'getThanas']);
+    Route::get('/export-madrasa', [MadrashaController::class, 'export']);
 
 
 
 
-Route::get('/markaz-madrashas/list', [MarkazAgreementController::class, 'getMadrashas'])->name('markaz.madrashas.list');
+    // ExamRegistrationController Routes
+    Route::get('/exam-fees', [ExamRegistrationController::class, 'examFeeList']);
+    Route::get('/student-registration/{marhalaId}', [ExamRegistrationController::class, 'getRegistrationData']);
+    Route::get('/student-registration_old/{marhalaId}', [ExamRegistrationController::class, 'getRegistrationDataforold']);
+    Route::get('/student-years', [ExamRegistrationController::class, 'getStudentYears']);
+    Route::get('/search-students', [ExamRegistrationController::class, 'searchStudents']);
+    Route::get('/get-student-for-edit', [ExamRegistrationController::class, 'getStudentForEdit']);
+    Route::post('/save-student-info/{marhalaId}', [ExamRegistrationController::class, 'saveStudentInfo']);
+    Route::post('/save-student-info_1/{marhalaId}', [ExamRegistrationController::class, 'NewSaveStudentInfo']);
 
+    // MarhalaListController Routes
+    Route::get('/subjects/{marhalaId}', [MarhalaListController::class, 'getSubjects'])->name('api.subjects');
+    Route::post('/save-subject-selection', [MarhalaListController::class, 'saveSubjectSelection'])->name('api.save-subject-selection');
+    Route::get('/user-subject-selection/{marhalaId}', [MarhalaListController::class, 'getUserSubjectSelection']);
 
+    // StudentRegistrationController Routes
+    Route::get('/students-registration', [StudentRegistrationController::class, 'getStudents']);
+    Route::get('/markaz-students', [StudentRegistrationController::class, 'getMarkazStudents']);
+    Route::get('/markaz-madrasa-list/{markaz_id}', [StudentRegistrationController::class, 'getMarkazMadrasaList'])->name('api.markaz_madrasa_list');
+    Route::get('/abandon-stu-list/{markaz_id}', [StudentRegistrationController::class, 'abandonStuList'])->name('nibondon_for_admin.abandon_stu_list');
 
-
-Route::post('/schedule-setups', [ScheduleSetupController::class, 'store']);
-
-
-
-Route::get('/madrasha-list', [MadrashaController::class, 'getMadrashaList']);
-
-Route::get('/markaz-list', [MadrashaController::class, 'getMarkazList']);
-// এডমিনের মারকায ফিল্টার
-Route::get('/madrashas/filter', [MadrashaController::class, 'filterMadrashas']);
-
-// Route::get('/markaz/filter', [MadrashaController::class, 'filterMarkazRegstudent']);
-Route::get('/filter-markaz-students', [MadrashaController::class, 'filterMarkazStudents']);
-
-// Route::get('/markaz/{id}/madrashas', [MadrashaController::class, 'getMadrashasUnderMarkaz'])
-//     ->name('markaz_for_admin.madrasha_list_underMarkaz');
-
-
-
-Route::get('/madrasa-list', [MadrashaController::class, 'index']);
-Route::get('/divisions', [MadrashaController::class, 'getDivisions']);
-Route::get('/districts/{division}', [MadrashaController::class, 'getDistricts']);
-Route::get('/thanas/{district}', [MadrashaController::class, 'getThanas']);
-Route::get('/export-madrasa', [MadrashaController::class, 'export']);
-
-
-Route::get('/exam-fees', [ExamRegistrationController::class, 'examFeeList']);
-
-
-Route::get('/student-registration/{marhalaId}', [ExamRegistrationController::class, 'getRegistrationData']);
-Route::get('/student-years', [ExamRegistrationController::class, 'getStudentYears']);
-Route::get('/search-students', [ExamRegistrationController::class, 'searchStudents']);
-
-
-Route::get('/get-student-for-edit', [ExamRegistrationController::class, 'getStudentForEdit']);
-
-
-
-
-
-Route::post('/save-student-info', [ExamRegistrationController::class, 'saveStudentInfo']);
-
-Route::post('/save-student-info_1/{marhalaId}', [ExamRegistrationController::class, 'NewSaveStudentInfo']);
-
-
-
-
-
-// মাদরাসা পেনেলের সাবজেক্ট সেটিংস
-
-Route::get('/subjects/{marhalaId}', [MarhalaListController::class, 'getSubjects'])->name('api.subjects');
-
-
-Route::post('/save-subject-selection', [MarhalaListController::class, 'saveSubjectSelection'])->name('api.save-subject-selection');
-
-Route::get('/user-subject-selection/{marhalaId}', [MarhalaListController::class, 'getUserSubjectSelection']);
-
-
-
-Route::get('/students-registration', [StudentRegistrationController::class, 'getStudents']);
-
-
-
-
-Route::get('/markaz-students', [StudentRegistrationController::class, 'getMarkazStudents']);
-
-
-Route::get('/markaz-madrasa-list/{markaz_id}', [StudentRegistrationController::class, 'getMarkazMadrasaList'])
-    ->name('api.markaz_madrasa_list');
-
-
-
-    Route::get('/nibondon/abandon-stu-list/{markaz_id}', [StudentRegistrationController::class, 'abandonStuList'])
-    ->name('nibondon_for_admin.abandon_stu_list');
-
-
-
-    // Route::get('/madrasha/students/{madrasha_id}', [StudentRegistrationController::class, 'getMadrashaStudents'])
-    // ->name('api.madrasha_students');
-
-
-
+    // DashboardController Routes
     Route::get('/dashboard/student-stats', [dashboardController::class, 'getStudentStats']);
-
     Route::get('/payment-stats', [dashboardController::class, 'getPaymentStats']);
+    Route::post('/store-payment', [dashboardController::class, 'storePayment']);
+    Route::get('/check-payment-status', [dashboardController::class, 'checkPaymentStatus']);
+    Route::get('/unpaid-students-count', [dashboardController::class, 'getUnpaidStudentsCount']);
+
+    // markazChangeController
+
+    Route::get('/user-centers', [markazChangeController::class, 'showUserCenters'])->name('user.centers');
+    Route::get('/markaz-madrashas/list', [markazChangeController::class, 'getMadrashasChange'])->name('markaz-madrashas.list');
+
+    Route::get('/markaz-Center', [markazChangeController::class, 'showMarkaZCenters'])->name('markaz.change');
+    Route::get('/markaz-changes', [MarkazChangeController::class, 'getMarkazChange'])->name('markaz-changes.index');
 
 
 
-Route::get('/payment-stats', [dashboardController::class, 'getPaymentStats']);
-Route::post('/store-payment', [dashboardController::class, 'storePayment']);
-
-Route::get('/check-payment-status', [dashboardController::class, 'checkPaymentStatus']);
-Route::get('/unpaid-students-count', [dashboardController::class, 'getUnpaidStudentsCount']);
-
-
-
-// Route::get('/api/admins', [ProfileController::class, 'getAdmins'])->name('api.admins');
+    Route::get('/search-teacher', [teacherController::class, 'searchTeacher']);
 
 
 
 
+    Route::get('/books', [teacherController::class, 'getbooks'])->name('books.getbooks');
+Route::get('/get-book-categories', [teacherController::class, 'getBookCategories'])->name('books.categories');
+// Route::post('/neg-mumtahin-application', [teacherController::class, 'techerStore'])->name('neg-mumtahin-application.store');
 
+Route::get('/neg-mumtahin-applications', [teacherController::class, 'getTeachers']);
+
+
+Route::get('/negran/edit/{id}', [App\Http\Controllers\teacherController::class, 'negedit'])->name('negran.edit');
+
+Route::put('/negran/update/{id}', [App\Http\Controllers\teacherController::class, 'negupdate'])->name('negran.update');
 
 
 });

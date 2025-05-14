@@ -37,7 +37,7 @@ const search = () => {
 </script>
 
 <template>
-    <Head title="Islamic Education Dashboard" />
+    <Head title="WEMS" />
 
     <AuthenticatedLayout>
 

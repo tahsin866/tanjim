@@ -91,6 +91,40 @@ class ExamRegistrationController extends Controller
 
 
 
+    public function getRegistrationDataforold($marhalaId)
+    {
+        $latestExamSetup = ExamSetup::latest()->first();
+
+        // Map CID to class names
+        $marhalaNamesMap = [
+            '2' => 'ফযিলত',
+            '3' => 'সানাবিয়া উলইয়া',
+            '4' => 'সানাবিয়া',
+            '5' => 'মুতাওয়াসসিতাহ',
+            '6' => 'ইবতিদাইয়্যাহ',
+            '7' => 'হিফযুল কুরআন',
+            '8' => 'ইলমুত তাজবীদ ওয়াল ক্বিরাআত',
+        ];
+
+        // Try to get marhala from database first
+        $marhala = Marhala::find($marhalaId);
+        $marhalaName = $marhala ? $marhala->marhala_name_bn : ($marhalaNamesMap[$marhalaId] ?? 'Unknown');
+
+        return response()->json([
+            'examName' => $latestExamSetup ? $latestExamSetup->exam_name : 'পরীক্ষা',
+            'marhalaName' => $marhalaName
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
 
     public function getStudentYears()
     {
@@ -156,13 +190,11 @@ class ExamRegistrationController extends Controller
         // Create translator instance
         $translator = new Translator();
 
-
         // Get marhalaId from header
         $marhalaId = $request->header('marhalaId');
 
         // Filter students based on special conditions
         $filteredStudents = collect();
-
         foreach ($students as $student) {
             // Translate fields
             $student->Madrasha = $translator->translate($student->Madrasha);
@@ -194,21 +226,16 @@ class ExamRegistrationController extends Controller
 
         // Process all students based on new conditions
         foreach ($filteredStudents as $student) {
-            // Check if the student matches the specific combinations where rules should apply
+            // Initialize shouldApplyRules to false by default
             $shouldApplyRules = false;
 
             // Check for the specific combinations where rules should apply
             if (
-                ($request->filled('marhala') && $request->marhala == 9) ||
-                ($request->filled('marhala') && $request->marhala == 2 && $year == '2024') ||
-                ($request->filled('marhala') && $request->marhala == 10) ||
-                ($request->filled('marhala') && $request->marhala == 3 && $year == '2024') ||
-                ($request->filled('marhala') && $request->marhala == 11) ||
-                ($request->filled('marhala') && $request->marhala == 4 && $year == '2024') ||
-                ($request->filled('marhala') && $request->marhala == 12) ||
-                ($request->filled('marhala') && $request->marhala == 5 && $year == '2024') ||
-                ($request->filled('marhala') && $request->marhala == 14) ||
-                ($request->filled('marhala') && $request->marhala == 6 && $year == '2024')
+                ($marhalaId == 9 && $student->CID == 2 && $student->years == '2024') ||
+                ($marhalaId == 10 && $student->CID == 3 && $student->years == '2024') ||
+                ($marhalaId == 11 && $student->CID == 4 && $student->years == '2024') ||
+                ($marhalaId == 12 && $student->CID == 5 && $student->years == '2024') ||
+                ($marhalaId == 14 && $student->CID == 6 && $student->years == '2024')
             ) {
                 $shouldApplyRules = true;
             }
@@ -255,42 +282,33 @@ class ExamRegistrationController extends Controller
                 }
 
                 // Determine student type based on the new rules
-
                 // "অনিয়মিত যেমনী" conditions
                 if (
-                        // 1. এক বা দুই বিষয়ে ফেল এবং বিভাগ রাসিব
+                    // 1. এক বা দুই বিষয়ে ফেল এবং বিভাগ রাসিব
                     (($failedSubjects == 1 || $failedSubjects == 2) && $student->Division === 'রাসিব') ||
-
-                        // 2. এক বা দুই বিষয়ে অনু (SubValue = 0) এবং কোন বিষয়ে ফেল নেই
+                    // 2. এক বা দুই বিষয়ে অনু (SubValue = 0) এবং কোন বিষয়ে ফেল নেই
                     (($zeroSubjects == 1 || $zeroSubjects == 2) && $failedSubjects == 0) ||
-
-                        // 3. এক বিষয়ে অনু এবং এক বিষয়ে ফেল
+                    // 3. এক বিষয়ে অনু এবং এক বিষয়ে ফেল
                     ($zeroSubjects == 1 && $failedSubjects == 1)
                 ) {
                     $student->student_type = 'অনিয়মিত যেমনী';
                 }
-
                 // "অনিয়মিত অন্যান্য" conditions
                 elseif (
-                        // 1. দুয়ের অধিক বিষয়ে ফেল এবং বিভাগ রাসিব
+                    // 1. দুয়ের অধিক বিষয়ে ফেল এবং বিভাগ রাসিব
                     ($failedSubjects > 2 && $student->Division === 'রাসিব') ||
-
-                        // 2. দুই বিষয় অনু এক বিষয়ে ফেল বা এক বিষয়ে অনু দুই বিষয়ে ফেল
+                    // 2. দুই বিষয় অনু এক বিষয়ে ফেল বা এক বিষয়ে অনু দুই বিষয়ে ফেল
                     ($zeroSubjects == 2 && $failedSubjects == 1) ||
                     ($zeroSubjects == 1 && $failedSubjects == 2) ||
-
-                        // 3. এক বিষয়ে অনু এবং দুয়ের অধিক বিষয়ে ফেল
+                    // 3. এক বিষয়ে অনু এবং দুয়ের অধিক বিষয়ে ফেল
                     ($zeroSubjects == 1 && $failedSubjects > 2) ||
-
-                        // 4. একের অধিক অনু একের অধিক ফেল
+                    // 4. একের অধিক অনু একের অধিক ফেল
                     ($zeroSubjects > 1 && $failedSubjects > 1) ||
-
-                        // 5. দুয়ের অধিক অনু বিভাগ অনু
+                    // 5. দুয়ের অধিক অনু বিভাগ অনু
                     ($zeroSubjects > 2 && $student->Absence === 'অনুপস্থিত')
                 ) {
                     $student->student_type = 'অনিয়মিত অন্যান্য';
                 }
-
                 // Division = রাসিব এবং মুমতায নয় এমন হলে মানউন্নয়ন
                 elseif ($student->Division !== 'রাসিব' && $student->Division !== 'মুমতায') {
                     $student->student_type = 'মানউন্নয়ন';
@@ -313,6 +331,10 @@ class ExamRegistrationController extends Controller
 
         return response()->json($filteredStudents);
     }
+
+
+
+
 
 
 
@@ -394,7 +416,7 @@ class ExamRegistrationController extends Controller
         }
 
         // Get current class name based on marhalaId
-        $currentClass = $this->getClassNameFromMarhalaId($marhalaId);
+        // $currentClass = $this->getClassNameFromMarhalaId($marhalaId);
 
         // Create response structure with both past and current exam info
         $response = [
@@ -415,7 +437,7 @@ class ExamRegistrationController extends Controller
             'currentExam' => [
                 'Madrasha' => Auth::user()->madrasha_name,
                 'Markaj' => $markazName,
-                'Class' => $currentClass,
+                // 'Class' => $currentClass,
                 'marhalaId' => $marhalaId
             ]
         ];
@@ -432,24 +454,24 @@ class ExamRegistrationController extends Controller
     /**
      * Get class name from marhalaId
      */
-    private function getClassNameFromMarhalaId($marhalaId)
-    {
-        // Map marhalaId to class names
-        $marhalaToClassMap = [
-            '1' => 'ইবতিদাইয়া',
-            '2' => 'মুতাওয়াসসিতাহ',
-            '3' => 'সানাবিয়া আম্মাহ',
-            '4' => 'সানাবিয়া খাসসাহ',
-            '5' => 'আলিয়া',
-            '6' => 'মুতাখাসসিস',
-            '7' => 'তাকমিল',
-            '8' => 'কামিল',
-            '9' => 'ফযিলত',
-            // Add more mappings as needed
-        ];
+    // private function getClassNameFromMarhalaId($marhalaId)
+    // {
+    //     // Map marhalaId to class names
+    //     $marhalaToClassMap = [
+    //         '1' => 'ইবতিদাইয়া',
+    //         '2' => 'মুতাওয়াসসিতাহ',
+    //         '3' => 'সানাবিয়া আম্মাহ',
+    //         '4' => 'সানাবিয়া খাসসাহ',
+    //         '5' => 'আলিয়া',
+    //         '6' => 'মুতাখাসসিস',
+    //         '7' => 'তাকমিল',
+    //         '8' => 'কামিল',
+    //         '9' => 'ফযিলত',
+    //         // Add more mappings as needed
+    //     ];
 
-        return $marhalaToClassMap[$marhalaId] ?? 'অন্যান্য';
-    }
+    //     return $marhalaToClassMap[$marhalaId] ?? 'অন্যান্য';
+    // }
 
 
 
@@ -632,7 +654,7 @@ class ExamRegistrationController extends Controller
 
 
 
-    public function saveStudentInfo(Request $request)
+    public function saveStudentInfo(Request $request, $marhalaId)
     {
         $request->validate([
             'name_bn' => 'required|string|max:255',
@@ -684,15 +706,55 @@ class ExamRegistrationController extends Controller
             ->latest('id')
             ->first();
 
-        $markazId = null;
-        $markazFromRledger = DB::table('stu_rledger_p')
-            ->where('MRID', Auth::user()->madrasha_id)
-            ->select('MDID')
+
+
+            $classMap = [
+                '2' => 'ফযিলত',
+                '3' => 'সানাবিয়া উলইয়া',
+                '4' => 'সানাবিয়া',
+                '5' => 'মুতাওয়াসসিতাহ',
+                '6' => 'ইবতিদাইয়্যাহ',
+                '7' => 'হিফযুল কুরআন',
+                '8' => 'ইলমুত তাজবীদ ওয়াল ক্বিরাআত'
+            ];
+
+            // Get class name from mapping
+            $className = isset($classMap[$marhalaId]) ? $classMap[$marhalaId] : null;
+
+
+
+
+
+            $marhala = DB::table('marhalas')
+            ->select('id', 'marhala_name_bn')
+            ->where('id', $marhalaId)
             ->first();
 
-        if ($markazFromRledger) {
-            $markazId = $markazFromRledger->MDID;
-        }
+
+            $markazId = null;
+            $markazName = null;
+
+            // Get markaz ID from stu_rledger_p table
+            $markazFromRledger = DB::table('stu_rledger_p')
+                ->where('MRID', Auth::user()->madrasha_id)
+                ->select('MDID')
+                ->first();
+
+            if ($markazFromRledger) {
+                $markazId = $markazFromRledger->MDID;
+
+                // Get markaz name from madrasha table using the markaz ID
+                $markazInfo = DB::table('madrasha')
+                    ->where('id', $markazId)
+                    ->select('MName')
+                    ->first();
+
+                if ($markazInfo) {
+                    $markazName = $markazInfo->MName;
+                }
+            }
+
+
 
         // Create new record in reg_stu_informations table
         reg_stu_information::updateOrCreate(
@@ -703,6 +765,8 @@ class ExamRegistrationController extends Controller
                 'user_name' => Auth::user()->name,
                 'madrasha_id' => Auth::user()->madrasha_id,
                 // Add exam information from exam_setups table
+                'current_class' => $className,
+                'marhala_id' => $marhalaId,
                 'markaz_id' => $markazId,
                 'exam_id' => $examSetup ? $examSetup->id : null,
                 'exam_name_Bn' => $examSetup ? $examSetup->exam_name : null,
@@ -724,9 +788,9 @@ class ExamRegistrationController extends Controller
                 'Division' => $request->Division,
                 'Date_of_birth' => $request->Date_of_birth,
                 'current_madrasha' => $request->current_madrasha,
-                'current_markaz' => $request->current_markaz,
+          'current_markaz' => $markazName,
                 'student_type' => $request->student_type,
-                'current_class' => $request->current_class,
+                // 'current_class' => $request->current_class,
                 'exam_books_name' => $request->exam_books_name,
                 'mobile_no' => $request->mobile_no,
                 'markaz_name' => $request->markaz_name,
@@ -823,14 +887,12 @@ class ExamRegistrationController extends Controller
             ->first();
 
 
-        // $markaz = DB::table('markaz_agreements')
-        // ->where('user_id', Auth::user()->id)
-        // ->latest('id')  // সর্বশেষ রেকর্ড প্রথমে আনবে
-        // ->first();
-
 
         // Directly look up the MDID in stu_rledger_p table
         $markazId = null;
+        $markazName = null;
+
+        // Get markaz ID from stu_rledger_p table
         $markazFromRledger = DB::table('stu_rledger_p')
             ->where('MRID', Auth::user()->madrasha_id)
             ->select('MDID')
@@ -838,7 +900,19 @@ class ExamRegistrationController extends Controller
 
         if ($markazFromRledger) {
             $markazId = $markazFromRledger->MDID;
+
+            // Get markaz name from madrasha table using the markaz ID
+            $markazInfo = DB::table('madrasha')
+                ->where('id', $markazId)
+                ->select('MName')
+                ->first();
+
+            if ($markazInfo) {
+                $markazName = $markazInfo->MName;
+            }
         }
+
+
 
 
         // Create new record in reg_stu_informations table
@@ -858,7 +932,7 @@ class ExamRegistrationController extends Controller
 
             // 'markaz_id' => $markaz ? $markaz->id : null,
             'markaz_id' => $markazId,
-
+            'current_markaz' => $markazName, // Set the markaz name here
             // 'markaz_id' => $markazId,
 
             'name_bn' => $request->name_bn,
@@ -875,7 +949,6 @@ class ExamRegistrationController extends Controller
             'class' => $request->class,
             'Division' => $request->Division,
             'Date_of_birth' => $request->Date_of_birth,
-            'current_markaz' => $request->current_markaz,
             'student_type' => $request->student_type ?? 'নিয়মিত',
             'current_class' => $request->current_class,
             'mobile_no' => $request->mobile_no,

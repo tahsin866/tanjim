@@ -18,6 +18,7 @@ class MarkazAgreement extends Model
         'mutawassita',
         'ibtedaiyyah',
         'hifzul_quran',
+        'qirat',
         'noc_file',
         'resolution_file',
         'requirements',

@@ -2,6 +2,42 @@
 import { ref, onMounted } from 'vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
+import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
+import Textarea from 'primevue/textarea';
+import Password from 'primevue/password';
+import Button from 'primevue/button';
+import FileUpload from 'primevue/fileupload';
+
+
+const designationOptions = [
+  { name: 'সুপার এডমিন', value: '1' },
+  { name: 'সহ সুপার এডমিন', value: '2' },
+  { name: 'বোর্ড এডমিন', value: '3' }
+];
+
+
+
+
+
+
+const handleImageUpload = (event) => {
+  const file = event.files[0];
+  if (file) {
+    // ফাইল ফর্মে সেট করা
+    form.profile_image = file;
+
+    // ইমেজ প্রিভিউ দেখানো
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      imagePreview.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+
+    // আপলোড হওয়ার পর ফাইল সিলেক্টর ক্লিয়ার করা (যদি প্রয়োজন হয়)
+    event.options.clear();
+  }
+};
 
 const form = useForm({
     name: '',
@@ -133,17 +169,17 @@ const errors = ref({});
 const imagePreview = ref(null);
 const activeTab = ref('basic');
 
-const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        form.profile_image = file;
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            imagePreview.value = e.target.result;
-        };
-        reader.readAsDataURL(file);
-    }
-};
+// const handleImageUpload = (e) => {
+//     const file = e.target.files[0];
+//     if (file) {
+//         form.profile_image = file;
+//         const reader = new FileReader();
+//         reader.onload = (e) => {
+//             imagePreview.value = e.target.result;
+//         };
+//         reader.readAsDataURL(file);
+//     }
+// };
 
 const toggleAllPermissions = (section, value) => {
     Object.keys(form).forEach(key => {
@@ -196,170 +232,125 @@ const submit = () => {
                         <form @submit.prevent="submit">
                             <!-- Basic Information Tab -->
                             <div v-if="activeTab === 'basic'">
-                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div class="col-span-1 md:col-span-2 flex justify-center">
-                                        <div class="mb-4 text-center">
-    <div class="w-32 h-40 mx-auto mb-2 overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center border border-gray-300">
-        <img v-if="imagePreview" :src="imagePreview" class="w-full h-full object-cover" />
-        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="col-span-1 md:col-span-2 flex justify-center">
+      <div class="mb-4 text-center">
+        <div class="w-32 h-40 mx-auto mb-2 overflow-hidden rounded-xl bg-gray-100 flex items-center justify-center border border-gray-300">
+          <img v-if="imagePreview" :src="imagePreview" class="w-full h-full object-cover" />
+          <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-        </svg>
+          </svg>
+        </div>
+        <p class="text-xs text-gray-500 mb-2">পাসপোর্ট সাইজের ছবি (3.5 × 4.5 সেমি)</p>
+        <FileUpload
+  mode="basic"
+  chooseLabel="ছবি আপলোড করুন"
+  :customUpload="true"
+  @uploader="handleImageUpload"
+  accept="image/*"
+  class="p-button-primary"
+/>
+        <small v-if="form.errors.profile_image" class="p-error">{{ form.errors.profile_image }}</small>
+      </div>
     </div>
-    <p class="text-xs text-gray-500 mb-2">পাসপোর্ট সাইজের ছবি (3.5 × 4.5 সেমি)</p>
-    <label class="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 mt-2 rounded-md">
-        <span>ছবি আপলোড করুন</span>
-        <input type="file" class="hidden" @change="handleImageUpload" accept="image/*" />
-    </label>
-    <div v-if="form.errors.profile_image" class="text-red-500 text-xs mt-1">{{ form.errors.profile_image }}</div>
+    <div class="mb-4">
+      <span class="p-float-label">
+        <InputText id="name" v-model="form.name" class="w-full text-xl" required autofocus autocomplete="name" />
+        <label for="name" class="text-xl">নাম</label>
+      </span>
+      <small v-if="form.errors.name" class="p-error">{{ form.errors.name }}</small>
+    </div>
+    <div class="mb-4">
+      <span class="p-float-label">
+        <InputText id="email" v-model="form.email" class="w-full text-xl" type="email" required autocomplete="username" />
+        <label for="email" class="text-xl">ইমেইল</label>
+      </span>
+      <small v-if="form.errors.email" class="p-error">{{ form.errors.email }}</small>
+    </div>
+    <div class="mb-4">
+      <span class="p-float-label">
+        <InputText id="phone" v-model="form.phone" class="w-full text-xl" />
+        <label for="phone" class="text-xl">ফোন নম্বর</label>
+      </span>
+      <small v-if="form.errors.phone" class="p-error">{{ form.errors.phone }}</small>
+    </div>
+    <div class="mb-4">
+      <span class="p-float-label">
+        <Dropdown id="designation" v-model="form.designation" :options="designationOptions" optionLabel="name" optionValue="value" placeholder="পদবি সিলেক্ট করুন" class="w-full text-xl" />
+        <label for="designation" class="text-xl">পদবি</label>
+      </span>
+      <small v-if="form.errors.designation" class="p-error">{{ form.errors.designation }}</small>
+    </div>
+    <div class="mb-4">
+      <span class="p-float-label">
+        <InputText id="nid" v-model="form.nid" class="w-full text-xl" />
+        <label for="nid" class="text-xl">এন আই ডি নম্বর</label>
+      </span>
+      <small v-if="form.errors.nid" class="p-error">{{ form.errors.nid }}</small>
+    </div>
+    <div class="mb-4">
+      <span class="p-float-label">
+        <InputText id="brn" v-model="form.brn" class="w-full text-xl" />
+        <label for="brn" class="text-xl">জন্ম-নিবন্ধন নম্বর</label>
+      </span>
+      <small v-if="form.errors.brn" class="p-error">{{ form.errors.brn }}</small>
+    </div>
+    <div class="mb-4 col-span-1 md:col-span-2">
+      <span class="p-float-label">
+        <Textarea id="address" v-model="form.address" rows="3" class="w-full text-xl" />
+        <label for="address" class="text-xl">ঠিকানা</label>
+      </span>
+      <small v-if="form.errors.address" class="p-error">{{ form.errors.address }}</small>
+    </div>
+    <div class="mb-4">
+  <span class="p-float-label">
+    <Password
+      id="password"
+      v-model="form.password"
+      :feedback="false"
+      :toggleMask="true"
+      inputClass="w-full text-xl"
+      required
+      autocomplete="new-password"
+      inputStyle="width: 100%"
+    />
+    <label for="password" class="text-xl">পাসওয়ার্ড</label>
+  </span>
+  <small v-if="form.errors.password" class="p-error">{{ form.errors.password }}</small>
 </div>
 
-                                    </div>
+<div class="mb-4">
+  <span class="p-float-label">
+    <Password
+      id="password_confirmation"
+      v-model="form.password_confirmation"
+      :feedback="false"
+      :toggleMask="true"
+      inputClass="w-full text-xl"
+      required
+      autocomplete="new-password"
+      inputStyle="width: 100%"
+    />
+    <label for="password_confirmation" class="text-xl">পাসওয়ার্ড নিশ্চিতকরণ</label>
+  </span>
+  <small v-if="form.errors.password_confirmation" class="p-error">{{ form.errors.password_confirmation }}</small>
+</div>
 
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="name">
-                                        নাম
-                                        </label>
-                                        <input
-                                            id="name"
-                                            type="text"
-                                            class="shadow appearance-none border rounded w-full py-2 px-3 text-xl text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.name"
-                                            required
-                                            autofocus
-                                            autocomplete="name"
-                                        />
-                                        <div v-if="form.errors.name" class="text-red-500 text-xs mt-1">{{ form.errors.name }}</div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="email">
-                                      ইমেইল
-                                        </label>
-                                        <input
-                                            id="email"
-                                            type="email"
-                                            class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.email"
-                                            required
-                                            autocomplete="username"
-                                        />
-                                        <div v-if="form.errors.email" class="text-red-500 text-xs mt-1">{{ form.errors.email }}</div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="phone">
-                                          ফোন নম্বর
-                                        </label>
-                                        <input
-                                            id="phone"
-                                            type="text"
-                                            class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.phone"
-                                        />
-                                        <div v-if="form.errors.phone" class="text-red-500 text-xs mt-1">{{ form.errors.phone }}</div>
-                                    </div>
-
-                                    <div class="mb-4">
-    <label class="block text-gray-700 text-xl font-bold mb-2" for="designation">
-       পদবি
-    </label>
-    <select
-        id="designation"
-        class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        v-model="form.designation"
-    >
-        <option value="">পদবি সিলেক্ট করুন</option>
-        <option value="1">সুপার এডমিন</option>
-        <option value="2">সহ সুপার এডমিন</option>
-        <option value="3">বোর্ড এডমিন</option>
-    </select>
-    <div v-if="form.errors.designation" class="text-red-500 text-xs mt-1">{{ form.errors.designation }}</div>
+  </div>
+  <div class="flex justify-between mt-6">
+    <div></div>
+    <Button
+      label="Next: Set Permissions"
+      @click="activeTab = 'permissions'"
+      class="p-button-primary"
+    />
+  </div>
 </div>
 
 
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="nid">
-                                       এন আই ডি  নম্বর
-                                        </label>
-                                        <input
-                                            id="nid"
-                                            type="text"
-                                            class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.nid"
-                                        />
-                                        <div v-if="form.errors.nid" class="text-red-500 text-xs mt-1">{{ form.errors.nid }}</div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="brn">
-                                        জন্ম-নিবন্ধন নম্বর
-                                        </label>
-                                        <input
-                                            id="brn"
-                                            type="text"
-                                            class="shadow appearance-none text-xl  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.brn"
-                                        />
-                                        <div v-if="form.errors.brn" class="text-red-500 text-xs mt-1">{{ form.errors.brn }}</div>
-                                    </div>
-
-                                    <div class="mb-4 col-span-1 md:col-span-2">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="address">
-                                 ঠিকানা
-                                        </label>
-                                        <textarea
-                                            id="address"
-                                            class="shadow appearance-none text-xl  border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.address"
-                                            rows="3"
-                                        ></textarea>
-                                        <div v-if="form.errors.address" class="text-red-500 text-xs mt-1">{{ form.errors.address }}</div>
-                                    </div>
-
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700  text-xl font-bold mb-2" for="password">
-                                           পাসওয়ার্ড
-                                        </label>
-                                        <input
-                                            id="password"
-                                            type="password"
 
 
-                                            class="shadow appearance-none text-xl border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.password"
-                                            required
-                                            autocomplete="new-password"
-                                        />
-                                        <div v-if="form.errors.password" class="text-red-500 text-xs mt-1">{{ form.errors.password }}</div>
-                                    </div>
 
-                                    <div class="mb-4">
-                                        <label class="block text-gray-700 text-xl font-bold mb-2" for="password_confirmation">
-                                     পাসওয়ার্ড নিশ্চিতকরণ
-                                        </label>
-                                        <input
-                                            id="password_confirmation"
-                                            type="password"
-                                            class="shadow appearance-none border text-xl  rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                                            v-model="form.password_confirmation"
-                                            required
-                                            autocomplete="new-password"
-                                        />
-                                        <div v-if="form.errors.password_confirmation" class="text-red-500 text-xs mt-1">{{ form.errors.password_confirmation }}</div>
-                                    </div>
-                                </div>
-
-                                <div class="flex justify-between mt-6">
-                                    <div></div>
-                                    <button
-                                        type="button"
-                                        @click="activeTab = 'permissions'"
-                                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                                    >
-                                        Next: Set Permissions
-                                    </button>
-                                </div>
-                            </div>
 
                             <!-- Permissions Tab -->
                             <div v-if="activeTab === 'permissions'" class="space-y-8">
@@ -374,7 +365,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('setup', form.setup_access)"
                                             >
-                                            <label for="setup_access" class="font-medium text-gray-700 text-xl font-semibold">সেটাপ সংক্রান্ত</label>
+                                            <label for="setup_access" class=" text-gray-700 text-xl font-semibold">সেটাপ সংক্রান্ত</label>
                                         </div>
                                         <button
                                             type="button"
@@ -419,7 +410,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('bill', form.bill_access)"
                                             >
-                                            <label for="bill_access" class="font-medium text-gray-700 text-xl font-semibold">ভাতা ও বিল</label>
+                                            <label for="bill_access" class=" text-gray-700 text-xl font-semibold">ভাতা ও বিল</label>
                                         </div>
                                         <button
                                             type="button"
@@ -460,7 +451,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('madrasa', form.madrasa_access)"
                                             >
-                                            <label for="madrasa_access" class="font-medium text-gray-700 text-xl font-semibold">মাদরাসা সংক্রান্ত</label>
+                                            <label for="madrasa_access" class=" text-gray-700 text-xl font-semibold">মাদরাসা সংক্রান্ত</label>
                                         </div>
                                         <button
                                             type="button"
@@ -505,7 +496,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('markaz', form.markaz_access)"
                                             >
-                                            <label for="markaz_access" class="font-medium text-gray-700 text-xl font-semibold">মারকায সংক্রান্ত</label>
+                                            <label for="markaz_access" class=" text-gray-700 text-xl font-semibold">মারকায সংক্রান্ত</label>
                                         </div>
                                         <button
                                             type="button"
@@ -567,7 +558,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('exam_routine', form.exam_routine_access)"
                                             >
-                                            <label for="exam_routine_access" class="font-medium text-gray-700 text-xl font-semibold">পরীক্ষার রুটিন</label>
+                                            <label for="exam_routine_access" class=" text-gray-700 text-xl font-semibold">পরীক্ষার রুটিন</label>
                                         </div>
                                         <button
                                             type="button"
@@ -604,7 +595,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('registration', form.registration_access)"
                                             >
-                                            <label for="registration_access" class="font-medium text-gray-700 text-xl font-semibold">রেজিস্ট্রেশন সংক্রান্ত</label>
+                                            <label for="registration_access" class=" text-gray-700 text-xl font-semibold">রেজিস্ট্রেশন সংক্রান্ত</label>
                                         </div>
                                         <button
                                             type="button"
@@ -653,7 +644,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('inclusion', form.inclusion_access)"
                                             >
-                                            <label for="inclusion_access" class="font-medium text-gray-700 text-xl font-semibold">অন্তর্ভুক্তি সংক্রান্ত</label>
+                                            <label for="inclusion_access" class=" text-gray-700 text-xl font-semibold">অন্তর্ভুক্তি সংক্রান্ত</label>
                                         </div>
                                         <button
                                             type="button"
@@ -698,7 +689,7 @@ const submit = () => {
                                                 class="mr-2"
                                                 @change="toggleAllPermissions('khata_loose', form.khata_loose_access)"
                                             >
-                                            <label for="khata_loose_access" class="font-medium text-gray-700 text-xl font-semibold">খাতা ও লুজ সংক্রান্ত</label>
+                                            <label for="khata_loose_access" class=" text-gray-700 text-xl font-semibold">খাতা ও লুজ সংক্রান্ত</label>
                                         </div>
                                         <button
                                             type="button"

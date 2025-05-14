@@ -148,6 +148,9 @@ class StudentRegistrationController extends Controller
 
 
 
+
+
+
     public function reg_submitApplication($id)
     {
         // 1️⃣ First check markaz_agreements table
@@ -317,25 +320,6 @@ class StudentRegistrationController extends Controller
 
 
 
-    // public function abandonStuList($markaz_id)
-// {
-//     // মারকাজ আইডি অনুযায়ী শুধু মাদরাসার নাম ও আইডি সিলেক্ট করা
-//     $madrashaList = MarkazAgreementMadrasa::where('markaz_agreement_id', $markaz_id)
-//         ->select('id', 'madrasa_Name')
-//         ->get();
-
-    //     // মারকাজের নাম পাওয়া
-//     $markazName = MarkazAgreement::where('id', $markaz_id)
-//         ->value('madrasha_Name');
-
-    //     return Inertia::render('nibondon_for_admin/abandon_stu_list', [
-//         'madrashaList' => $madrashaList,
-//         'markazName' => $markazName
-//     ]);
-// }
-
-
-
 
 
 
@@ -413,20 +397,6 @@ class StudentRegistrationController extends Controller
 
 
 
-
-
-
-    // public function getMadrashaStudents($madrasha_id)
-// {
-//     $students = reg_stu_information::where('madrasha_id', $madrasha_id)
-//         ->select('id', 'name_bn as name')
-//         ->get();
-
-    //     return Inertia::render('nibondon_for_admin/madrashaWari_stu_nibond_list', [
-//         'students' => $students,
-//         'madrasha_id' => $madrasha_id
-//     ]);
-// }
 
 
 

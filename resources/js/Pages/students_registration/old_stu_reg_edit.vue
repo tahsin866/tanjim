@@ -311,6 +311,31 @@
                                                 class="bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 w-full cursor-not-allowed pl-4 pr-3 py-2">
                                         </div>
                                     </div>
+
+
+                                    <div class="relative">
+                                        <label
+                                            class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+
+                                            পরীক্ষার্থীর ধরন
+                                        </label>
+                                        <div class="relative">
+                                            <input v-model="currentExamForm.student_type" type="text" disabled
+                                                class="bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 w-full cursor-not-allowed pl-4 pr-3 py-2">
+                                        </div>
+                                    </div>
+
+                                    <div class="relative"
+                                        v-if="currentExamForm.student_type === 'অনিয়মিত যেমনী' || currentExamForm.student_type === 'অনিয়মিত অন্যান্য'">
+                                        <label
+                                            class="flex text-emerald-700 text-lg font-arabic font-medium gap-2 items-center mb-1">
+                                            অনিয়মিত হলে পরীক্ষা দিতে হবে এমন কিতাবের নাম
+                                        </label>
+                                        <div class="relative">
+                                            <input v-model="currentExamForm.irregular_subjects" type="text" disabled
+                                                class="bg-emerald-50 border border-emerald-200 rounded-md text-emerald-800 w-full cursor-not-allowed pl-4 pr-3 py-2">
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -318,7 +343,7 @@
 
 
 
-                        <div class="bg-white border border-emerald-100 rounded-lg shadow">
+                        <!-- <div class="bg-white border border-emerald-100 rounded-lg shadow">
                             <div
                                 class="bg-gradient-to-r rounded-t-md from-emerald-800 overflow-hidden px-6 py-3 relative to-emerald-600">
                                 <div class="bg-[url( absolute inset-0 opacity-10"></div>
@@ -399,7 +424,7 @@
 
 
                             </div>
-                        </div>
+                        </div> -->
 
 
                         <!-- Address Section -->
@@ -655,7 +680,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { ref, onMounted, reactive, watch } from 'vue';
 import { Link, useForm } from '@inertiajs/vue3';
-
+import { createToaster } from "@meforma/vue-toaster";
 // Student data with initial values
 const props = defineProps({
     roll: String,
@@ -664,8 +689,15 @@ const props = defineProps({
     modelValue: Object
 });
 
+const toaster = createToaster({
+  position: "top-right",
+  duration: 3000 // 3 সেকেন্ড দেখাবে
+});
 
 
+const examName = ref('');
+const marhalaName = ref('');
+const currentMarhalaId = ref(null);
 
 const student = ref(null);
 const loading = ref(true);
@@ -732,7 +764,7 @@ const studentInfoForm = useForm({
     user_id: '',
     markaz_id: '',
     NID_attach: '',
-
+    marhala_id: '',
 
 
     present_division_name: '',
@@ -768,7 +800,7 @@ onMounted(async () => {
                 roll: props.roll,
                 reg_id: props.reg_id,
                 CID: props.CID,
-                marhalaId: localStorage.getItem('marhalaId') || ''
+                 marhalaId: localStorage.getItem('marhalaId') || ''
             }
         });
 
@@ -802,21 +834,26 @@ onMounted(async () => {
         }
 
         // Populate the current exam form
-        if (response.data.currentExam) {
-            currentExamForm.Madrasha = response.data.currentExam.Madrasha || '';
-            currentExamForm.Markaj = response.data.currentExam.Markaj || '';
-            currentExamForm.Class = response.data.currentExam.Class || '';
-            currentExamForm.student_type = response.data.currentExam.student_type || '';
-            currentExamForm.marhalaId = response.data.currentExam.marhalaId || '';
-            currentExamForm.irregular_subjects = response.data.currentExam.irregular_subjects || '';
+   // Populate the current exam form
+if (response.data.currentExam) {
+    currentExamForm.Madrasha = response.data.currentExam.Madrasha || '';
+    currentExamForm.Markaj = response.data.currentExam.Markaj || '';
+    currentExamForm.Class = response.data.currentExam.Class || '';
+
+    // এখানে student_type সেট করা হচ্ছে
+    currentExamForm.student_type = response.data.currentExam.student_type || '';
+
+    currentExamForm.marhalaId = response.data.currentExam.marhalaId || '';
+    currentExamForm.irregular_subjects = response.data.currentExam.irregular_subjects || '';
+    studentInfoForm.current_madrasha = response.data.currentExam.Madrasha
+    studentInfoForm.current_markaz = response.data.currentExam.Markaj
+    studentInfoForm.student_type = response.data.currentExam.student_type
+    // studentInfoForm.current_class = response.data.currentExam.Class
+    studentInfoForm.exam_books_name = response.data.currentExam.irregular_subjects
+}
 
 
-            studentInfoForm.current_madrasha = response.data.currentExam.Madrasha
-            studentInfoForm.current_markaz = response.data.currentExam.Markaj
-            studentInfoForm.student_type = response.data.currentExam.student_type
-            studentInfoForm.current_class = response.data.currentExam.Class
-            studentInfoForm.exam_books_name = response.data.currentExam.irregular_subjects
-        }
+
 
         // Populate address fields if they exist in the response
         if (response.data.studentInfo) {
@@ -851,30 +888,39 @@ onMounted(async () => {
 
 
 
+// In the submitStudentInfo function, the marhalaId is not being properly set
 const submitStudentInfo = () => {
     // আগে ঠিকানার ডাটা আপডেট করুন
     updateFormData();
+
+    // মারহালা আইডি সেট করুন
+    const marhalaId = props.CID || localStorage.getItem('marhalaId');
+    studentInfoForm.marhala_id = marhalaId;
 
     // ফাইল যোগ করুন
     if (studentPhoto.value) {
         studentInfoForm.student_image = studentPhoto.value;
     }
-
     if (nidAttachment.value) {
         studentInfoForm.NID_attach = nidAttachment.value;
     }
 
     // ফর্ম সাবমিট করুন
-    studentInfoForm.post('/api/save-student-info', {
-        forceFormData: true, // এটি গুরুত্বপূর্ণ - ফাইল আপলোডের জন্য FormData ব্যবহার করতে বাধ্য করে
-        onSuccess: () => {
-            alert('Student information saved successfully');
-        },
-        onError: (errors) => {
-            console.error('Error saving student information:', errors);
-        }
+    studentInfoForm.post(`/api/save-student-info/${marhalaId}`, {
+        forceFormData: true,
+        onSuccess: (page) => {
+        // page.props.flash.success থেকে মেসেজ নিন
+        toaster.success(page.props.flash?.success || 'ছাত্রের তথ্য সফলভাবে সংরক্ষণ করা হয়েছে');
+    },
+    onError: (errors) => {
+        toaster.error('ছাত্রের তথ্য সংরক্ষণ করতে সমস্যা হয়েছে');
+        console.error('Error saving student information:', errors);
+    },
+    preserveScroll: true
     });
 };
+
+
 
 
 
@@ -1089,7 +1135,32 @@ onMounted(async () => {
             await handleDistrictChange();
         }
     }
+
+
+    const marhalaId = route().params.marhalaId;
+    currentMarhalaId.value = marhalaId;
+
+    try {
+        const response = await axios.get(`/api/student-registration_old/${marhalaId}`);
+        examName.value = response.data.examName;
+        marhalaName.value = response.data.marhalaName;
+
+        // এই লাইন যোগ করুন - studentInfoForm এ মারহালার নাম সেট করুন
+        studentInfoForm.current_class = response.data.marhalaName;
+        studentInfoForm.marhala_id = marhalaId;
+
+    } catch (error) {
+        console.error("Error fetching marhala info:", error);
+    }
+
+
 });
+
+
+
+
+
+
 
 const loadDivisions = async () => {
     try {
@@ -1236,4 +1307,6 @@ const updateFormData = () => {
 </script>
 
 
-<style scoped></style>
+<style scoped>
+
+</style>

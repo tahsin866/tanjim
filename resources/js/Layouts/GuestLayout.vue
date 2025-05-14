@@ -23,12 +23,6 @@ import { Link } from '@inertiajs/vue3';
             <h2 class="w-full text-4xl md:text-5xl font-extrabold text-emerald-900 tracking-wide">
                 বেফাকুল মাদারসিল আরাবিয়া বাংলাদেশ
             </h2>
-
-
-            <!-- English Title - Smaller -->
-            <h3 class="text-lg md:text-2xl font-semibold text-emerald-700 mt-3 uppercase tracking-wider">
-                WIFAQUL MADARASIL ARABIA BANGLADESH
-            </h3>
         </div>
     </div>
     <!-- Main Content Card -->
@@ -43,11 +37,7 @@ import { Link } from '@inertiajs/vue3';
             </div>
 
             <!-- Islamic Decorative Bottom -->
-            <div class="flex items-center justify-center gap-4 p-5 bg-emerald-50 border-t border-emerald-200">
-                <span class="text-emerald-900 text-3xl">۞</span>
-                <div class="h-px flex-grow bg-emerald-300"></div>
-                <span class="text-emerald-900 text-3xl">۞</span>
-            </div>
+
         </div>
     </div>
 </div>

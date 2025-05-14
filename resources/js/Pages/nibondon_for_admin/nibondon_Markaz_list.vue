@@ -10,545 +10,561 @@
             <p class="text-gray-600">কেন্দ্রীয় মাদ্রাসা আবেদন ব্যবস্থাপনা সিস্টেম</p>
           </div>
 
-          <!-- Search Panel -->
-          <div class="bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden">
-    <!-- Header -->
-    <div class="bg-[#2d6a4f] p-4 flex justify-between items-center">
-        <h2 class="text-white text-lg font-semibold flex items-center gap-2">
-            <i class="fas fa-search"></i>
-            অনুসন্ধান ফিল্টার
-        </h2>
-        <div class="flex gap-2">
-            <button @click="resetFilters"
-                class="text-white hover:text-[#90caf9] flex items-center gap-1">
-                <i class="fas fa-redo-alt"></i>
-                রিসেট
-            </button>
-            <button @click="exportData" class="text-white hover:text-[#90caf9] flex items-center gap-1">
-                <i class="fas fa-download"></i>
-                এক্সপোর্ট
-            </button>
-        </div>
+          <!-- Results Table with PrimeVue DataTable -->
+         <div class="mt-8 bg-white rounded-lg shadow-md border border-emerald-100 overflow-hidden">
+  <!-- হেডার সেকশন -->
+  <div class="bg-gradient-to-r from-emerald-800 to-emerald-600 p-4 flex justify-between items-center">
+    <h2 class="text-white text-xl font-bold flex items-center gap-3">
+      <i class="fas fa-moon-and-star text-amber-300"></i>
+      <span class="border-r-2 border-amber-300 pr-3">আবেদন তালিকা</span>
+
+    </h2>
+    <div class="bg-emerald-700 text-amber-200 px-4 py-2 rounded-full shadow-inner border border-emerald-500 flex items-center">
+      <i class="fas fa-users-viewfinder mr-2"></i>
+      মোট উপাত্ত: <span class="font-bold ml-1 text-white">{{ students.length || 0 }}</span>
     </div>
-    
-    <!-- Filter Body -->
-    <div class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- মাদ্রাসার নাম/ইলহাক নম্বর -->
-            <div class="bg-gray-50 p-4 rounded-sm hover:shadow-md transition-all duration-300">
-                <label class="text-md font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <i class="fas fa-school text-[#2d6a4f]"></i>
-                    মাদরাসার নাম/ইলহাক নম্বর
-                </label>
-                <input
-                    type="text"
-                    v-model="filters.madrasahName"
-                    placeholder="মাদরাসার নাম বা ইলহাক নম্বর লিখুন"
-                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]"
-                />
-            </div>
-            
+  </div>
+
+  <!-- ডাটা টেবিল -->
+  <div class="p-4 bg-pattern-islamic">
+    <DataTable
+      :value="students"
+      v-model:filters="filters"
+      filterDisplay="menu"
+      :loading="loading"
+      dataKey="id"
+      paginator
+      :rows="perPage"
+      :rowsPerPageOptions="[10, 20, 50, 100]"
+      paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+      currentPageReportTemplate="দেখানো হচ্ছে {first} থেকে {last} মোট {totalRecords} এর মধ্যে"
+      responsiveLayout="stack"
+      breakpoint="960px"
+      class="p-datatable-sm islamic-datatable"
+      :scrollable="true"
+      scrollHeight="flex"
+      :resizableColumns="true"
+      columnResizeMode="fit"
+      showGridlines
+      stripedRows
+      :globalFilterFields="['madrasha_Name', 'Elhaq_no', 'exam_name_Bn', 'madrasha_code', 'Mobile', 'division_name', 'district_name', 'thana_name']"
+    >
+      <template #header>
+        <div class="flex justify-between items-center">
+          <div class="flex flex-wrap items-center gap-6">
+            <span class="p-input-icon-left w-64 relative">
+              <i class="pi pi-search text-emerald-600" />
+              <InputText
+                v-model="filters['global'].value"
+                placeholder="সার্চ করুন..."
+                class="w-full rounded-full border-emerald-200 focus:border-emerald-500 focus:ring focus:ring-emerald-200 pl-10"
+              />
+              <button
+                v-if="filters['global'].value"
+                @click="filters['global'].value = ''"
+                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-red-500"
+              >
+                <i class="pi pi-times"></i>
+              </button>
+            </span>
             <!-- মাদ্রাসার ধরন -->
-            <div class="bg-gray-50 p-4 rounded-sm hover:shadow-md transition-all duration-300">
-                <label class="text-md font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <i class="fas fa-users text-[#2d6a4f]"></i>
-                    মাদ্রাসার ধরন
-                </label>
-                <select 
-                    v-model="filters.type"
-                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]"
-                >
-                    <option value="">সকল</option>
-                    <option value="ছাত্র">ছাত্র</option>
-                    <option value="ছাত্রী">ছাত্রী</option>
-                </select>
-            </div>
-            
-            <!-- মাদরাসার স্তর -->
-            <div class="bg-gray-50 p-4 rounded-sm hover:shadow-md transition-all duration-300">
-                <label class="text-md font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <i class="fas fa-layer-group text-[#2d6a4f]"></i>
-                    মাদরাসার স্তর
-                </label>
-                <select 
-                    v-model="filters.level" 
-                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]"
-                >
-                    <option value="">সকল</option>
-                    <option value="takmil">তাকমিল</option>
-                    <option value="fazilat">ফযিলত</option>
-                    <option value="sanabiya_uliya">সানাবিয়া উলইয়া</option>
-                    <option value="sanabiya">সানাবিয়া</option>
-                    <option value="mutawassita">মুতাওয়াসসিতা</option>
-                    <option value="ibtedaiya">ইবতেদাইয়া</option>
-                    <option value="hifzul_quran">হিফজুল কোরআন</option>
-                    <option value="ilmul_qiraat">ইলমুল কিরাআত</option>
-                </select>
-            </div>
-            
-            <!-- মারকাযের ধরন নির্বাচন -->
-            <div class="bg-gray-50 p-4 rounded-sm hover:shadow-md transition-all duration-300">
-                <label class="text-md font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <i class="fas fa-mosque text-[#2d6a4f]"></i>
-                    মারকাযের ধরন নির্বাচন
-                </label>
-                <select 
-                    v-model="filters.status" 
-                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]"
-                >
-                    <option value="">সকল</option>
-                    <option value="darsiyat">দরসিয়াত</option>
-                    <option value="hifzul_quran">হিফজুল কুরআন</option>
-                    <option value="ilmul_qiraat">ইলমুল কিরাআত</option>
-                    <option value="all">সকল মারকাজ</option>
-                </select>
-            </div>
-            
-            <!-- বিভাগ -->
-            <div class="bg-gray-50 p-4 rounded-sm hover:shadow-md transition-all duration-300">
-                <label class="text-md font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <i class="fas fa-map-marked-alt text-[#2d6a4f]"></i>
-                    বিভাগ
-                </label>
-                <select
-                    v-model="filters.division"
-                    @change="handleDivisionChange"
-                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]"
-                >
-                    <option value="">সকল বিভাগ</option>
-                    <option v-for="division in divisions" :key="division.id" :value="division.id">
-                        {{ division.Division }}
-                    </option>
-                </select>
-            </div>
-            
-            <!-- জেলা -->
-            <div class="bg-gray-50 p-4 rounded-sm hover:shadow-md transition-all duration-300">
-                <label class="text-md font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <i class="fas fa-city text-[#2d6a4f]"></i>
-                    জেলা
-                </label>
-                <select
-                    v-model="filters.district"
-                    @change="handleDistrictChange"
-                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]"
-                    :disabled="!filters.division"
-                >
-                    <option value="">সকল জেলা</option>
-                    <option v-for="district in districts" :key="district.DesID" :value="district.DesID">
-                        {{ district.District }}
-                    </option>
-                </select>
-            </div>
-            
-            <!-- থানা/উপজেলা -->
-            <div class="bg-gray-50 p-4 rounded-sm hover:shadow-md transition-all duration-300">
-                <label class="text-md font-semibold text-gray-700 mb-2 flex items-center gap-2">
-                    <i class="fas fa-map-pin text-[#2d6a4f]"></i>
-                    থানা/উপজেলা
-                </label>
-                <select
-                    v-model="filters.thana"
-                    class="block w-full px-4 py-2 bg-white border border-gray-200 rounded-sm focus:ring-2 focus:ring-[#2d6a4f] focus:border-[#2d6a4f]"
-                    :disabled="!filters.district"
-                >
-                    <option value="">সকল থানা</option>
-                    <option v-for="thana in thanas" :key="thana.Thana_ID" :value="thana.Thana_ID">
-                        {{ thana.Thana }}
-                    </option>
-                </select>
-            </div>
-        </div>
-        
-        <!-- Action Buttons -->
-        <div class="mt-6 flex justify-end space-x-3">
-            <button
-                @click="resetFilters"
-                class="px-4 py-2 bg-gray-100 text-gray-700 rounded-sm border border-gray-300 hover:bg-gray-200 transition-colors flex items-center gap-2"
-            >
-                <i class="fas fa-redo-alt"></i>
-                রিসেট
+          </div>
+          <div class="flex items-center gap-2">
+            <button class="bg-amber-50 text-amber-700 p-2 rounded-md hover:bg-amber-100 transition-all duration-200">
+              <i class="pi pi-file-excel"></i>
             </button>
-            <button
-                @click="search"
-                class="px-4 py-2 bg-[#2d6a4f] text-white rounded-sm hover:bg-[#1b4332] transition-colors flex items-center gap-2"
-            >
-                <i class="fas fa-search"></i>
-                অনুসন্ধান
+            <button class="bg-emerald-50 text-emerald-700 p-2 rounded-md hover:bg-emerald-100 transition-all duration-200">
+              <i class="pi pi-file-pdf"></i>
             </button>
+            <button class="bg-blue-50 text-blue-700 p-2 rounded-md hover:bg-blue-100 transition-all duration-200">
+              <i class="pi pi-print"></i>
+            </button>
+          </div>
         </div>
-    </div>
-</div>
+      </template>
 
+      <Column field="id" header="ক্রমিক নং" sortable style="min-width: 5rem" headerClass="islamic-header" bodyClass="text-center">
+        <template #body="{ index }">
+          <div class="bg-amber-50 text-amber-800 w-8 h-8 rounded-full flex items-center justify-center mx-auto font-semibold border border-amber-200">
+            {{ index + 1 }}
+          </div>
+        </template>
+      </Column>
 
-          <!-- Results Table -->
-          <div class="mt-8 bg-white rounded-sm shadow-sm border border-gray-100 overflow-hidden">
-            <div class="bg-[#2d6a4f] p-4 flex justify-between items-center">
-              <h2 class="text-white text-lg font-semibold flex items-center gap-2">
-                <i class="fas fa-list"></i>
-                আবেদন তালিকা
-              </h2>
-              <div class="text-white">
-                <span class="font-medium">{{ students.length }}</span>
-              </div>
-            </div>
+      <Column field="id" header="আবেদন নং" sortable style="min-width: 8rem" headerClass="islamic-header">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" @input="filterCallback()" placeholder="সার্চ করুন..." class="w-full rounded-md" />
+        </template>
+        <template #body="{ data }">
+          <span class="font-medium text-emerald-800">{{ data.id }}</span>
+        </template>
+      </Column>
 
-            <div class="p-6 overflow-x-auto">
-  <table class="min-w-full divide-y divide-gray-200">
-    <thead>
-      <tr>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">ক্রমিক নং</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">আবেদন নং</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">মাদ্রাসার নাম</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">ইলহাক নং</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">কেন্দ্রীয় পরীক্ষা</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">কোড</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">ছাত্র সংখ্যা</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">ফোন নম্বর</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">বিভাগ</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">জেলা</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">থানা/উপজেলা</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">বোর্ড স্ট্যটাস</th>
-        <th class="px-6 py-3 bg-gray-50 text-left text-md font-semibold text-gray-500 uppercase tracking-wider">একশন</th>
-      </tr>
-    </thead>
-    <tbody class="bg-white divide-y divide-gray-200">
-      <tr v-for="(student, index) in students" :key="student?.id || index" class="hover:bg-gray-50 transition-colors">
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ index + 1 }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ student?.id }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm">
-          <!-- {{ student?.madrasha_Name }} -->
-
+      <Column field="madrasha_Name" header="মাদ্রাসার নাম" sortable style="min-width: 12rem" headerClass="islamic-header">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" @input="filterCallback()" placeholder="সার্চ করুন..." class="w-full rounded-md" />
+        </template>
+        <template #body="{ data }">
           <Link
-  :href="route('nibondon_for_admin.abandon_stu_list', { markaz_id: student.id })"
-  class="inline-flex items-center justify-center p-1 rounded-sm bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all duration-200"
-  title="View Details"
->
-  {{ student?.madrasha_Name }}
-</Link>
+            :href="route('nibondon_for_admin.abandon_stu_list', { markaz_id: data.id })"
+            class="inline-flex items-center justify-center px-3 py-1 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all duration-200 border border-emerald-200"
+            title="View Details"
+          >
+            <i class="fas fa-mosque text-xs mr-2 text-amber-600"></i>
+            {{ data.madrasha_Name }}
+          </Link>
+        </template>
+      </Column>
 
+      <Column field="Elhaq_no" header="ইলহাক নং" sortable style="min-width: 10rem" headerClass="islamic-header">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" @input="filterCallback()" placeholder="সার্চ করুন..." class="w-full rounded-md" />
+        </template>
+        <template #body="{ data }">
+          <div class="font-arabic">{{ data.Elhaq_no }}</div>
+        </template>
+      </Column>
 
+      <Column field="exam_name_Bn" header="কেন্দ্রীয় পরীক্ষা" sortable style="min-width: 10rem" headerClass="islamic-header">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" @input="filterCallback()" placeholder="সার্চ করুন..." class="w-full rounded-md" />
+        </template>
+        <template #body="{ data }">
+          <span class="px-2 py-1 bg-blue-50 text-blue-700 rounded-md border border-blue-200">{{ data.exam_name_Bn }}</span>
+        </template>
+      </Column>
 
+      <Column field="madrasha_code" header="কোড" sortable style="min-width: 8rem" headerClass="islamic-header" bodyClass="text-center">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" @input="filterCallback()" placeholder="সার্চ করুন..." class="w-full rounded-md" />
+        </template>
+        <template #body="{ data }">
+          <span class="font-mono bg-gray-100 px-2 py-1 rounded-md text-gray-700 border border-gray-200">{{ data.madrasha_code }}</span>
+        </template>
+      </Column>
 
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-          {{ student?.Elhaq_no }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ student?.exam_name_Bn }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-          {{ student?.madrasha_code }}
-        </td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ student?.student_count }}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ student?.Mobile}}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ student?.division_name}}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ student?.district_name}}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ student?.thana_name}}</td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"></td>
-        <td class="px-6 py-4 whitespace-nowrap text-sm">
-          <div class="flex items-center gap-3">
+      <Column field="student_count" header="ছাত্র সংখ্যা" sortable style="min-width: 8rem" headerClass="islamic-header" bodyClass="text-center">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" @input="filterCallback()" placeholder="সার্চ করুন..." class="w-full rounded-md" />
+        </template>
+        <template #body="{ data }">
+          <span class="bg-amber-50 text-amber-800 px-3 py-1 rounded-full font-medium border border-amber-200">{{ data.student_count }}</span>
+        </template>
+      </Column>
+
+      <Column field="Mobile" header="ফোন নম্বর" sortable style="min-width: 10rem" headerClass="islamic-header">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" @input="filterCallback()" placeholder="সার্চ করুন..." class="w-full rounded-md" />
+        </template>
+        <template #body="{ data }">
+          <div class="flex items-center">
+            <i class="fas fa-phone-alt text-emerald-600 mr-2"></i>
+            <span>{{ data.Mobile }}</span>
+          </div>
+        </template>
+      </Column>
+
+      <Column field="division_name" header="বিভাগ" sortable style="min-width: 10rem" headerClass="islamic-header">
+        <template #filter="{ filterModel }">
+          <Dropdown
+            v-model="filterModel.value"
+            :options="divisionOptions"
+            optionLabel="Division"
+            optionValue="Division"
+            placeholder="বিভাগ নির্বাচন করুন"
+            class="p-column-filter w-full rounded-md"
+            @change="handleTableDivisionChange($event, filterModel)"
+          />
+        </template>
+        <template #body="{ data }">
+          <div class="flex items-center">
+            <i class="fas fa-map-marker-alt text-red-500 mr-2"></i>
+            <span>{{ data.division_name }}</span>
+          </div>
+        </template>
+      </Column>
+
+      <Column field="district_name" header="জেলা" sortable style="min-width: 10rem" headerClass="islamic-header">
+        <template #filter="{ filterModel }">
+          <Dropdown
+            v-model="filterModel.value"
+            :options="tableFilterDistricts"
+            optionLabel="District"
+            optionValue="District"
+            placeholder="জেলা নির্বাচন করুন"
+            class="p-column-filter w-full rounded-md"
+            @change="handleTableDistrictChange($event, filterModel)"
+          />
+        </template>
+        <template #body="{ data }">
+          <span>{{ data.district_name }}</span>
+        </template>
+      </Column>
+
+      <Column field="thana_name" header="থানা/উপজেলা" sortable style="min-width: 10rem" headerClass="islamic-header">
+        <template #filter="{ filterModel }">
+          <Dropdown
+            v-model="filterModel.value"
+            :options="tableFilterThanas"
+            optionLabel="Thana"
+            optionValue="Thana"
+            placeholder="থানা নির্বাচন করুন"
+            class="p-column-filter w-full rounded-md"
+          />
+        </template>
+        <template #body="{ data }">
+          <span>{{ data.thana_name }}</span>
+        </template>
+      </Column>
+
+      <Column field="board_status" header="বোর্ড স্ট্যটাস" sortable style="min-width: 10rem" headerClass="islamic-header">
+        <template #filter="{ filterModel, filterCallback }">
+          <InputText v-model="filterModel.value" @input="filterCallback()" placeholder="সার্চ করুন..." class="w-full rounded-md" />
+        </template>
+        <template #body="{ data }">
+          <span
+            :class="{
+              'bg-green-50 text-green-700 border-green-200': data.board_status === 'অনুমোদিত',
+              'bg-yellow-50 text-yellow-700 border-yellow-200': data.board_status === 'পেন্ডিং',
+              'bg-red-50 text-red-700 border-red-200': data.board_status === 'বাতিল',
+              'bg-blue-50 text-blue-700 border-blue-200': data.board_status === 'প্রক্রিয়াধীন',
+              'bg-gray-50 text-gray-700 border-gray-200': !data.board_status
+            }"
+            class="px-3 py-1 rounded-md border inline-block"
+          >
+            {{ data.board_status || 'অনির্ধারিত' }}
+          </span>
+        </template>
+      </Column>
+
+      <Column header="একশন" style="min-width: 8rem" headerClass="islamic-header" bodyClass="text-center">
+        <template #body="{ data }">
+          <div class="flex items-center justify-center gap-2">
             <Link
-              v-if="student?.id"
-              href="route('markaz-agreements.view', student.id)"
-              class="inline-flex items-center justify-center p-1 rounded-sm bg-blue-50 text-blue-700 hover:bg-blue-100 transition-all duration-200"
+              v-if="data?.id"
+              href="route('markaz-agreements.view', data.id)"
+              class="inline-flex items-center justify-center p-2 rounded-md bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all duration-200 border border-amber-200"
               title="View Details"
             >
-            <i class="fas fa-envelope text-lg mr-1"></i>
+              <i class="fas fa-envelope"></i>
             </Link>
+            <button
+              class="inline-flex items-center justify-center p-2 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all duration-200 border border-emerald-200"
+              title="Print"
+            >
+              <i class="fas fa-print"></i>
+            </button>
           </div>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-          <!-- Pagination -->
-          <div class="bg-gray-50 px-6 py-4 flex items-center justify-between">
-            <div class="flex-1 flex justify-between sm:hidden">
-              <button class="btn-pagination">Previous</button>
-              <button class="btn-pagination">Next</button>
+        </template>
+      </Column>
+        <template #empty>
+            <div class="text-center p-6 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+              <img src="/images/empty-data.svg" alt="No Data" class="w-32 h-32 mx-auto mb-4 opacity-50" />
+              <p class="text-gray-500 text-lg">কোন তথ্য পাওয়া যায়নি</p>
+              <p class="text-gray-400 italic">আল্লাহ্‌ সবচেয়ে ভালো জানেন</p>
             </div>
-            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-              <div>
-                <p class="text-sm text-gray-700">
-                  Showing
-                  <span class="font-medium">1</span>
-                  to
-                  <span class="font-medium">10</span>
-                  of
-                  <span class="font-medium">{{ students.length }}</span>
-                  results
-                </p>
-              </div>
-              <div>
-                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
-                  <!-- Add pagination buttons here -->
-                </nav>
-              </div>
+          </template>
+
+          <template #paginatorstart>
+            <div class="flex items-center gap-2">
+              <button class="p-2 rounded-md bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-all duration-200 border border-emerald-200">
+                <i class="pi pi-refresh"></i>
+              </button>
             </div>
-          </div>
+          </template>
 
-          <div class="flex flex-col items-center gap-6 mt-4 mb-5 font-bangla">
-                        <!-- Top Controls -->
-                        <div
-                            class="flex items-center justify-between w-full max-w-3xl bg-[#f8f9fa] p-4 rounded-lg shadow-sm border border-emerald-100">
-                            <div class="flex items-center gap-3">
-                                <label class="text-sm font-medium text-emerald-800">প্রতি পেজে:</label>
-                                <select v-model="perPage" @change="handlePerPageChange"
-                                    class="border-2 border-emerald-200 rounded-md px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 bg-white">
-                                    <option value="10">১০</option>
-                                    <option value="20">২০</option>
-                                    <option value="50">৫০</option>
-                                    <option value="100">১০০</option>
-                                </select>
-                            </div>
+          <template #paginatorend>
+            <div class="text-xs text-gray-500 italic">
+              সর্বশেষ হালনাগাদ: {{ new Date().toLocaleString('bn-BD') }}
+            </div>
+          </template>
 
-                            <div class="flex items-center gap-3">
-                                <label class="text-sm font-medium text-emerald-800">পেজে যান:</label>
-                                <div class="flex items-center gap-2">
-                                    <input type="number" v-model="jumpToPage" min="1" :max="applications.last_page"
-                                        class="border-2 border-emerald-200 rounded-md w-24 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500" />
-                                    <button @click="handleJumpToPage"
-                                        class="bg-emerald-600 text-white px-4 py-1.5 rounded-md text-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors duration-200">
-                                        যান
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
+          <template #loading>
+            <div class="flex flex-col items-center justify-center p-8">
+              <div class="w-16 h-16 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin mb-4"></div>
+              <p class="text-emerald-700">তথ্য লোড হচ্ছে...</p>
+            </div>
+          </template>
+        </DataTable>
+      </div>
 
-                        <!-- Results Info -->
-                        <div
-                            class="text-sm font-medium text-emerald-800 bg-emerald-50 px-6 py-3 rounded-lg border border-emerald-200">
-                            মোট <span class="text-emerald-600 font-bold">{{ applications.total }}</span> টির মধ্যে
-                            <span class="text-emerald-600 font-bold">{{ applications.from }}-{{ applications.to
-                                }}</span> দেখাচ্ছে
-                        </div>
+      <!-- ফুটার -->
 
-                        <!-- Pagination -->
-                        <nav class="flex items-center gap-1.5 bg-white p-2 rounded-lg shadow-sm">
-                            <button @click="handlePageChange(1)" class="pagination-btn rounded-l-md"
-                                :class="{ 'opacity-50 cursor-not-allowed': applications.current_page === 1 }">
-                                <i class="fas fa-angle-double-left"></i>
-                            </button>
+    </div>
 
-                            <button @click="handlePageChange(applications.current_page - 1)" class="pagination-btn"
-                                :class="{ 'opacity-50 cursor-not-allowed': applications.current_page === 1 }">
-                                <i class="fas fa-angle-left"></i>
-                            </button>
-
-                            <button v-for="page in displayedPages" :key="page" @click="handlePageChange(page)"
-                                class="relative inline-flex items-center px-4 py-2 border-2 border-emerald-200 text-sm font-medium transition-all duration-200 hover:bg-emerald-50"
-                                :class="applications.current_page === page ? 'bg-emerald-600 text-white border-emerald-600 hover:bg-emerald-700' : 'text-emerald-800'">
-                                {{ page }}
-                            </button>
-
-                            <button @click="handlePageChange(applications.current_page + 1)" class="pagination-btn"
-                                :class="{ 'opacity-50 cursor-not-allowed': applications.current_page === applications.last_page }">
-                                <i class="fas fa-angle-right"></i>
-                            </button>
-
-                            <button @click="handlePageChange(applications.last_page)"
-                                class="pagination-btn rounded-r-md"
-                                :class="{ 'opacity-50 cursor-not-allowed': applications.current_page === applications.last_page }">
-                                <i class="fas fa-angle-double-right"></i>
-                            </button>
-                        </nav>
-                    </div>
         </div>
       </div>
-    </div>
-  </AuthenticatedLayout>
-</template>
+    </AuthenticatedLayout>
+  </template>
 
-<script setup>
-import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
-import { Link } from '@inertiajs/vue3';
-import { ref, reactive, computed, watch, onMounted } from 'vue';
-import axios from 'axios';
+  <script setup>
+  import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
+  import { Link } from '@inertiajs/vue3';
+  import { ref, reactive, computed, watch, onMounted } from 'vue';
+  import axios from 'axios';
 
-// আগের props ডিফাইনেশন রাখুন যাতে কোন এরর না হয়
-const props = defineProps({
-  students: {
-    type: Array,
-    default: () => []
-  },
-  districts: {
-    type: Array,
-    default: () => []
-  },
-  upazilas: {
-    type: Array,
-    default: () => []
-  },
-  divisions: {
-    type: Array,
-    default: () => []
-  }
+  // PrimeVue Components
+  import DataTable from 'primevue/datatable';
+  import Column from 'primevue/column';
+  import InputText from 'primevue/inputtext';
+  import Dropdown from 'primevue/dropdown';
+
+  // Props definition
+  const props = defineProps({
+    students: {
+      type: Array,
+      default: () => []
+    },
+    districts: {
+      type: Array,
+      default: () => []
+    },
+    upazilas: {
+      type: Array,
+      default: () => []
+    },
+    divisions: {
+      type: Array,
+      default: () => []
+    }
+  });
+
+  // State variables
+  const students = ref([]);
+  const loading = ref(true);
+  const perPage = ref(10);
+  const divisions = ref([]);
+  const districts = ref([]);
+  const thanas = ref([]);
+
+  // Table filter variables
+  const tableFilterDistricts = ref([]);
+  const tableFilterThanas = ref([]);
+  const selectedDivision = ref(null);
+  const selectedDistrict = ref(null);
+
+  // PrimeVue DataTable filters
+  const filters = ref({
+    global: { value: null, matchMode: 'contains' },
+    madrasha_Name: { value: null, matchMode: 'contains' },
+    Elhaq_no: { value: null, matchMode: 'contains' },
+    exam_name_Bn: { value: null, matchMode: 'contains' },
+    madrasha_code: { value: null, matchMode: 'contains' },
+    student_count: { value: null, matchMode: 'contains' },
+    Mobile: { value: null, matchMode: 'contains' },
+    division_name: { value: null, matchMode: 'equals' },
+    district_name: { value: null, matchMode: 'equals' },
+    thana_name: { value: null, matchMode: 'equals' },
+    board_status: { value: null, matchMode: 'contains' }
 });
 
-const applications = ref({
-    data: [],
-    current_page: 1,
-    last_page: 1,
-    total: 0,
-    from: 0,
-    to: 0
+// Search filters for the top filter section
+const searchFilters = ref({
+  madrasahName: '',
+  type: '',
+  level: '',
+  status: '',
+  division: '',
+  district: '',
+  thana: ''
 });
-// Axios দিয়ে ডাটা ফেচ করার জন্য
-const students = ref([]);
-const loading = ref(true);
 
+// Computed properties
+const divisionOptions = computed(() => {
+  return divisions.value.map(div => ({ Division: div.Division, id: div.id }));
+});
+
+// Fetch data on component mount
 onMounted(() => {
   fetchStudents();
+  loadDivisions();
 });
 
+// Data fetching functions
 const fetchStudents = async () => {
   try {
+    loading.value = true;
     const response = await axios.get('/api/markaz-students');
     students.value = response.data;
-    loading.value = false;
   } catch (error) {
     console.error('ডাটা লোড করতে সমস্যা হয়েছে:', error);
+  } finally {
     loading.value = false;
   }
 };
 
-
-// const loading = ref(false);
-const perPage = ref(10);
-const jumpToPage = ref('');
-const divisions = ref([]);
-const districts = ref([]);
-const thanas = ref([]);
-
-// Filters
-const filters = ref({
-    madrasahName: '',
-    type: '',
-    level: '',
-    status: '',
-    division: '',
-    district: '',
-    thana: ''
-});
-
-
-
 const loadDivisions = async () => {
+  try {
+    const response = await axios.get('/api/divisions');
+    divisions.value = response.data;
+  } catch (error) {
+    console.error('Error loading divisions:', error);
+  }
+};
+
+// Filter handling functions
+const handleTableDivisionChange = async (event, filterModel) => {
+  const divisionName = event.value;
+  const division = divisions.value.find(d => d.Division === divisionName);
+
+  if (division) {
     try {
-        const response = await axios.get('/api/divisions');
-        divisions.value = response.data;
+      const response = await axios.get(`/api/districts/${division.id}`);
+      tableFilterDistricts.value = response.data;
+      // Reset district and thana filters
+      filters.value.district_name.value = null;
+      filters.value.thana_name.value = null;
+      tableFilterThanas.value = [];
     } catch (error) {
-        console.error('Error loading divisions:', error);
+      console.error('Error loading districts:', error);
     }
+  } else {
+    tableFilterDistricts.value = [];
+    tableFilterThanas.value = [];
+  }
 };
 
-const handleDivisionChange = async () => {
-    filters.value.district = '';
-    filters.value.thana = '';
-    districts.value = [];
-    thanas.value = [];
+const handleTableDistrictChange = async (event, filterModel) => {
+  const districtName = event.value;
+  const district = tableFilterDistricts.value.find(d => d.District === districtName);
 
-    if (filters.value.division) {
-        try {
-            const response = await axios.get(`/api/districts/${filters.value.division}`);
-            districts.value = response.data;
-        } catch (error) {
-            console.error('Error loading districts:', error);
-        }
+  if (district) {
+    try {
+      const response = await axios.get(`/api/thanas/${district.DesID}`);
+      tableFilterThanas.value = response.data;
+      // Reset thana filter
+      filters.value.thana_name.value = null;
+    } catch (error) {
+      console.error('Error loading thanas:', error);
     }
+  } else {
+    tableFilterThanas.value = [];
+  }
 };
 
-const handleDistrictChange = async () => {
-    filters.value.thana = '';
-    thanas.value = [];
-
-    if (filters.value.district) {
-        try {
-            const response = await axios.get(`/api/thanas/${filters.value.district}`);
-            thanas.value = response.data;
-        } catch (error) {
-            console.error('Error loading thanas:', error);
-        }
-    }
-};
-
-
-// Update the search function to call the correct endpoint
+// Search function for the top filter section
 const search = () => {
-    loading.value = true;
-    
-    // Trim search term
-    if (filters.value.madrasahName) {
-        filters.value.madrasahName = filters.value.madrasahName.trim();
-    }
-    
-    axios.get('/api/filter-markaz-students', {
-        params: filters.value
-    })
-    .then(response => {
-        students.value = response.data;
-    })
-    .catch(error => {
-        console.error('Error filtering students:', error);
-    })
-    .finally(() => {
-        loading.value = false;
-    });
+  loading.value = true;
+
+  // Trim search term
+  if (searchFilters.value.madrasahName) {
+    searchFilters.value.madrasahName = searchFilters.value.madrasahName.trim();
+  }
+
+  axios.get('/api/filter-markaz-students', {
+    params: searchFilters.value
+  })
+  .then(response => {
+    students.value = response.data;
+  })
+  .catch(error => {
+    console.error('Error filtering students:', error);
+  })
+  .finally(() => {
+    loading.value = false;
+  });
 };
 
-// Replace fetchStudents with this updated version
-// const fetchStudents = async () => {
-//   try {
-//     loading.value = true;
-//     const response = await axios.get('/api/markaz-students');
-//     students.value = response.data;
-//   } catch (error) {
-//     console.error('ডাটা লোড করতে সমস্যা হয়েছে:', error);
-//   } finally {
-//     loading.value = false;
-//   }
-// };
-
-
-
-// Event Handlers
-const handlePageChange = async (page) => {
-    applications.value.current_page = page;
-    await fetchMadrasaData();
-};
-
-const handlePerPageChange = () => {
-    applications.value.current_page = 1;
-    fetchMadrasaData();
-};
-
-const handleJumpToPage = () => {
-    const pageNumber = parseInt(jumpToPage.value);
-    if (pageNumber && pageNumber >= 1 && pageNumber <= applications.value.last_page) {
-        handlePageChange(pageNumber);
-        jumpToPage.value = '';
-    }
-};
-
+// Reset filters
 const resetFilters = () => {
-    Object.keys(filters.value).forEach(key => {
-        filters.value[key] = '';
-    });
-    districts.value = [];
-    thanas.value = [];
-    search();
+  // Reset PrimeVue DataTable filters
+  Object.keys(filters.value).forEach(key => {
+    if (key !== 'global') {
+      filters.value[key].value = null;
+    } else {
+      filters.value[key].value = null;
+    }
+  });
+
+  // Reset search filters
+  Object.keys(searchFilters.value).forEach(key => {
+    searchFilters.value[key] = '';
+  });
+
+  // Reset dropdown data
+  tableFilterDistricts.value = [];
+  tableFilterThanas.value = [];
+
+  // Fetch all data again
+  fetchStudents();
 };
 
-onMounted(() => {
-    loadDivisions();
+// Export data function
+const exportData = () => {
+  // Implement export functionality here
+  console.log('Exporting data...');
+};
 
-});
+// View and edit functions
+const viewApplication = (data) => {
+  // Implement view functionality
+  console.log('Viewing application:', data);
+};
 
+const editApplication = (data) => {
+  // Implement edit functionality
+  console.log('Editing application:', data);
+};
 </script>
 
-
-
 <style scoped>
-.btn-pagination {
-  @apply relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50;
+/* Custom styles for PrimeVue components */
+:deep(.p-datatable-header) {
+  background-color: white;
+  border: none;
+  padding: 1rem;
+}
+
+:deep(.p-datatable .p-datatable-thead > tr > th) {
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  padding: 0.75rem 1rem;
+}
+
+:deep(.p-datatable .p-datatable-tbody > tr) {
+  transition: background-color 0.2s;
+}
+
+:deep(.p-datatable .p-datatable-tbody > tr:hover) {
+  background-color: #f1f5f9;
+}
+
+:deep(.p-dropdown) {
+  width: 100%;
+}
+
+:deep(.p-column-filter) {
+  width: 100%;
+}
+
+:deep(.p-paginator) {
+  padding: 1rem;
+  background-color: #f8f9fa;
+}
+
+:deep(.p-paginator .p-paginator-current) {
+  margin-left: auto;
+}
+
+:deep(.p-datatable.p-datatable-sm .p-datatable-header) {
+  padding: 0.5rem 1rem;
+}
+
+:deep(.p-datatable.p-datatable-sm .p-datatable-thead > tr > th) {
+  padding: 0.5rem 1rem;
+}
+
+:deep(.p-datatable.p-datatable-sm .p-datatable-tbody > tr > td) {
+  padding: 0.5rem 1rem;
+}
+
+:deep(.p-datatable.p-datatable-sm .p-datatable-tfoot > tr > td) {
+  padding: 0.5rem 1rem;
+}
+
+:deep(.p-datatable.p-datatable-sm .p-datatable-footer) {
+  padding: 0.5rem 1rem;
 }
 </style>
+

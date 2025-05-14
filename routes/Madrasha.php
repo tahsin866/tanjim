@@ -3,7 +3,7 @@
 use App\Http\Controllers\MarhalaController;
 use App\Http\Controllers\ExamRegistrationController;
 use App\Http\Controllers\MarkazAgreementController;
-use App\Http\Controllers\dashboardController;
+
 use App\Http\Controllers\StudentRegistrationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -11,78 +11,78 @@ use Inertia\Inertia;
 
 
 
-Route::get('Markaz/Makaj_apply', function () {
-    return Inertia::render('Markaz/Makaj_apply');
-})->name('Markaz.Makaj_apply');
+Route::get('/makaj-apply', function () {
+    return Inertia::render('Markaz/makaj-apply');
+})->name('Markaz.makaj-apply');
 
-Route::get('Markaz/markaz_change_table', function () {
+Route::get('/markaz-change-table', function () {
     return Inertia::render('Markaz/markaz_change_table');
 })->name('Markaz.markaz_change_table');
 
 
-Route::get('Markaz/Makaj_change', function () {
+Route::get('/makaj-change', function () {
     return Inertia::render('Markaz/Makaj_change');
 })->name('Markaz.Makaj_change');
 
-Route::get('Markaz/markaz_agreement_form', function () {
+Route::get('/markaz-agreement-form', function () {
     return Inertia::render('Markaz/markaz_agreement_form');
 })->name('Markaz.markaz_agreement_form');
 
 
-Route::get('Markaz/marhala_change_table', function () {
+Route::get('/marhala-change-table', function () {
     return Inertia::render('Markaz/marhala_change_table');
 })->name('Markaz.marhala_change_table');
 
-Route::get('Markaz/subjectSettings_for_madrasha', function () {
+Route::get('/subjectSettings-for-madrasha', function () {
     return Inertia::render('Markaz/subjectSettings_for_madrasha');
 })->name('Markaz.subjectSettings_for_madrasha');
 
-Route::get('Markaz/subjectSetting_list', function () {
+Route::get('/subjectSetting-list', function () {
     return Inertia::render('Markaz/subjectSetting_list');
 })->name('Markaz.subjectSetting_list');
 
 
 
-Route::get('Markaz/marhala_change', function () {
+Route::get('/marhala-change', function () {
     return Inertia::render('Markaz/marhala_change');
 })->name('Markaz.marhala_change');
 
-Route::get('students_registration/student_registration', function () {
+Route::get('/student-registration', function () {
     return Inertia::render('students_registration/student_registration');
 })->name('students_registration.student_registration');
 
-Route::get('students_registration/student_reg_table', function () {
+Route::get('/student-reg-table', function () {
     return Inertia::render('students_registration/student_reg_table');
 })->name('students_registration.student_reg_table');
 
-Route::get('students_registration/old_stu_reg_Form', function () {
+Route::get('/old-stu-reg-Form', function () {
     return Inertia::render('students_registration/old_stu_reg_Form');
 })->name('students_registration.old_stu_reg_Form');
 
 
-Route::get('students_registration/new_stu_reg_Form', function () {
+Route::get('/new-stu-reg-Form', function () {
     return Inertia::render('students_registration/new_stu_reg_Form');
 })->name('students_registration.new_stu_reg_Form');
 
-Route::get('students_registration/stuedent_reg_list', function () {
+Route::get('/stuedent-reg-list', function () {
     return Inertia::render('students_registration/stuedent_reg_list');
 })->name('students_registration.stuedent_reg_list');
 
-Route::get('students_registration/student_reg_card', function () {
+Route::get('/student-reg-card', function () {
     return Inertia::render('students_registration/student_reg_card');
 })->name('students_registration.student_reg_card');
 
-Route::get('students_registration/stu_reg_view', function () {
+Route::get('/stu-reg-view', function () {
     return Inertia::render('students_registration/stu_reg_view');
 })->name('students_registration.stu_reg_view');
 
 
-Route::get('students_registration/stu_reg_payment', function () {
+Route::get('/stu-reg-payment', function () {
     return Inertia::render('students_registration/stu_reg_payment');
 })->name('students_registration.stu_reg_payment');
 
 
-Route::get('students_registration/stue_reg_draft_soft_delete', function () {
+Route::get('/stue-reg-draft-soft-delete', function () {
     return Inertia::render('students_registration/stue_reg_draft_soft_delete');
 })->name('students_registration.stue_reg_draft_soft_delete');
 
@@ -120,27 +120,34 @@ Route::get('OntorVukti/stu_payment', function () {
 
 // নেগরান/মুমতাহিন রাউট
 
-Route::get('Negran_Mumtahin/negran_mumtahin', function () {
+Route::get('/negran-mumtahin', function () {
     return Inertia::render('Negran_Mumtahin/negran_mumtahin');
 })->name('Negran_Mumtahin.negran_mumtahin');
 
 
 
-Route::get('Negran_Mumtahin/negran_mumtahin_appy', function () {
-    return Inertia::render('Negran_Mumtahin/negran_mumtahin_appy');
-})->name('Negran_Mumtahin.negran_mumtahin_appy');
+Route::get('/negran-mumtahin-apply', function () {
+    return Inertia::render('Negran_Mumtahin/negran_mumtahin_apply');
+})->name('Negran_Mumtahin.negran_mumtahin_apply');
 
 
-Route::get('Negran_Mumtahin/mumtahin_list', function () {
+Route::get('/mumtahin_list', function () {
     return Inertia::render('Negran_Mumtahin/mumtahin_list');
 })->name('Negran_Mumtahin.mumtahin_list');
 
 
-Route::get('Negran_Mumtahin/negran_apoint_list', function () {
+Route::get('/negran_apoint_list', function () {
     return Inertia::render('Negran_Mumtahin/negran_apoint_list');
 })->name('Negran_Mumtahin.negran_apoint_list');
 
+Route::get('/negran-view-detailes', function () {
+    return Inertia::render('Negran_Mumtahin/negran-view-detailes');
+})->name('Negran_Mumtahin.negran-view-detailes');
 
+
+Route::get('/neg-mumtahin-eidt', function () {
+    return Inertia::render('Negran_Mumtahin/neg-mumtahin-eidt');
+})->name('Negran_Mumtahin.neg-mumtahin-eidt');
 // others
 
 Route::get('others/notice', function () {
@@ -159,9 +166,9 @@ Route::get('others/massaging', function () {
 // })->name('About_markaj.madrasha_list');
 
 
-// Route::get('Auth/madrasha_check_for_user', function () {
-//     return Inertia::render('Auth/madrasha_check_for_user');
-// })->name('Auth.madrasha_check_for_user');
+Route::get('Auth/madrasha_check_for_user', function () {
+    return Inertia::render('Auth/madrasha_check_for_user');
+})->name('Auth.madrasha_check_for_user');
 
 Route::get('/marhalas', [MarhalaController::class, 'index'])->name('marhalas.index');
 Route::post('/marhalas', [MarhalaController::class, 'store'])->name('marhalas.store');
@@ -179,10 +186,10 @@ Route::get('/markaz/makaj-apply', [MarkazAgreementController::class, 'getTableDa
 
 // Route::get('/markaz-agreements', [MarkazAgreementController::class, 'index'])
 // ->name('markaz-agreements.index');
-Route::get('/Markaz/marjaz_detailes_view/{id}', [MarkazAgreementController::class, 'viewDetails'])->name('Markaz.view');
+Route::get('/marjaz-detailes-view/{id}', [MarkazAgreementController::class, 'viewDetails'])->name('Markaz.view');
 
-Route::get('/Markaz/markaz_apply_edit/{id}', [MarkazAgreementController::class, 'Edit'])->name('Markaz.edit');
-Route::post('/Markaz/markaz_apply_update/{id}', [MarkazAgreementController::class, 'update'])->name('markaz-agreements.update');
+Route::get('/markaz-apply-edit/{id}', [MarkazAgreementController::class, 'Edit'])->name('Markaz.edit');
+Route::post('/markaz-apply-update/{id}', [MarkazAgreementController::class, 'update'])->name('markaz-agreements.update');
 
 Route::post('/markaz/submit/{id}', [MarkazAgreementController::class, 'submitApplication'])->name('markaz.submit');
 Route::post('/student_reg/submit/{id}', [StudentRegistrationController::class, 'reg_submitApplication'])->name('student_reg.submit');
@@ -215,8 +222,9 @@ Route::get('/students/registration/{id}', [StudentRegistrationController::class,
     ->name('students_registration.student_registraion_view');
 
 
-    
-    
+
+
 Route::delete('/students/delete/{id}', [StudentRegistrationController::class, 'studentRegistrationDelete'])->name('students.delete');
 
 // Route::get('/Dashboard', [dashboardController::class, 'dashboard'])->name('Dashboard');
+

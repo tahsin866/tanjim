@@ -44,6 +44,14 @@ class madrasha_check_for_userController extends Controller
     // }
 
 
+
+
+
+
+
+
+
+
     public function check(Request $request)
     {
         $request->validate([
@@ -64,8 +72,11 @@ class madrasha_check_for_userController extends Controller
                 'madrasha_name' => $madrasha->MName,
                 'thana' => $madrasha->Vill,
                 'post' => $madrasha->Post,
+                'Stage' => $madrasha->Stage,
+                'MType' => $madrasha->MType,
                 'markaz_serial' => $madrasha->markaz_serial,
-                'custom_code' => $customCode
+                'custom_code' => $customCode,
+                'madrasha_verified_at' => now()
             ]);
 
             return redirect()->route('register');

@@ -4,8 +4,15 @@ import AuthenticatedLayout from "@/Layouts/admin/AuthenticatedLayout.vue";
 import { Head } from '@inertiajs/vue3';
 import { router } from '@inertiajs/vue3'
 import moment from 'moment';
+import { useToast } from "primevue/usetoast";
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import Textarea from 'primevue/textarea';
+import FileUpload from 'primevue/fileupload';
+import Toast from 'primevue/toast'
+import Badge from 'primevue/badge';
 
-
+const toast = useToast();
 
 const props = defineProps({
     markazDetails: {
@@ -52,7 +59,7 @@ const handleReturnImageUpload = (event) => {
 };
 
 const handleRejectImageUpload = (event) => {
-  const file = event.target.files[0];
+  const file = event.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = () => {
@@ -73,8 +80,49 @@ const removeRejectImage = () => {
 
 
 const submitRejectReason = () => {
-  console.log("রিজেক্ট কারণ:", rejectReason.value);
-  closeRejectModal();
+  if (!rejectReason.value.trim()) {
+    toast.add({
+      severity: 'error',
+      summary: 'ত্রুটি',
+      detail: 'অনুগ্রহ করে কারণ লিখুন!',
+      life: 3000
+    });
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('message', rejectReason.value.trim());
+
+  if (rejectImage.value) {
+    // Convert base64 to file if needed
+    const base64Response = fetch(rejectImage.value);
+    base64Response.then(res => res.blob()).then(blob => {
+      formData.append('image', blob, 'reject-image.jpg');
+    });
+  }
+
+  const id = props.application?.id || route().params.id;
+
+  router.post(route('markaz.reject', id), formData, {
+    onSuccess: () => {
+      closeRejectModal();
+      toast.add({
+        severity: 'success',
+        summary: 'সফল',
+        detail: 'আবেদন সফলভাবে রিজেক্ট করা হয়েছে!',
+        life: 3000
+      });
+      setTimeout(() => window.location.reload(), 1500);
+    },
+    onError: (errors) => {
+      toast.add({
+        severity: 'error',
+        summary: 'ত্রুটি',
+        detail: errors.message || 'কিছু সমস্যা হয়েছে!',
+        life: 3000
+      });
+    }
+  });
 };
 
 
@@ -102,7 +150,7 @@ const closeReturnModal = () => {
 
 // ইমেজ আপলোড হ্যান্ডলার
 const handleImageUpload = (event) => {
-  const file = event.target.files[0];
+  const file = event.files[0];
   if (file) {
     selectedImage.value = file;
     const reader = new FileReader();
@@ -121,34 +169,45 @@ const removeImage = () => {
 
 // ফেরতের কারণ সাবমিট করার ফাংশন
 const submitReturnReason = () => {
-    if (!returnReason.value.trim()) {
-        alert('অনুগ্রহ করে কারণ লিখুন!');
-        return;
-    }
-
-    const formData = new FormData();
-    // Sending the admin feedback message
-    formData.append('message', returnReason.value.trim());
-
-    // Sending image if selected
-    if (selectedImage.value) {
-        formData.append('image', selectedImage.value);
-    }
-
-    // Get the ID from props or route params
-    const id = props.application?.id || route().params.id;
-
-    router.post(route('markaz.reject', id), formData, {
-        onSuccess: () => {
-            closeReturnModal();
-            alert('আবেদন সফলভাবে ফেরত পাঠানো হয়েছে!');
-            // Optionally refresh the page to show updated data
-            window.location.reload();
-        },
-        onError: (errors) => {
-            alert(errors.message || 'কিছু সমস্যা হয়েছে!');
-        }
+  if (!returnReason.value.trim()) {
+    toast.add({
+      severity: 'error',
+      summary: 'ত্রুটি',
+      detail: 'অনুগ্রহ করে কারণ লিখুন!',
+      life: 3000
     });
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append('message', returnReason.value.trim());
+
+  if (selectedImage.value) {
+    formData.append('image', selectedImage.value);
+  }
+
+  const id = props.application?.id || route().params.id;
+
+  router.post(route('markaz.reject', id), formData, {
+    onSuccess: () => {
+      closeReturnModal();
+      toast.add({
+        severity: 'success',
+        summary: 'সফল',
+        detail: 'আবেদন সফলভাবে ফেরত পাঠানো হয়েছে!',
+        life: 3000
+      });
+      setTimeout(() => window.location.reload(), 1500);
+    },
+    onError: (errors) => {
+      toast.add({
+        severity: 'error',
+        summary: 'ত্রুটি',
+        detail: errors.message || 'কিছু সমস্যা হয়েছে!',
+        life: 3000
+      });
+    }
+  });
 };
 
 
@@ -172,17 +231,27 @@ const confirmApproval = () => {
   router.post(route('markaz.approve', { id: props.markazDetails.id }), {}, {
     preserveScroll: true,
     onSuccess: () => {
-      showModal.value = false
-      showToast.value = true
-      setTimeout(() => window.location.reload(), 100)
+      showModal.value = false;
+      toast.add({
+        severity: 'success',
+        summary: 'সফল',
+        detail: 'আবেদন সফলভাবে অনুমোদন করা হয়েছে!',
+        life: 3000
+      });
+      setTimeout(() => window.location.reload(), 1500);
     },
     onError: (errors) => {
       if (errors.error) {
-        alert(errors.error)
+        toast.add({
+          severity: 'error',
+          summary: 'ত্রুটি',
+          detail: errors.error,
+          life: 3000
+        });
       }
     }
-  })
-}
+  });
+};
 
 
 const formatDate = (timestamp) => {
@@ -200,11 +269,37 @@ const formatDate = (timestamp) => {
       <div class=" mx-auto sm:px-6 lg:px-8">
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-sm">
           <!-- Header -->
-          <div class="bg-gradient-to-r from-emerald-900 to-emerald-800 p-6">
-            <h2 class="text-2xl font-bold text-white text-center">
-              মারকায মাদরাসার বিস্তারিত তথ্য
-            </h2>
-          </div>
+          <div class="bg-gradient-to-r from-emerald-900 to-emerald-800 p-6 relative flex justify-between items-center">
+  <div class="flex-grow">
+    <h2 class="text-2xl font-bold text-white text-center">
+      মারকায মাদরাসার বিস্তারিত তথ্য
+    </h2>
+  </div>
+  <div class="absolute right-6">
+    <span v-if="props.application.status === 'pending'"
+          class="px-3 py-1 bg-yellow-500 text-white text-sm font-medium rounded-full">
+      পেন্ডিং
+    </span>
+    <span v-else-if="props.application.status === 'approved'"
+          class="px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
+      অনুমোদিত
+    </span>
+    <span v-else-if="props.application.status === 'rejected'"
+          class="px-3 py-1 bg-red-500 text-white text-sm font-medium rounded-full">
+      বাতিল
+    </span>
+    <span v-else-if="props.application.status === 'returned'"
+          class="px-3 py-1 bg-orange-500 text-white text-sm font-medium rounded-full">
+      ফেরত
+    </span>
+    <span v-else
+          class="px-3 py-1 bg-gray-500 text-white text-sm font-medium rounded-full">
+      অজানা
+    </span>
+  </div>
+</div>
+
+
 
           <!-- Main Content -->
           <div class="p-6">
@@ -546,175 +641,152 @@ const formatDate = (timestamp) => {
             <!-- Attachments -->
 
             <div class="p-6 bg-white shadow-lg rounded-lg w-full border border-emerald-100">
-  <h2 class="text-xl font-bold text-emerald-800 mb-4 text-center">
-    <span class="border-b-2 border-emerald-500 pb-1">আবেদনের অবস্থা পরিবর্তন করুন</span>
-  </h2>
+    <h2 class="text-xl font-bold text-emerald-800 mb-4 text-center">
+      <span class="border-b-2 border-emerald-500 pb-1">আবেদনের অবস্থা পরিবর্তন করুন</span>
+    </h2>
+    <div class="flex gap-3 justify-center">
+      <!-- Approval Button -->
+      <Button @click="openApprovalModal"
+              class="p-button-success"
+              icon="pi pi-check"
+              label="অনুমোদন" />
 
-  <div class="flex gap-3 justify-center">
-    <!-- Approval Button -->
-    <button
-  @click="openApprovalModal()"
-  class="px-5 py-2 text-white bg-emerald-600 hover:bg-emerald-700 rounded-sm transition duration-200 shadow-sm flex items-center gap-2"
->
-  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-  </svg>
-  অনুমোদন
-</button>
-  <!-- Islamic Modal -->
-  <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg w-96 overflow-hidden">
-      <!-- Islamic Pattern Header -->
-      <div class="bg-emerald-600 p-4 relative">
-        <div class="absolute inset-0 opacity-20 pattern-islamic"></div>
+      <!-- Return Button -->
+      <Button @click="openReturnModal"
+              class="p-button-warning"
+              label="ফেরত" />
 
-      </div>
+      <!-- Reject Button -->
+      <Button @click="openRejectModal"
+              class="p-button-danger"
+              label="রিজেক্ট" />
+    </div>
 
-      <!-- Modal Content -->
-      <div class="p-6">
-        <div class="text-center mb-6">
-          <div class="w-16 h-16 mx-auto mb-4 bg-emerald-100 rounded-full flex items-center justify-center">
-            <svg class="w-8 h-8 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h4 class="text-xl font-semibold text-gray-800">অনুমোদন নিশ্চিতকরণ</h4>
-          <p class="text-gray-600 mt-2">আপনি কি এই অনুমোদন প্রদান করতে নিশ্চিত?</p>
+    <!-- Approval Confirmation Dialog -->
+    <Dialog v-model:visible="showModal"
+            modal
+
+            header="অনুমোদন নিশ্চিতকরণ"
+            :style="{width: '30vw'}"
+            :closable="false">
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto mb-4 bg-emerald-100 rounded-full flex items-center justify-center">
+          <i class="pi pi-check text-emerald-600 text-2xl"></i>
         </div>
+        <h4
+        style=" font-family: 'Merriweather','SolaimanLipi',sans-serif;"
+        class="text-xl font-semibold text-gray-800 ">অনুমোদন নিশ্চিতকরণ</h4>
+        <p
+               style=" font-family: 'Merriweather','SolaimanLipi',sans-serif;"
+        class="text-gray-600 mt-2">আপনি কি এই অনুমোদন প্রদান করতে নিশ্চিত?</p>
+      </div>
+      <template #footer>
+        <Button
+         style=" font-family: 'Merriweather','SolaimanLipi',sans-serif;"
+        label="না, ফিরে যান"
+                icon="pi pi-times"
+                @click="showModal = false"
+                class="p-button-text" />
+        <Button
+             style=" font-family: 'Merriweather','SolaimanLipi',sans-serif;"
+        label="হ্যাঁ, নিশ্চিত"
+                icon="pi pi-check"
+                @click="confirmApproval"
+                class="p-button-success"
+                autofocus />
+      </template>
+    </Dialog>
 
-        <!-- Action Buttons -->
-        <div class="flex justify-center gap-4">
-          <button
-            @click="confirmApproval"
-            class="px-6 py-2 bg-emerald-600 text-white rounded hover:bg-emerald-700 transition duration-200"
-          >
-            হ্যাঁ, নিশ্চিত
-          </button>
-          <button
-            @click="showModal = false"
-            class="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition duration-200"
-          >
-            না, ফিরে যান
-          </button>
+    <!-- Return Modal -->
+    <Dialog v-model:visible="isReturnModalOpen"
+        modal
+        header="ফেরতের কারণ"
+        :style="{width: '550px'}"
+        :closable="false"
+        class="return-modal">
+  <div class="p-fluid w-full">
+    <div class="field w-full">
+      <Textarea v-model="returnReason"
+                placeholder="ফেরতের কারণ লিখুন..."
+                rows="5"
+                class="text-2xl w-full"
+                style="width: 100%; min-width: 100%;" />
+    </div>
+    <div class="field mt-5 w-full">
+      <label class="block text-sm font-semibold text-emerald-700 mb-2">ছবি সংযুক্ত করুন</label>
+      <FileUpload mode="basic"
+                  accept="image/*"
+                  :maxFileSize="1000000"
+                  @select="handleImageUpload"
+                  :auto="true"
+                  chooseLabel="ছবি নির্বাচন করুন"
+                  class="w-full" />
+    </div>
+    <div v-if="imagePreview" class="mt-4 relative w-full">
+      <img :src="imagePreview" class="w-full h-48 object-cover rounded-lg border border-emerald-200">
+      <Button icon="pi pi-times"
+              @click="removeImage"
+              class="p-button-rounded p-button-danger absolute top-2 right-2" />
+    </div>
+  </div>
+  <template #footer>
+    <Button label="বাতিল"
+            icon="pi pi-times"
+            @click="closeReturnModal"
+            class="p-button-text" />
+    <Button label="সাবমিট"
+            icon="pi pi-check"
+            @click="submitReturnReason"
+            class="p-button-success" />
+  </template>
+</Dialog>
+
+
+    <!-- Reject Modal -->
+    <Dialog v-model:visible="isRejectModalOpen"
+            modal
+            header="রিজেক্টের কারণ"
+            :style="{width: '550px'}"
+            :closable="false">
+      <div class="p-fluid">
+        <div class="field">
+          <Textarea v-model="rejectReason"
+                    placeholder="রিজেক্টের কারণ লিখুন..."
+                    rows="5"
+        class="text-2xl w-full"
+                    />
+        </div>
+        <div class="field mt-5">
+          <label class="block text-sm font-semibold text-red-700 mb-2">ছবি সংযুক্ত করুন</label>
+          <FileUpload mode="basic"
+                      accept="image/*"
+                      :maxFileSize="1000000"
+                      @select="handleRejectImageUpload"
+                      :auto="true"
+                      chooseLabel="ছবি নির্বাচন করুন" />
+        </div>
+        <div v-if="rejectImage" class="mt-4 relative">
+          <img :src="rejectImage" class="w-full h-48 object-cover rounded-lg border border-red-200">
+          <Button icon="pi pi-times"
+                  @click="removeRejectImage"
+                  class="p-button-rounded p-button-danger absolute top-2 right-2" />
         </div>
       </div>
-    </div>
+      <template #footer>
+        <Button label="বাতিল"
+                icon="pi pi-times"
+                @click="closeRejectModal"
+                class="p-button-text" />
+        <Button label="সাবমিট"
+                icon="pi pi-check"
+                @click="submitRejectReason"
+                class="p-button-danger" />
+      </template>
+    </Dialog>
+
+    <!-- Toast -->
+    <Toast position="top-right" />
   </div>
-
-
-  <div v-if="showToast"
-        class="fixed top-20 -right-96 flex items-center w-full max-w-md p-6 text-white bg-gradient-to-r from-emerald-600 to-emerald-700 rounded-lg shadow-2xl border-l-4 border-emerald-400 transition-all duration-300 ease-out transform translate-x-[-512px]">
-        <div class="flex items-center space-x-4">
-            <div class="bg-white bg-opacity-20 rounded-full p-3">
-                <i class="fas fa-check-circle text-2xl"></i>
-            </div>
-            <div class="flex flex-col">
-                <span class="text-xl">আবেদন সফলভাবে অনুমোদন করা হয়েছে!</span>
-            </div>
-        </div>
-        <button @click="showToast = false" class="ml-auto text-white hover:text-emerald-200 text-xl">&times;</button>
-    </div>
-
-
-
-
-
-
-
-
-
-
-    <button @click="openReturnModal"
-      class="px-5 py-2 text-white bg-amber-500 hover:bg-amber-600 rounded-sm transition duration-200 shadow-sm">
-      ফেরত
-    </button>
-
-    <button @click="openRejectModal"
-      class="px-5 py-2 text-white bg-red-600 hover:bg-red-700 rounded-sm transition duration-200 shadow-sm">
-      রিজেক্ট
-    </button>
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-  <!-- Return Modal -->
-  <div v-if="isReturnModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-60">
-    <div class="bg-white p-8 rounded-lg shadow-xl w-[550px] border-t-4 border-emerald-500">
-      <h3 class="text-xl font-bold text-emerald-800 mb-4 text-center">ফেরতের কারণ</h3>
-
-      <textarea v-model="returnReason" placeholder="ফেরতের কারণ লিখুন..."
-        class="w-full h-36 p-4 border text-2xl border-emerald-200 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"></textarea>
-
-      <div class="mt-5">
-        <label class="block text-sm font-semibold text-emerald-700 mb-2">ছবি সংযুক্ত করুন</label>
-        <input type="file" @change="handleImageUpload"
-          class="block w-full text-sm text-gray-700 border border-emerald-200 rounded-lg p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500">
-      </div>
-
-      <div v-if="imagePreview" class="mt-4 relative">
-        <img :src="imagePreview" class="w-full h-48 object-cover rounded-lg border border-emerald-200">
-        <button @click="removeImage"
-          class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition">
-          ❌
-        </button>
-      </div>
-
-      <div class="flex justify-end mt-6 gap-3">
-        <button @click="closeReturnModal"
-          class="px-5 py-2.5 bg-gray-400 hover:bg-gray-500 text-white rounded-sm transition">
-          বাতিল
-        </button>
-        <button @click="submitReturnReason"
-          class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-sm transition">
-          সাবমিট
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- Reject Modal -->
-  <div v-if="isRejectModalOpen" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-60">
-    <div class="bg-white p-8 rounded-lg shadow-xl w-[550px] border-t-4 border-red-500">
-      <h3 class="text-xl font-bold text-red-800 mb-4 text-center">রিজেক্টের কারণ</h3>
-
-      <textarea v-model="rejectReason" placeholder="রিজেক্টের কারণ লিখুন..."
-        class="w-full h-36 p-4 border border-red-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 resize-none"></textarea>
-
-      <div class="mt-5">
-        <label class="block text-sm font-semibold text-red-700 mb-2">ছবি সংযুক্ত করুন</label>
-        <input type="file" @change="handleRejectImageUpload"
-          class="block w-full text-sm text-gray-700 border border-red-200 rounded-lg p-2 cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500">
-      </div>
-
-      <div v-if="rejectImage" class="mt-4 relative">
-        <img :src="rejectImage" class="w-full h-48 object-cover rounded-lg border border-red-200">
-        <button @click="removeRejectImage"
-          class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1.5 hover:bg-red-600 transition">
-          ❌
-        </button>
-      </div>
-
-      <div class="flex justify-end mt-6 gap-3">
-        <button @click="closeRejectModal"
-          class="px-5 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-sm transition">
-          বাতিল
-        </button>
-        <button @click="submitRejectReason"
-          class="px-5 py-2 bg-red-600 hover:bg-red-700 text-white rounded-sm transition">
-          সাবমিট
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
 
 
 

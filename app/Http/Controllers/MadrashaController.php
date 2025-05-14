@@ -12,6 +12,7 @@ use App\Exports\MadrasaExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\DB;
 use App\Models\reg_stu_information;
+use Illuminate\Support\Facades\Auth;
 
 class MadrashaController extends Controller
 {
@@ -264,7 +265,7 @@ public function filterMadrashas(Request $request)
 public function filterMarkazStudents(Request $request)
 {
     $self = $this;
-    
+
     $query = reg_stu_information::select(
         'reg_stu_informations.markaz_id as id',
         'madrasha.MName as madrasha_Name',
@@ -285,7 +286,7 @@ public function filterMarkazStudents(Request $request)
     ->leftJoin('district', 'madrasha.DISID', '=', 'district.DesID')
     ->leftJoin('thana', 'madrasha.TID', '=', 'thana.Thana_ID')
     ->whereNotNull('reg_stu_informations.markaz_id');
-    
+
     // মাদরাসার নাম/ইলহাক নম্বর ফিল্টার
     if ($request->filled('madrasahName')) {
         $searchTerm = $request->madrasahName;
@@ -294,27 +295,27 @@ public function filterMarkazStudents(Request $request)
               ->orWhere('madrasha.ElhaqNo', 'like', '%' . $searchTerm . '%');
         });
     }
-    
+
     // বিভাগ ফিল্টার
     if ($request->filled('division')) {
         $query->where('madrasha.DID', $request->division);
     }
-    
+
     // জেলা ফিল্টার
     if ($request->filled('district')) {
         $query->where('madrasha.DISID', $request->district);
     }
-    
+
     // থানা ফিল্টার
     if ($request->filled('thana')) {
         $query->where('madrasha.TID', $request->thana);
     }
-    
+
     // পরীক্ষার নাম ফিল্টার
     if ($request->filled('exam_name')) {
         $query->where('reg_stu_informations.exam_name_Bn', $request->exam_name);
     }
-    
+
     // মাদরাসার ধরন ফিল্টার
     if ($request->filled('type')) {
         if ($request->type === 'ছাত্র') {
@@ -323,7 +324,7 @@ public function filterMarkazStudents(Request $request)
             $query->where('madrasha.MType', 0);
         }
     }
-    
+
     // Group by the same fields as in the original query
     $students = $query->groupBy(
         'reg_stu_informations.markaz_id',
@@ -358,24 +359,9 @@ public function filterMarkazStudents(Request $request)
             'madrasha_code' => $item->madrasha_code // Use the directly selected field
         ];
     });
-    
+
     return response()->json($students);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -391,7 +377,7 @@ public function madrashaListUnderMarkaz($markazId)
 
     // Get only the names of madrashas where id matches any of the MRID values
     $madrashas = Madrasha::whereIn('id', $mridValues)
-        ->select('id', 'MName as name','ElhaqNo')
+        ->select('id', 'MName as name','ElhaqNo as Elhaq_no','Mobile as Mobile_no')
         ->get();
 
     return Inertia::render('markaz_for_admin/madrasha_list_underMarkaz', [
@@ -473,6 +459,85 @@ public function madrashaListUnderMarkaz($markazId)
             ->where('Des_ID', $district_Id)  // This matches thana.Des_ID with district.DesID
             ->get();
     }
+
+
+
+
+
+
+
+
+
+
+
+    public function showMarlaZCenters()
+    {
+        $userId = Auth::id();
+
+        // Get madrasha_id from users table
+        $user = DB::table('users')
+            ->where('id', $userId)
+            ->first();
+
+        if (!$user || !isset($user->madrasha_id)) {
+            return response()->json(['centers' => [], 'error' => 'User or madrasha_id not found']);
+        }
+
+        $madrashaId = $user->madrasha_id;
+
+        // Find record in stu_rledger_p where MRID = madrasha_id
+        $studentRecord = DB::table('stu_rledger_p')
+            ->where('MRID', $madrashaId)
+            ->first();
+
+        if (!$studentRecord || !isset($studentRecord->MDID)) {
+            return response()->json(['centers' => [], 'error' => 'Student record or MDID not found']);
+        }
+
+        $mdid = $studentRecord->MDID;
+
+        // Get madrasha details using MDID
+        $madrashaRecord = DB::table('madrasha')
+            ->where('id', $mdid)
+            ->first();
+
+        if (!$madrashaRecord) {
+            return response()->json(['centers' => [], 'error' => 'Madrasha record not found']);
+        }
+
+        $centers = [];
+
+        // Check for Darsiyat center
+        if ($madrashaRecord->CenterD == 1) {
+            $centers['darsiyat'] = ' ' . $madrashaRecord->MNName;
+        }
+
+        // Check for Hifz center
+        if ($madrashaRecord->CenterH == 1) {
+            $centers['hifz'] = 'হিফজ মারকায: ' . $madrashaRecord->MNName;
+        }
+
+        // Check for Kirat center
+        if ($madrashaRecord->CenterK == 1) {
+            $centers['kirat'] = 'কিরাত মারকায: ' . $madrashaRecord->MNName;
+        }
+
+        return response()->json(['centers' => $centers]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 

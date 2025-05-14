@@ -1,12 +1,26 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Link } from '@inertiajs/vue3'
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
+// Import PrimeVue components
+import DataTable from 'primevue/datatable'
+import Column from 'primevue/column'
+import Button from 'primevue/button'
+import InputText from 'primevue/inputtext'
 
 const isDialogOpen = ref(false)
 const examFees = ref([])
 const examName = ref('')
+const globalFilterValue = ref('')
+const filters = ref({
+  global: { value: null, matchMode: 'contains' }
+})
+
+// Watch for changes in globalFilterValue to update filters
+watch(globalFilterValue, (newValue) => {
+  filters.value.global.value = newValue;
+})
 
 const fetchExamFees = async () => {
   try {
@@ -27,146 +41,94 @@ const toggleDialog = () => {
 }
 </script>
 
+
 <template>
-<AuthenticatedLayout>
-    <div class="bg-white rounded-sm shadow-lg overflow-hidden mx-5 mt-5">
-  <!-- Header Section -->
-  <div class="bg-gradient-to-r from-emerald-800 to-emerald-600 p-6 rounded-t-sm shadow-lg">
-    <div class="container mx-auto">
-      <div class="flex justify-between items-center">
-        <!-- Title -->
-        <h2 class="text-white text-xl md:text-3xl font-bold">
-                            {{ examName }}
-                        </h2>
+  <AuthenticatedLayout>
+    <div class="card mx-5 mt-5">
+      <!-- Header Section -->
+      <div class="bg-gradient-to-r from-emerald-800 to-emerald-600 p-6 rounded-t-sm shadow-lg">
+        <div class="container mx-auto">
+          <div class="flex justify-between items-center">
+            <!-- Title -->
+            <h2 class="text-white text-xl md:text-3xl font-bold">
+              {{ examName }}
+            </h2>
+          </div>
+        </div>
+      </div>
 
-        <!-- Settings Button -->
-        <button
-          @click="toggleDialog"
-          class="bg-white/20 hover:bg-white/30 text-white px-6 py-3 rounded-md shadow-md flex items-center gap-2 transition-all duration-300"
+      <!-- DataTable Section -->
+      <div class="card">
+        <DataTable
+          :value="examFees"
+          :paginator="true"
+          :rows="10"
+          :rowsPerPageOptions="[5, 10, 20, 50]"
+          tableStyle="min-width: 50rem"
+          stripedRows
+          class="p-datatable-lg"
+          :globalFilterFields="['marhala_name_bn']"
+          v-model:filters="filters"
+          filterDisplay="menu"
         >
-          <i class="fas fa-cog"></i>
-          <span>মারকায সেটিং</span>
-        </button>
+          <template #header>
+            <div class="flex justify-between">
+              <span class="p-input-icon-left">
+                <i class="pi pi-search" />
+                <InputText v-model="globalFilterValue" placeholder="অনুসন্ধান করুন..." class="p-inputtext-lg" />
+              </span>
+            </div>
+          </template>
+
+          <Column field="marhala_name_bn" header="মারহালা" sortable style="min-width: 12rem"></Column>
+
+          <Column header="নিয়মিত রেজিস্ট্রেশন (শুরু)" field="regularStartDate" sortable style="min-width: 10rem"></Column>
+          <Column header="নিয়মিত রেজিস্ট্রেশন (শেষ)" field="regularEndDate" sortable style="min-width: 10rem"></Column>
+          <Column header="নিয়মিত ফি" field="regularFee" sortable style="min-width: 8rem">
+            <template #body="slotProps">
+              <span class="font-medium">৳{{ slotProps.data.regularFee }}</span>
+            </template>
+          </Column>
+
+          <Column header="বিলম্ব রেজিস্ট্রেশন (শুরু)" field="lateStartDate" sortable style="min-width: 10rem"></Column>
+          <Column header="বিলম্ব রেজিস্ট্রেশন (শেষ)" field="lateEndDate" sortable style="min-width: 10rem"></Column>
+          <Column header="বিলম্ব ফি" field="lateFee" sortable style="min-width: 8rem">
+            <template #body="slotProps">
+              <span class="font-medium">৳{{ slotProps.data.lateFee }}</span>
+            </template>
+          </Column>
+
+          <Column header="নিয়মিত ছাত্র সংখ্যা" field="regularStudents" sortable style="min-width: 8rem"></Column>
+          <Column header="অনিয়মিত ছাত্র সংখ্যা" field="irregularStudents" sortable style="min-width: 8rem"></Column>
+
+          <Column header="একশন" style="min-width: 12rem">
+            <template #body="slotProps">
+              <div class="flex gap-2">
+                <Link
+                  :href="route('students_registration.old_stu_reg_Form', { marhalaId: slotProps.data.marhala_id })"
+                  class="no-underline"
+                >
+                  <Button
+                    label="নিবন্ধন"
+                    icon="pi pi-user-plus"
+                    class="p-button-success p-button-lg"
+                  />
+                </Link>
+                <Link
+                  :href="route('students_registration.student_reg_table')"
+                  class="no-underline"
+                >
+                  <Button
+                    label="তালিকা"
+                    icon="pi pi-list"
+                    class="p-button-info p-button-lg"
+                  />
+                </Link>
+              </div>
+            </template>
+          </Column>
+        </DataTable>
       </div>
     </div>
-  </div>
-
-  <!-- Table Section -->
-  <div class="p-6 overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200 bg-white shadow-md rounded-lg">
-            <thead class="bg-emerald-600">
-  <tr class="divide-x divide-emerald-500">
-    <th class="px-4 py-3 text-white text-left text-xl font-semibold border-r border-emerald-500">
-      মারহালা
-    </th>
-
-    <!-- Regular Registration -->
-    <th colspan="2" class="px-4 py-3 border-r border-emerald-500">
-      <div class="text-white text-center font-semibold text-xl">নিয়মিত রেজিস্ট্রেশন</div>
-      <div class="grid grid-cols-2 gap-2 mt-2 divide-x divide-emerald-500">
-        <div class="text-white text-xl">শুরু</div>
-        <div class="text-white text-xl">শেষ</div>
-      </div>
-    </th>
-
-    <th class="px-4 py-3 text-white text-center text-xl font-semibold border-r border-emerald-500">
-      নিয়মিত ফি
-    </th>
-
-    <!-- Late Registration -->
-    <th colspan="2" class="px-4 py-3 border-r border-emerald-500">
-      <div class="text-white text-center font-semibold text-xl">বিলম্ব রেজিস্ট্রেশন</div>
-      <div class="grid grid-cols-2 gap-2 mt-2 divide-x divide-emerald-500">
-        <div class="text-white text-xl">শুরু</div>
-        <div class="text-white text-xl">শেষ</div>
-      </div>
-    </th>
-
-    <th class="px-4 py-3 text-white text-center font-semibold border-r border-emerald-500 text-xl">
-      বিলম্ব ফি
-    </th>
-
-    <!-- Student Count -->
-    <th colspan="2" class="px-4 py-3 border-r border-emerald-500">
-      <div class="text-white text-center font-semibold text-xl">ছাত্র সংখ্যা</div>
-      <div class="grid grid-cols-2 gap-2 mt-2 divide-x divide-emerald-500">
-        <div class="text-white text-xl">নিয়মিত</div>
-        <div class="text-white text-xl">অনিয়মিত</div>
-      </div>
-    </th>
-
-    <th class="px-4 py-3 text-white text-center font-semibold text-xl">
-      একশন
-    </th>
-  </tr>
-</thead>
-
-
-            <tbody class="divide-y divide-gray-100 text-xl">
-                <tr v-for="fee in examFees" :key="fee.id" class="hover:bg-gray-50 transition-colors">
-                    <td class="px-4 py-3 ">{{ fee.marhala_name_bn }}</td>
-                            <td class="px-4 py-3 text-center">{{ fee.regularStartDate }}</td>
-                            <td class="px-4 py-3 text-center">{{ fee.regularEndDate }}</td>
-                            <td class="px-4 py-3 text-center font-medium">৳{{ fee.regularFee }}</td>
-                            <td class="px-4 py-3 text-center">{{ fee.lateStartDate }}</td>
-                            <td class="px-4 py-3 text-center">{{ fee.lateEndDate }}</td>
-                            <td class="px-4 py-3 text-center font-medium">৳{{ fee.lateFee }}</td>
-                            <td class="px-4 py-3 text-center">{{ fee.regularStudents }}</td>
-                            <td class="px-4 py-3 text-center">{{ fee.irregularStudents }}</td>
-
-              <td class="px-4 py-3">
-                <div class="flex gap-2 justify-center ">
-                    <Link
-                :href="route('students_registration.old_stu_reg_Form', { marhalaId: fee.marhala_id })"
-                class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-sm text-xl transition-all duration-300"
-            >
-                নিবন্ধন
-            </Link>
-                  <Link
-                    :href="route('students_registration.student_reg_table')"
-                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-sm text-xl transition-all duration-300"
-                  >
-                    তালিকা
-                  </Link>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-  <!-- Settings Dialog -->
-  <div v-if="isDialogOpen" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg w-full max-w-2xl mx-4 shadow-xl p-6">
-      <div class="flex justify-between items-center border-b border-emerald-200 pb-4">
-        <h3 class="text-xl font-semibold text-emerald-800 flex items-center gap-2">
-          <i class="fas fa-cog"></i> মারকায সেটিংস
-        </h3>
-        <button @click="toggleDialog" class="text-gray-500 hover:text-gray-700 transition-colors">
-          <i class="fas fa-times"></i>
-        </button>
-      </div>
-
-      <!-- Dialog content here -->
-
-      <div class="flex justify-end gap-4 pt-4 border-t border-emerald-200 mt-6">
-        <button
-          @click="toggleDialog"
-          class="px-6 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-md text-gray-700 transition-all duration-300"
-        >
-          বাতিল
-        </button>
-        <button
-          class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition-all duration-300"
-        >
-          সংরক্ষণ
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-</AuthenticatedLayout>
-
-
+  </AuthenticatedLayout>
 </template>

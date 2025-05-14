@@ -23,6 +23,7 @@ const form = useForm({
     mutawassita: '',
     ibtedaiyyah: '',
     hifzul_quran: '',
+    qirat: '',
     noc_file: null,
     resolution_file: null,
 
@@ -51,6 +52,7 @@ const rows = ref([{
     mutawassita: "",
     ibtedaiyyah: "",
     hifzul_quran: "",
+    qirat: "",
     madrasa_Name: "",
     madrasa_id: "",
     searchQuery: "",
@@ -74,6 +76,7 @@ const addRow = () => {
     mutawassita: "",
     ibtedaiyyah: "",
     hifzul_quran: "",
+    qirat: "",
     madrasa_Name: "",
     madrasa_id: "",
     searchQuery: "",
@@ -215,6 +218,7 @@ const submitForm = () => {
         mutawassita: row.mutawassita,
         ibtedaiyyah: row.ibtedaiyyah,
         hifzul_quran: row.hifzul_quran,
+        qirat: row.qirat,
         noc_file: row.files.noc,
         resolution_file: row.files.resolution
     }))
@@ -405,6 +409,16 @@ onMounted(() => {
                             class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
                             placeholder="ছাত্র সংখ্যা লিখুন" />
                     </div>
+                    <div class="flex-1 min-w-[150px]">
+                        <label class="block text-lg font-medium text-emerald-700 mb-2">
+
+                     ইলমুল কিরআত
+                        </label>
+                        <input type="number"
+                        v-model="form.qirat"
+                            class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
+                            placeholder="ছাত্র সংখ্যা লিখুন" />
+                    </div>
                 </div>
 
                 <!-- এটাচমেন্ট -->
@@ -467,144 +481,143 @@ onMounted(() => {
 
             <!-- Dynamic Rows Section -->
             <div class="mb-8 mt-6">
-                <h3 class="text-xl text-emerald-800 font-bold mb-4 arabic-font">আবেদনকৃত মাদরাসায় পরীক্ষা দিতে ইচ্ছুক
-                    মাদরাসার তালিকা ও তথ্য</h3>
+    <h3 class="text-xl text-emerald-800 font-bold mb-4 arabic-font">আবেদনকৃত মাদরাসায় পরীক্ষা দিতে ইচ্ছুক মাদরাসার তালিকা ও তথ্য</h3>
+    <div class="flex flex-col gap-6">
+        <div v-for="(row, index) in rows" :key="index"
+            class="bg-white p-6 rounded-md shadow-md border border-emerald-200 hover:border-emerald-300 transition-all duration-300">
 
-                <div class="flex flex-col gap-6">
-                    <div v-for="(row, index) in rows" :key="index"
-                        class="bg-white p-6 rounded-md shadow-md border border-emerald-200 hover:border-emerald-300 transition-all duration-300">
-
-                        <div class="flex flex-wrap gap-6 items-end">
-                            <div class="flex-1 min-w-[150px]">
-                                <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">ফযীলত</label>
-                                <input type="number" v-model="row.fazilat"
-                                    class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
-                                    placeholder="ছাত্র সংখ্যা লিখুন" />
-                            </div>
-
-                            <div class="flex-1 min-w-[150px]">
-                                <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">সানাবিয়া
-                                    ‍উলইয়া</label>
-                                <input type="number" v-model="row.sanabiya_ulya"
-                                    class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
-                                    placeholder="ছাত্র সংখ্যা লিখুন" />
-                            </div>
-
-                            <div class="flex-1 min-w-[150px]">
-                                <label
-                                    class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">সানাবিয়া</label>
-                                <input type="number" v-model="row.sanabiya"
-                                    class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
-                                    placeholder="ছাত্র সংখ্যা লিখুন" />
-                            </div>
-
-                            <div class="flex-1 min-w-[150px]">
-                                <label
-                                    class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">মুতাওয়াসসিতা</label>
-                                <input type="number" v-model="row.mutawassita"
-                                    class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
-                                    placeholder="ছাত্র সংখ্যা লিখুন" />
-                            </div>
-
-                            <div class="flex-1 min-w-[150px]">
-                                <label
-                                    class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">ইবতেদাইয়্যাহ</label>
-                                <input type="number" v-model="row.ibtedaiyyah"
-                                    class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
-                                    placeholder="ছাত্র সংখ্যা লিখুন" />
-                            </div>
-
-                            <div class="flex-1 min-w-[150px]">
-                                <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">হিফজুল
-                                    কোরান</label>
-                                <input type="number" v-model="row.hifzul_quran"
-                                    class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
-                                    placeholder="ছাত্র সংখ্যা লিখুন" />
-                            </div>
-                            <div class="search-container relative">
-    <input
-        type="text"
-        v-model="row.searchQuery"
-        @focus="row.isOpen = true"
-        placeholder="মাদরাসার নাম বা ইলহাক নম্বর দিয়ে খুঁজুন"
-        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500"
-    />
-
-    <div
-        v-if="row.isOpen && filteredOptions(row).length > 0"
-        class="absolute z-50 w-full mt-1 bg-white border border-emerald-300 rounded-md shadow-lg max-h-60 overflow-auto"
-    >
-        <div
-            v-for="madrasha in filteredOptions(row)"
-            :key="madrasha.id"
-            @click="selectOption(madrasha, row)"
-            class="px-4 py-2 cursor-pointer hover:bg-emerald-50"
-        >
-            <div class="font-medium">{{ madrasha.name }}</div>
-            <div class="text-sm text-gray-600">ইলহাক: {{ madrasha.ElhaqNo }}</div>
-        </div>
-    </div>
-</div>
-                            <button v-if="rows.length > 1" @click="removeRow(index)"
-                                class="px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors duration-200 shadow-md">
-                                সারি মুছুন
-                            </button>
+            <!-- First row: Madrasa search field only -->
+            <div class="mb-6">
+                <div class="search-container relative w-full">
+                    <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">মাদরাসা নির্বাচন করুন</label>
+                    <input
+                        type="text"
+                        v-model="row.searchQuery"
+                        @focus="row.isOpen = true"
+                        placeholder="মাদরাসার নাম বা ইলহাক নম্বর দিয়ে খুঁজুন"
+                        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500"
+                    />
+                    <div
+                        v-if="row.isOpen && filteredOptions(row).length > 0"
+                        class="absolute z-50 w-full mt-1 bg-white border border-emerald-300 rounded-md shadow-lg max-h-60 overflow-auto"
+                    >
+                        <div
+                            v-for="madrasha in filteredOptions(row)"
+                            :key="madrasha.id"
+                            @click="selectOption(madrasha, row)"
+                            class="px-4 py-2 cursor-pointer hover:bg-emerald-50"
+                        >
+                            <div class="font-medium">{{ madrasha.name }}</div>
+                            <div class="text-sm text-gray-600">ইলহাক: {{ madrasha.ElhaqNo }}</div>
                         </div>
-
-                        <div class="mt-8">
-                            <h3 class="text-xl font-bold text-emerald-700 mb-6">প্রয়োজনীয় ডকুমেন্টস</h3>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <!-- NOC Upload -->
-                                <div class="p-3 border-2 border-dashed border-emerald-300 rounded-lg">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <label class="text-lg font-medium text-emerald-700">পূর্বের মাদরাসার অনাপত্তিপত্র</label>
-                                        <div v-if="row.files.nocPreview" class="flex items-center space-x-4">
-                                            <a :href="row.files.nocPreview" target="_blank"
-                                                class="text-emerald-600 hover:text-emerald-800 flex items-center">
-                                                <span>প্রিভিউ</span>
-                                            </a>
-                                            <button @click="removeFile('noc', index)"
-                                                class="text-red-600 hover:text-red-800 flex items-center">
-                                                <span>মুছুন</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <input type="file" @change="handleFileUpload($event, 'noc', index)"
-                                        class="w-full text-emerald-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
-
-                                </div>
-
-                                <!-- Resolution Upload -->
-                                <div class="p-4 border-2 border-dashed border-emerald-300 rounded-lg">
-                                    <div class="flex items-center justify-between mb-4">
-                                        <label class="text-lg font-medium text-emerald-700">বর্তমান মাদরাসার সম্মতিপত্র</label>
-                                        <div v-if="row.files.resolutionPreview" class="flex items-center space-x-4">
-                                            <a :href="row.files.resolutionPreview" target="_blank"
-                                                class="text-emerald-600 hover:text-emerald-800 flex items-center">
-                                                <span>প্রিভিউ</span>
-                                            </a>
-                                            <button @click="removeFile('resolution', index)"
-                                                class="text-red-600 hover:text-red-800 flex items-center">
-                                                <span>মুছুন</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <input type="file" @change="handleFileUpload($event, 'resolution', index)"
-                                        class="w-full text-emerald-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
-                                </div>
-                            </div>
-                        </div>
-
-
                     </div>
-
-                    <button @click="addRow"
-                        class="px-4 py-2 bg-emerald-600 text-white rounded-sm hover:bg-emerald-700 transition-colors duration-200 shadow-md w-fit">
-                        নতুন সারি যোগ করুন +
-                    </button>
                 </div>
             </div>
+
+            <!-- Second row: Student count inputs -->
+            <div class="flex flex-wrap gap-6 items-end">
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">ফযীলত</label>
+                    <input type="number" v-model="row.fazilat"
+                        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
+                        placeholder="ছাত্র সংখ্যা লিখুন" />
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">সানাবিয়া ‍উলইয়া</label>
+                    <input type="number" v-model="row.sanabiya_ulya"
+                        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
+                        placeholder="ছাত্র সংখ্যা লিখুন" />
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">সানাবিয়া</label>
+                    <input type="number" v-model="row.sanabiya"
+                        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
+                        placeholder="ছাত্র সংখ্যা লিখুন" />
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">মুতাওয়াসসিতা</label>
+                    <input type="number" v-model="row.mutawassita"
+                        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
+                        placeholder="ছাত্র সংখ্যা লিখুন" />
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">ইবতেদাইয়্যাহ</label>
+                    <input type="number" v-model="row.ibtedaiyyah"
+                        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
+                        placeholder="ছাত্র সংখ্যা লিখুন" />
+                </div>
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">হিফজুল কোরান</label>
+                    <input type="number" v-model="row.hifzul_quran"
+                        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
+                        placeholder="ছাত্র সংখ্যা লিখুন" />
+                </div>
+
+                <div class="flex-1 min-w-[150px]">
+                    <label class="block text-lg font-medium text-emerald-700 mb-2 arabic-font">ইলমুল কিরাত</label>
+                    <input type="number" v-model="row.qirat"
+                        class="w-full px-4 py-2 border border-emerald-300 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white shadow-sm"
+                        placeholder="ছাত্র সংখ্যা লিখুন" />
+                </div>
+
+
+                <button v-if="rows.length > 1" @click="removeRow(index)"
+
+                    class="px-4 py-2 bg-red-600 text-white rounded-sm hover:bg-red-700 transition-colors duration-200 shadow-md">
+                    সারি মুছুন
+                </button>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-xl font-bold text-emerald-700 mb-6">প্রয়োজনীয় ডকুমেন্টস</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- NOC Upload -->
+                    <div class="p-3 border-2 border-dashed border-emerald-300 rounded-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="text-lg font-medium text-emerald-700">পূর্বের মাদরাসার অনাপত্তিপত্র</label>
+                            <div v-if="row.files.nocPreview" class="flex items-center space-x-4">
+                                <a :href="row.files.nocPreview" target="_blank"
+                                    class="text-emerald-600 hover:text-emerald-800 flex items-center">
+                                    <span>প্রিভিউ</span>
+                                </a>
+                                <button @click="removeFile('noc', index)"
+                                    class="text-red-600 hover:text-red-800 flex items-center">
+                                    <span>মুছুন</span>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="file" @change="handleFileUpload($event, 'noc', index)"
+                            class="w-full text-emerald-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
+                    </div>
+                    <!-- Resolution Upload -->
+                    <div class="p-4 border-2 border-dashed border-emerald-300 rounded-lg">
+                        <div class="flex items-center justify-between mb-4">
+                            <label class="text-lg font-medium text-emerald-700">বর্তমান মাদরাসার সম্মতিপত্র</label>
+                            <div v-if="row.files.resolutionPreview" class="flex items-center space-x-4">
+                                <a :href="row.files.resolutionPreview" target="_blank"
+                                    class="text-emerald-600 hover:text-emerald-800 flex items-center">
+                                    <span>প্রিভিউ</span>
+                                </a>
+                                <button @click="removeFile('resolution', index)"
+                                    class="text-red-600 hover:text-red-800 flex items-center">
+                                    <span>মুছুন</span>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="file" @change="handleFileUpload($event, 'resolution', index)"
+                            class="w-full text-emerald-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button @click="addRow"
+            class="px-4 py-2 bg-emerald-600 text-white rounded-sm hover:bg-emerald-700 transition-colors duration-200 shadow-md w-fit">
+            নতুন সারি যোগ করুন +
+        </button>
+    </div>
+</div>
+
+
 
 
 

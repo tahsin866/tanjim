@@ -13,7 +13,7 @@ use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class RegisteredUserController extends Controller
+class userRegisteredUserController extends Controller
 {
     /**
      * Display the registration view.
@@ -55,7 +55,10 @@ class RegisteredUserController extends Controller
             'madrasha_name' => session('madrasha_name'),
             'thana' => session('thana'),
             'post' => session('post'),
+            'MType' => session('MType'),
+            'Stage' => session('Stage'),
             'markaz_serial' => session('markaz_serial'),
+
         ]);
 
         event(new Registered($user));
@@ -66,4 +69,28 @@ class RegisteredUserController extends Controller
 
         return redirect()->route('dashboard');
     }
+
+
+
+
+
+// রেজিস্টার সম্পন্ন হওয়ার পর এই মেথড কল করুন
+protected function clearMadrashaSession()
+{
+    session()->forget([
+        'madrasha_id',
+        'madrasha_name',
+        'thana',
+        'post',
+        'Stage',
+        'MType',
+        'markaz_serial',
+        'custom_code',
+        'madrasha_verified_at'
+    ]);
+}
+
+
+
+
 }

@@ -114,7 +114,7 @@ public function updateSubjectSetting(Request $request, $id)
 
     return response()->json([
         'success' => true,
-        'message' => 'Subject settings updated successfully',
+        'message' => 'বিষয় সেটাপ সঠিকভাবে আপডেট করা হয়েছে',
     ]);
 }
 

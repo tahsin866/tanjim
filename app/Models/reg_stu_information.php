@@ -92,7 +92,7 @@ class reg_stu_information extends Model
     {
         return $this->belongsTo(ExamFee::class, 'exam_id', 'exam_setup_id');
     }
-    
+
     public function payments()
     {
         return $this->hasMany(student_reg_payment::class, 'students_id', 'id');
@@ -103,7 +103,7 @@ class reg_stu_information extends Model
     {
         return $this->belongsTo(Madrasha::class, 'markaz_id');
     }
-    
+
 
 
 }

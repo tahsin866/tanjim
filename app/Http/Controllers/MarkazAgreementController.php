@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\MarkazAgreement;
 use App\Models\MarkazAgreementMadrasa;
 use App\Models\admin\marhala_for_admin\ExamSetup;
-use App\Models\Madrasha;
+use App\Models\madrasha;
 use App\Models\Division;
+use Illuminate\Support\Facades\DB;
 use App\Models\District;
 use App\Models\Thana;
 use App\Models\schedule_setups;
@@ -31,13 +32,25 @@ class MarkazAgreementController extends Controller
     }
 
 
+
+
+
+    public function getLatest_1()
+    {
+        return ExamSetup::latest()->first();
+
+    }
+
+
+
+
     // মাদরাসার মারকায আবেদন
 
     public function store(Request $request)
 {
     // Get user with madrasha relationship
     $user = Auth::user();
-    $madrashaData = Madrasha::where('id', $user->madrasha_id)->first();
+    $madrashaData = madrasha::where('id', $user->madrasha_id)->first();
 
     // Get exam setup data
     $examSetup = ExamSetup::select('id', 'exam_name')->latest()->first();
@@ -97,6 +110,7 @@ class MarkazAgreementController extends Controller
     $markazAgreement->mutawassita = $request->mutawassita;
     $markazAgreement->ibtedaiyyah = $request->ibtedaiyyah;
     $markazAgreement->hifzul_quran = $request->hifzul_quran;
+    $markazAgreement->qirat = $request->qirat;
 
     // File handling
     if ($request->hasFile('noc_file')) {
@@ -142,6 +156,8 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
         $associatedMadrasa->mutawassita = $madrasaData['mutawassita'];
         $associatedMadrasa->ibtedaiyyah = $madrasaData['ibtedaiyyah'];
         $associatedMadrasa->hifzul_quran = $madrasaData['hifzul_quran'];
+        $associatedMadrasa->qirat = $madrasaData['qirat'];
+
 
         // File handling
         if (isset($madrasaData['noc_file'])) {
@@ -168,12 +184,47 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
 
     public function getMadrashas()
     {
-        $madrashas = Madrasha::select('id', 'MName as name', 'ElhaqNo')
-            ->orderBy('MName')
-            ->get();
+        // লগইন করা ইউজারের ডেটা নিয়ে আসি
+        $user = Auth::user();
+
+        // markaz_serial খালি বা 0 বা খালি স্ট্রিং এর কন্ডিশন
+        $markazEmptyCondition = function($query) {
+            $query->whereNull('markaz_serial')
+                  ->orWhere('markaz_serial', 0)
+                  ->orWhere('markaz_serial', '');
+        };
+
+        // ইউজারের MType চেক করি
+        if ($user->MType == 1) {
+            // MType=1 হলে শুধু markaz_serial খালি বা 0 এবং MType=1 এর মাদরাসাগুলো নিয়ে আসি
+            $madrashas = madrasha::select('id', 'MName as name', 'ElhaqNo')
+                ->where('MType', 1)
+                ->where($markazEmptyCondition)
+                ->orderBy('MName')
+                ->get();
+        } else if ($user->MType == 0) {
+            // ইউজারের MType=0 হলে MType=0 এর মাদরাসাগুলো নিয়ে আসি
+            // এবং markaz_serial খালি বা 0 বা খালি স্ট্রিং হতে হবে
+            $madrashas = madrasha::select('id', 'MName as name', 'ElhaqNo')
+                ->where('MType', 0)
+                ->where($markazEmptyCondition)
+                ->orderBy('MName')
+                ->get();
+        } else {
+            // অন্যান্য ইউজারদের জন্য সব মাদরাসা দেখাবে
+            $madrashas = madrasha::select('id', 'MName as name', 'ElhaqNo')
+                ->orderBy('MName')
+                ->get();
+        }
 
         return response()->json($madrashas);
     }
+
+
+
+
+
+
 
 
     public function getTableData()
@@ -181,7 +232,7 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
         $agreements = MarkazAgreement::with(['associatedMadrasas', 'activityLogs'])
             ->where('user_id', Auth::id())
             ->select('markaz_agreements.*')
-            ->selectRaw('(fazilat + sanabiya_ulya + sanabiya + mutawassita + ibtedaiyyah + hifzul_quran) as total_students')
+            ->selectRaw('(fazilat + sanabiya_ulya + sanabiya + mutawassita + ibtedaiyyah + hifzul_quran+ qirat) as total_students')
             ->latest()
             ->get()
             ->map(function ($agreement) {
@@ -191,7 +242,8 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
                         $madrasa->sanabiya +
                         $madrasa->mutawassita +
                         $madrasa->ibtedaiyyah +
-                        $madrasa->hifzul_quran;
+                        $madrasa->hifzul_quran +
+                        $madrasa->qirat;
                 });
 
                 // Get the latest activity log status
@@ -229,10 +281,10 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
                     'user_name',
                     'admin_name',
                     'user_position',
-                    // 'admin_name',
+                    'admin_position',
                     'admin_message',
-                    'status',      // Add this
-                    'created_at'   // Add this if needed
+                    'status',
+                    'created_at'
                 );
             }
         ])->select(
@@ -246,6 +298,7 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
             'mutawassita',
             'ibtedaiyyah',
             'hifzul_quran',
+            'qirat',
             'noc_file',
             'resolution_file',
             'requirements',
@@ -264,12 +317,21 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
             : null;
         $markazDetails->resolution_file = $markazDetails->resolution_file ? Storage::url($markazDetails->resolution_file) : null;
 
-
+        // Map admin_position values to their text representations
+        $markazDetails->activityLogs->each(function ($log) {
+            $log->admin_position_text = match ((int)$log->admin_position) {
+                1 => 'সুপার এডমিন',
+                2 => 'সহ সুপার এডমিন',
+                3 => 'বোর্ড এডমিন',
+                default => $log->admin_position
+            };
+        });
 
         return inertia('Markaz/marjaz_detailes_view', [
             'markazDetails' => $markazDetails
         ]);
     }
+
 
 
     // মাদরাসার জন্য বোর্ড দাখিল এবং সময় চেক
@@ -425,6 +487,7 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
             'mutawassita' => $request->mutawassita,
             'ibtedaiyyah' => $request->ibtedaiyyah,
             'hifzul_quran' => $request->hifzul_quran,
+            'qirat' => $request->qirat,
             'requirements' => $request->requirements,
         ]);
 
@@ -474,6 +537,7 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
             $associatedMadrasa->mutawassita = $madrasaData['mutawassita'];
             $associatedMadrasa->ibtedaiyyah = $madrasaData['ibtedaiyyah'];
             $associatedMadrasa->hifzul_quran = $madrasaData['hifzul_quran'];
+            $associatedMadrasa->qirat = $madrasaData['qirat'];
 
             // Handle file uploads
             if (isset($madrasaData['noc_file']) && $madrasaData['noc_file'] instanceof UploadedFile) {
@@ -530,7 +594,7 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
             ->select(
                 'id',
                 'markaz_type',
-
+'madrasha_Name',
                 'created_at',
                 'fazilat',
                 'sanabiya_ulya',
@@ -573,11 +637,13 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
 
         $adminId = Auth::guard('admin')->id();
         $adminName = Auth::guard('admin')->user()->name;
+        $admin_position = Auth::guard('admin')->user()->designation;
 
         // Create activity log entry
         $logData = [
             'admin_id' => $adminId,
             'admin_name' => $adminName,
+            'admin_position' => $admin_position,
             'markaz_agreement_id' => $agreement->id,
             'status' => 'অনুমোদন',
             'processed_at' => now(),
@@ -592,8 +658,6 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
 
         return back()->withErrors(['error' => 'আপডেট করতে সমস্যা হয়েছে!']);
     }
-
-
 
     // এডমিন আবেদন ফেরত
 
@@ -611,11 +675,14 @@ $associatedMadrasa->madrasa_id = $madrasaData['madrasa_id'];
 
         $adminId = Auth::guard('admin')->id();
         $adminName = Auth::guard('admin')->user()->name;
+        $adminName = Auth::guard('admin')->user()->name;
+        $admin_position = Auth::guard('admin')->user()->designation;
 
         // Initialize feedback data
         $feedbackData = [
             'admin_id' => $adminId,
             'admin_name' => $adminName,
+            'admin_position' => $admin_position,
             'markaz_agreement_id' => $agreement->id,
             'status' => 'বোর্ড ফেরত', // Update status
             'admin_message' => $request->message, // Insert the admin's message

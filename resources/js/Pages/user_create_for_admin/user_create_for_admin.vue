@@ -1,206 +1,245 @@
 <template>
-<AuthenticatedLayout>
-    <div class="bg-white mx-5 mt-5 dark:bg-gray-900 rounded-lg shadow-lg p-6 border border-emerald-100 dark:border-emerald-900">
-      <!-- Header with Islamic pattern -->
-      <div class="relative mb-6 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-4 overflow-hidden">
-        <div class="absolute inset-0 opacity-10"></div>
-        <h2 class="text-2xl  text-emerald-800 dark:text-emerald-200 text-center relative z-10">
-          ইউজার ম্যানেজমেন্ট সিস্টেম
-        </h2>
-      </div>
+    <AuthenticatedLayout>
+      <div class="bg-white mx-5 mt-5 dark:bg-gray-900 rounded-lg shadow-lg p-6 border border-emerald-100 dark:border-emerald-900">
+        <!-- Header with Islamic pattern -->
+        <div class="relative mb-6 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg p-4 overflow-hidden">
+          <div class="absolute inset-0 opacity-10 islamic-pattern"></div>
+          <h2 class="text-2xl text-emerald-800 dark:text-emerald-200 text-center relative z-10">
+            ইউজার ম্যানেজমেন্ট সিস্টেম
+          </h2>
+        </div>
 
-      <!-- Search and Filter Section -->
-      <div class="flex flex-col md:flex-row gap-4 mb-6">
-        <div class="flex-1">
-          <div class="relative">
-            <input
-              type="text"
-              placeholder="ফোন নম্বর দিয়ে সার্চ করুন"
-              class="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-200"
-            />
-            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+        <!-- Search and Add User Section -->
+        <div class="flex flex-col md:flex-row gap-4 mb-6">
+          <div class="flex-1">
+            <div class="relative">
+              <span class="p-input-icon-left w-full">
+
+                <InputText
+                  v-model="filters['global'].value"
+                  placeholder="ফোন নম্বর দিয়ে সার্চ করুন"
+                  class="w-full"
+                />
+              </span>
             </div>
+          </div>
+          <div>
+            <Link
+              :href="route('user_create_for_admin.new_user_for_admin')"
+              class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition-colors duration-200 flex items-center justify-center gap-2 shadow-md"
+            >
+              <i class="pi pi-plus"></i>
+              নতুন ইউজার
+            </Link>
           </div>
         </div>
 
-        <div class="w-full md:w-48">
-          <select
-            class="w-full py-2 px-3 border border-gray-300 dark:border-gray-700 rounded-md focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 dark:bg-gray-800 dark:text-gray-200"
-          >
-            <option value="">সকল ইউজার</option>
-            <option value="super_admin">সুপার এডমিন</option>
-            <option value="board_admin">বোর্ড এডমিন</option>
-            <option value="admin">এডমিন</option>
-            <option value="user">সাধারণ ইউজার</option>
-          </select>
-        </div>
-
-        <div>
-          <Link
-          :href="route('user_create_for_admin.new_user_for_admin')"
-            class="w-full md:w-auto px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md transition-colors duration-200 flex items-center justify-center gap-2 shadow-md"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-            </svg>
-            নতুন ইউজার
-          </Link>
-        </div>
-      </div>
-
-      <!-- Table -->
-      <div class="overflow-x-auto">
-    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-      <thead class="bg-emerald-50 dark:bg-emerald-900/30">
-        <tr>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">ছবি</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">নাম</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">ফোন নম্বর</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">ইমেইল</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">পদবি</th>
-          <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-emerald-800 dark:text-emerald-200 uppercase tracking-wider">একশন</th>
-        </tr>
-      </thead>
-      <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-800">
-        <tr v-for="admin in admins" :key="admin.id" class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors duration-150">
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="h-10 w-10 rounded-full overflow-hidden border-2 border-emerald-200 dark:border-emerald-700">
-              <img :src="admin.profile_image ? '/storage/' + admin.profile_image : 'https://randomuser.me/api/portraits/men/1.jpg'"
-                   :alt="admin.name" class="h-full w-full object-cover" />
-            </div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ admin.name }}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-700 dark:text-gray-300">{{ admin.phone }}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-700 dark:text-gray-300">{{ admin.email }}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
-                  :class="getDesignationClass(admin.designation)">
-              {{ getDesignationText(admin.designation) }}
-            </span>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-            <div class="flex space-x-2">
-                <Link
-    :href="route('user_create_for_admin.admin_user_edit', admin.id)"
-    class="text-emerald-600 hover:text-emerald-900 dark:text-emerald-400 dark:hover:text-emerald-300"
->
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-    </svg>
-</Link>
-
-
-<div>
-    <!-- ডিলিট বাটন -->
-    <button
-      @click="confirmDelete(admin.id)"
-      class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300">
-      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-      </svg>
-    </button>
-
-    <!-- কনফার্মেশন মডাল -->
-    <div v-if="showModal" class="fixed inset-0 z-50 overflow-y-auto">
-      <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        <div class="fixed inset-0 transition-opacity" @click="showModal = false">
-          <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
-        </div>
-
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
-
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-            <div class="sm:flex sm:items-start">
-              <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                </svg>
+        <!-- PrimeVue DataTable -->
+        <DataTable
+          :value="admins"
+          :paginator="true"
+          :rows="20"
+          :rowsPerPageOptions="[5, 10, 20, 50]"
+          paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
+          currentPageReportTemplate="মোট {totalRecords} জন ইউজারের মধ্যে {first}-{last} দেখাচ্ছে"
+          responsiveLayout="scroll"
+          :globalFilterFields="['name', 'phone', 'email']"
+          v-model:filters="filters"
+          filterDisplay="menu"
+          class="p-datatable-gridlines"
+        >
+          <Column field="profile_image" header="ছবি">
+            <template #body="slotProps">
+              <div class="h-10 w-10 rounded-full overflow-hidden border-2 border-emerald-200 dark:border-emerald-700">
+                <img
+                  :src="slotProps.data.profile_image ? '/storage/' + slotProps.data.profile_image : 'https://randomuser.me/api/portraits/men/1.jpg'"
+                  :alt="slotProps.data.name"
+                  class="h-full w-full object-cover"
+                />
               </div>
-              <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3 class="text-lg leading-6 font-medium text-gray-900">
-                  এডমিন ডিলিট করুন
-                </h3>
-                <div class="mt-2">
-                  <p class="text-sm text-gray-500">
-                    আপনি কি নিশ্চিত যে আপনি এই এডমিন ডিলিট করতে চান? এই কাজটি অপরিবর্তনীয়।
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-            <button
-              @click="deleteAdmin"
-              type="button"
-              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-              ডিলিট করুন
-            </button>
-            <button
-              @click="showModal = false"
-              type="button"
-              class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-              বাতিল করুন
-            </button>
+            </template>
+          </Column>
+
+          <Column field="name" header="নাম" :sortable="true" :filter="true" filterPlaceholder="নাম খুঁজুন">
+          </Column>
+
+          <Column field="phone" header="ফোন নম্বর" :sortable="true" :filter="true" filterPlaceholder="ফোন নম্বর খুঁজুন">
+          </Column>
+
+          <Column field="email" header="ইমেইল" :sortable="true" :filter="true" filterPlaceholder="ইমেইল খুঁজুন">
+          </Column>
+
+          <Column field="designation" header="পদবি" :sortable="true" :filter="true" filterMatchMode="equals">
+            <template #body="slotProps">
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    :class="getDesignationClass(slotProps.data.designation)">
+                {{ getDesignationText(slotProps.data.designation) }}
+              </span>
+            </template>
+            <template #filter="{ filterModel }">
+              <Dropdown
+                v-model="filterModel.value"
+                :options="designationOptions"
+                optionLabel="name"
+                optionValue="value"
+                placeholder="পদবি বাছাই করুন"
+                class="p-column-filter"
+                showClear
+              />
+            </template>
+          </Column>
+
+          <Column header="একশন">
+  <template #body="slotProps">
+    <div class="flex space-x-2">
+      <Toast />
+      <ConfirmPopup></ConfirmPopup>
+      <Dialog v-model:visible="showModal" :style="{width: '450px'}" header="এডমিন ডিলিট করুন" :modal="true">
+        <div class="flex items-start">
+          <i class="pi pi-exclamation-triangle mr-3 text-red-500" style="font-size: 2rem"></i>
+          <div>
+            <p class="text-sm text-gray-500">
+              আপনি কি নিশ্চিত যে আপনি এই এডমিন ডিলিট করতে চান? এই কাজটি অপরিবর্তনীয়।
+            </p>
           </div>
         </div>
-      </div>
+        <template #footer>
+          <Button label="বাতিল করুন" icon="pi pi-times" class="p-button-text" @click="showModal = false" />
+          <Button label="ডিলিট করুন" icon="pi pi-check" class="p-button-danger" @click="deleteAdmin" />
+        </template>
+      </Dialog>
+      <SplitButton
+        label="সংশোধন"
+        @click="editUser(slotProps.data.id)"
+        :model="getActionItems(slotProps.data.id)"
+        class="p-button-sm"
+      />
     </div>
-  </div>
+  </template>
+</Column>
+        </DataTable>
 
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        <!-- Delete Confirmation Dialog -->
 
-    <!-- Pagination -->
-    <div class="flex items-center justify-between mt-6">
-      <div class="flex items-center">
-        <span class="text-sm text-gray-700 dark:text-gray-300">
-          মোট <span class="font-medium">৫০</span> জন ইউজারের মধ্যে <span class="font-medium">১-৫</span> দেখাচ্ছে
-        </span>
       </div>
-      <div class="flex items-center space-x-2">
-        <button class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
-          আগের পেজ
-        </button>
-        <button class="px-3 py-1 rounded-md bg-emerald-600 text-white hover:bg-emerald-700">
-          ১
-        </button>
-        <button class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-          ২
-        </button>
-        <button class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-          ৩
-        </button>
-        <button class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700">
-          পরের পেজ
-        </button>
-      </div>
-    </div>
-  </div>
-</AuthenticatedLayout>
-</template>
+    </AuthenticatedLayout>
+  </template>
 
 <script setup>
 import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
-import { Link } from '@inertiajs/vue3';
+import { Link, router } from '@inertiajs/vue3';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { router } from '@inertiajs/vue3';
+
+// PrimeVue Components
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import InputText from 'primevue/inputtext';
+import Dropdown from 'primevue/dropdown';
+import Button from 'primevue/button';
+import Dialog from 'primevue/dialog';
+import Toast from 'primevue/toast';
+import ConfirmPopup from 'primevue/confirmpopup';
+import SplitButton from 'primevue/splitbutton';
+import { useToast } from "primevue/usetoast";
+import { useConfirm } from "primevue/useconfirm";
+
+const toast = useToast();
+const confirm = useConfirm();
+const showModal = ref(false);
+const selectedUserId = ref(null);
+
+const editUser = (userId) => {
+  router.visit(route('user_create_for_admin.admin_user_edit', userId));
+};
+
+const viewUser = (userId) => {
+  // Implement view user functionality
+  toast.add({ severity: 'info', summary: 'View', detail: 'Viewing user details', life: 3000 });
+};
+
+const confirmDelete = (userId) => {
+  adminIdToDelete.value = userId;
+  showModal.value = true;
+};
+const deleteAdmin = () => {
+  // Inertia.js ব্যবহার করে ডিলিট রিকোয়েস্ট পাঠানো
+  router.delete(route('user_create_for_admin.destroy', adminIdToDelete.value), {
+    onSuccess: () => {
+      toast.add({
+        severity: 'success',
+        summary: 'সফল',
+        detail: 'এডমিন সফলভাবে ডিলিট করা হয়েছে',
+        life: 3000
+      });
+    },
+    onError: () => {
+      toast.add({
+        severity: 'error',
+        summary: 'ত্রুটি',
+        detail: 'এডমিন ডিলিট করতে সমস্যা হয়েছে',
+        life: 3000
+      });
+    }
+  });
+  showModal.value = false;
+};
+
+const checkHistory = (userId) => {
+  // Implement check history functionality
+  toast.add({ severity: 'info', summary: 'History', detail: 'Checking user history', life: 3000 });
+};
+
+const getActionItems = (userId) => {
+  return [
+    {
+      label: 'ভিউ',
+      icon: 'pi pi-eye',
+      command: () => {
+        viewUser(userId);
+      }
+    },
+    {
+      label: 'ডিলিট',
+      icon: 'pi pi-trash',
+      command: () => {
+        confirmDelete(userId);
+      }
+    },
+    {
+      label: 'চেক হিস্টরি',
+      icon: 'pi pi-history',
+      command: () => {
+        checkHistory(userId);
+      }
+    }
+  ];
+};
+
+const FilterMatchMode = {
+  STARTS_WITH: 'startswith',
+  CONTAINS: 'contains',
+  EQUALS: 'equals',
+  DATE_IS: 'dateIs'
+};
 
 const admins = ref([]);
+
+// Designation options for dropdown filter
+const designationOptions = ref([
+  { name: 'সুপার এডমিন', value: 1 },
+  { name: 'সহ সুপার এডমিন', value: 2 },
+  { name: 'বোর্ড এডমিন', value: 3 }
+]);
+
+// Initialize filters
+const filters = ref({
+  'global': { value: null, matchMode: FilterMatchMode.CONTAINS },
+  'name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+  'phone': { value: null, matchMode: FilterMatchMode.CONTAINS },
+  'email': { value: null, matchMode: FilterMatchMode.CONTAINS },
+  'designation': { value: null, matchMode: FilterMatchMode.EQUALS }
+});
 
 onMounted(() => {
   fetchAdmins();
@@ -235,36 +274,119 @@ const getDesignationClass = (designation) => {
   }
 };
 
-
-
-const showModal = ref(false);
 const adminIdToDelete = ref(null);
-
-const confirmDelete = (id) => {
-  adminIdToDelete.value = id;
-  showModal.value = true;
-};
-
-const deleteAdmin = () => {
-  // Inertia.js ব্যবহার করে ডিলিট রিকোয়েস্ট পাঠানো
-  router.delete(route('user_create_for_admin.destroy', adminIdToDelete.value));
-  showModal.value = false;
-};
-
-
-
-
-
-
-// আপনি এখানে ডাটা যোগ করতে পারেন
 </script>
 
-<style scoped>
-.font-arabic {
-  font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
-}
+  <style>
+  .font-arabic {
+    font-family: 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+  }
 
-.islamic-pattern {
-  background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-}
-</style>
+  .islamic-pattern {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2310b981' fill-opacity='0.2'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* PrimeVue DataTable customization */
+  .p-datatable .p-datatable-thead > tr > th {
+    background-color: #ffffff !important;
+    color: #333333 !important;
+    padding: 0.75rem;
+    font-weight: 600;
+    border-bottom: 1px solid #e5e7eb;
+    border-right: 1px solid #e5e7eb;
+  }
+
+  .p-datatable .p-datatable-thead > tr > th:last-child {
+    border-right: none;
+  }
+
+  .p-datatable .p-datatable-tbody > tr {
+    background-color: #ffffff;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td {
+    padding: 0.75rem;
+    text-align: center;
+    border-right: 1px solid #f3f4f6;
+  }
+
+  .p-datatable .p-datatable-tbody > tr > td:last-child {
+    border-right: none;
+  }
+
+  .p-datatable .p-paginator {
+    padding: 1rem;
+  }
+
+  .p-datatable .p-datatable-header {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-bottom: none;
+    padding: 1rem;
+    font-weight: 700;
+  }
+
+  .p-datatable .p-datatable-footer {
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-top: none;
+    padding: 1rem;
+    font-weight: 700;
+  }
+
+  /* Column filter styles */
+  .p-column-filter {
+    width: 100%;
+  }
+
+  .p-column-filter-menu-button {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .p-column-filter-overlay {
+    min-width: 200px;
+  }
+
+  /* Dark mode support */
+  .dark .p-datatable .p-datatable-thead > tr > th {
+    background-color: #1f2937 !important;
+    color: #e5e7eb !important;
+    border-color: #374151;
+  }
+
+  .dark .p-datatable .p-datatable-tbody > tr {
+    background-color: #111827;
+    border-color: #374151;
+  }
+
+  .dark .p-datatable .p-datatable-tbody > tr > td {
+    border-color: #374151;
+    color: #e5e7eb;
+  }
+
+  .dark .p-datatable .p-paginator {
+    background-color: #1f2937;
+    color: #e5e7eb;
+  }
+
+  .dark .p-dropdown-panel {
+    background-color: #1f2937;
+    color: #e5e7eb;
+  }
+
+  .dark .p-dropdown-item {
+    color: #e5e7eb;
+  }
+
+  .dark .p-dropdown-item:hover {
+    background-color: #374151;
+  }
+
+  .dark .p-inputtext {
+    background-color: #1f2937;
+    color: #e5e7eb;
+    border-color: #374151;
+  }
+  </style>

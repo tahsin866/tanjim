@@ -1,16 +1,19 @@
 <?php
 use App\Http\Controllers\MarhalaController;
 use App\Http\Controllers\Admin\Auth\RegisteredUserController;
+use App\Http\Controllers\markazChangeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\SubjectSettingsController;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\teacherController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MarhalaListController;
 use Inertia\Inertia;
 use App\Models\admin\marhala_for_admin\Marhala;
 use App\Http\Controllers\ExamSetupController;
-
+use App\Http\Controllers\Auth\madrasha_check_for_userController;
+use App\Http\Controllers\Auth\userRegisteredUserController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -37,8 +40,6 @@ Route::prefix('api')->group(function () {
     Route::get('/subject-marhala-counts', [MarhalaController::class, 'getSubjectMarhalaStats']);
 });
 
-Route::get('Mrahala_for_Admin/marhala_edit/{marhala}', [MarhalaController::class, 'edit'])
-    ->name('Mrahala_for_Admin.marhala_edit');
 
     Route::post('/subject-settings', [SubjectSettingsController::class, 'store'])
     ->name('subject-settings.store');
@@ -79,15 +80,28 @@ Route::get('Mrahala_for_Admin/marhala_edit/{marhala}', [MarhalaController::class
 
     Route::get('/api/admins', [ProfileController::class, 'getAdmins'])->name('api.admins');
 
-
-// রাউট ঠিক করুন - api প্রিফিক্স যোগ করুন
-
-
-
+    Route::post('/teacher-store', [teacherController::class, 'techerStore'])->name('teacher.store');
+    Route::post('/old-teacher-store', [teacherController::class, 'OldtecherStore'])->name('Oldteacher.store');
+Route::delete('/negran-mumtahin/delete/{id}', [teacherController::class, 'destroy'])->name('Negran_Mumtahin.delete');
 
 
 
 
+
+
+    Route::post('/markaz-exchange', [markazChangeController::class, 'MarkazStore'])->name('markaz.exchange.store');
+
+
+    Route::post('madrasha_check_for_user', [madrasha_check_for_userController::class, 'check'])->name('madrasha.check');
+
+
+    Route::get('madrasha_check_for_user', function () {
+        return inertia::render('Auth/madrasha_check_for_user');
+    })->name('madrasha_check_for_user');
+
+
+    Route::get('register', [userRegisteredUserController::class, 'create'])->middleware('check.madrasha.access')
+    ->name('register');
 
 
 

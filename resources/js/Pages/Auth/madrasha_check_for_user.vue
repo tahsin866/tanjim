@@ -1,15 +1,13 @@
 <script setup>
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import { Head, Link, useForm } from '@inertiajs/vue3';
+import InputText from 'primevue/inputtext';
+import Button from 'primevue/button';
+import Card from 'primevue/card';
+import Message from 'primevue/message';
 
 const form = useForm({
     ElhaqNo: '',
     Mobile: '',
-
 });
 
 const submit = () => {
@@ -17,63 +15,76 @@ const submit = () => {
         onFinish: () => form.reset('password', 'password_confirmation')
     });
 };
-
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="madrasha_check_for_user" />
+    <Head title="madrasha_check_for_user" />
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="ElhaqNo" value="ইলহাক নম্বর" />
-
-                <TextInput
-                    id="ElhaqNo"
-                    type="text"
-                        class="mt-1 block w-full  rounded-sm"
-                    v-model="form.ElhaqNo"
-                    required
-                    autofocus
-                    autocomplete="ElhaqNo"
-                />
-
-                <InputError class="mt-2" :message="form.errors.ElhaqNo" />
-            </div>
-
-            <div>
-                <InputLabel for="Mobile" value="মোবইল নম্বর" />
-
-                <TextInput
-                    id="Mobile"
-                    type="text"
-                    class="mt-1 block w-full  rounded-sm"
-                    v-model="form.Mobile"
-                    required
-                    autofocus
-                    autocomplete="Mobile"
-                />
-
-                <InputError class="mt-2" :message="form.errors.Mobile" />
-            </div>
-
-
-            <div class="mt-4 flex items-center justify-end">
-                <!-- <Link
-                    :href="route('admin.login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                >
-                    Already registered?
-                </Link> -->
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    অনুন্ধান করুন
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+    <div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div class="w-full max-w-md">
+            <Card class="p-4 shadow-md">
+                <template #title>
+                    <div class="text-center text-xl font-bold text-emerald-700 mb-4">
+                        মাদরাসা তথ্য অনুসন্ধান
+                    </div>
+                </template>
+                <template #content>
+                    <form @submit.prevent="submit">
+                        <div class="field mb-4">
+                            <label for="ElhaqNo" class="block text-sm font-medium text-gray-700 mb-1">ইলহাক নম্বর</label>
+                            <span class="p-input-icon-left w-full">
+                                <i class="pi pi-id-card" />
+                                <InputText
+                                    id="ElhaqNo"
+                                    v-model="form.ElhaqNo"
+                                    placeholder="ইলহাক নম্বর লিখুন"
+                                    class="w-full p-inputtext-sm"
+                                    required
+                                    autofocus
+                                />
+                            </span>
+                            <Message v-if="form.errors.ElhaqNo" severity="error" :text="form.errors.ElhaqNo" class="mt-2 w-full" />
+                        </div>
+                        <div class="field mb-4">
+                            <label for="Mobile" class="block text-sm font-medium text-gray-700 mb-1">মোবাইল নম্বর</label>
+                            <span class="p-input-icon-left w-full">
+                                <i class="pi pi-mobile" />
+                                <InputText
+                                    id="Mobile"
+                                    v-model="form.Mobile"
+                                    placeholder="মোবাইল নম্বর লিখুন"
+                                    class="w-full p-inputtext-sm"
+                                    required
+                                />
+                            </span>
+                            <Message v-if="form.errors.Mobile" severity="error" :text="form.errors.Mobile" class="mt-2 w-full" />
+                        </div>
+                        <div class="flex justify-end mt-6">
+                            <Button
+                                type="submit"
+                                label="অনুসন্ধান করুন"
+                                icon="pi pi-search"
+                                severity="success"
+                                :loading="form.processing"
+                                :disabled="form.processing"
+                                class="p-button-sm"
+                            />
+                        </div>
+                    </form>
+                </template>
+            </Card>
+        </div>
+    </div>
 </template>
+
+<style scoped>
+.p-card {
+    font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+.p-button {
+    font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+.p-inputtext {
+    font-family: 'SolaimanLipi', Arial, sans-serif;
+}
+</style>
