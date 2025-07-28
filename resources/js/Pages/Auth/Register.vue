@@ -346,7 +346,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <Head title="নিবন্ধন - দস্তাবেজ ব্যবস্থাপনা সিস্টেম" />
+  <Head title="নিবন্ধন - দস্তরবন্দির জন্য  ব্যবস্থাপনা সিস্টেম" />
 
   <div class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 relative overflow-hidden">
     <div class="absolute inset-0 opacity-5">
