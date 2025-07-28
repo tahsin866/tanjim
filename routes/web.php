@@ -66,6 +66,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::post('madrasha_check_for_user', [madrasha_check_for_userController::class, 'check'])->name('madrasha.check');
 
 
+    // Registration Routes
+    Route::get('register', function () {
+        return inertia::render('Auth/Register');
+    })->name('register');
+
     Route::get('Register', function () {
         return inertia::render('Auth/Register');
     })->name('Register');

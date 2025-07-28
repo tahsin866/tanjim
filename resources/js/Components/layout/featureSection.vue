@@ -152,7 +152,7 @@
                   icon="pi pi-user-plus"
                   iconPos="right"
                   class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 border-0 p-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                  @click="$inertia.visit(route('Register'))" />
+                  @click="$inertia.visit(route('register'))" />
               </div>
             </template>
           </Card>
