@@ -4,7 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
-use App\Models\admin_permission;
+
 
 class HandleInertiaRequests extends Middleware
 {
@@ -32,20 +32,8 @@ class HandleInertiaRequests extends Middleware
     {
         $admin = $request->user('admin');
         
-        // Load permissions if admin is logged in
-        if ($admin) {
-            $permissions = admin_permission::where('admin_id', $admin->id)->first();
-            if ($permissions) {
-                // Convert to array and remove unnecessary fields
-                $permissionsArray = collect($permissions->toArray())
-                    ->except(['id', 'admin_id', 'created_at', 'updated_at'])
-                    ->toArray();
-                
-                // Add permissions to admin object
-                $admin = $admin->toArray();
-                $admin['permissions'] = $permissionsArray;
-            }
-        }
+        // Permissions are now stored directly in the admin model as JSON
+        // No need to load from separate table
         
         return [
             ...parent::share($request),

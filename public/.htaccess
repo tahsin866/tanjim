@@ -1,3 +1,92 @@
+# Security Headers
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options nosniff
+    Header always set X-Frame-Options DENY
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+</IfModule>
+
+# CORS Headers for Assets
+<FilesMatch "\.(js|css|woff|woff2|ttf|eot|svg|png|jpg|jpeg|gif|ico)$">
+    <IfModule mod_headers.c>
+        Header set Access-Control-Allow-Origin "*"
+        Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+        Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+        Header set Cache-Control "max-age=31536000, public"
+        Header unset ETag
+        FileETag None
+    </IfModule>
+</FilesMatch>
+
+# Special handling for build assets (for 499 error fix)
+<FilesMatch "^(app-|AuthenticatedLayout-|GuestLayout-|PrimaryButton-).*\.(css|js)$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "max-age=31536000, public"
+        Header set Access-Control-Allow-Origin "*"
+        Header unset ETag
+        FileETag None
+        # Force correct MIME types
+        <FilesMatch "\.css$">
+            Header set Content-Type "text/css"
+        </FilesMatch>
+        <FilesMatch "\.js$">
+            Header set Content-Type "application/javascript"
+        </FilesMatch>
+    </IfModule>
+</FilesMatch>
+
+# Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/xml
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/json
+</IfModule>
+
+# Browser Caching
+<IfModule mod_expires.c>
+    ExpiresActive on
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType application/x-javascript "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    ExpiresByType application/vnd.ms-fontobject "access plus 1 year"
+    ExpiresByType font/truetype "access plus 1 year"
+</IfModule>
+
+# Cache Control Headers
+<FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$">
+    <IfModule mod_headers.c>
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </IfModule>
+</FilesMatch>
+
+# Deny access to sensitive files
+<FilesMatch "\.(env|log|htaccess|htpasswd)$">
+    Require all denied
+</FilesMatch>
+
+# Deny access to specific directories
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^(vendor|storage|bootstrap|config|database|resources|routes|tests)/ - [F,L]
+</IfModule>
+
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
@@ -13,6 +102,10 @@
     RewriteCond %{HTTP:x-xsrf-token} .
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
+    # Serve static files directly (important for Vite assets)
+    RewriteCond %{REQUEST_FILENAME} -f
+    RewriteRule ^(.*)$ - [L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
@@ -23,3 +116,4 @@
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
+

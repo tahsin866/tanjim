@@ -3,9 +3,6 @@
       <!-- Navbar -->
       <Navbar />
 
-      <!-- Hero Section -->
-      <hero_section />
-
       <!-- Features Section -->
       <featureSection />
 
@@ -22,7 +19,6 @@
 
   <script setup>
   import Navbar from '@/Components/layout/Navbar.vue';
-  import hero_section from '@/Components/layout/hero_section.vue';
   import featureSection from '@/Components/layout/featureSection.vue';
   import contact_section from '@/Components/layout/contact_section.vue';
   import FAQVideoSection from '@/Components/layout/FAQVideoSection.vue';

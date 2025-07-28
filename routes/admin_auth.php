@@ -1,72 +1,60 @@
 <?php
 
-use App\Http\Controllers\Admin\auth\AdminAuthenticatedSessionController;
-// use App\Http\Controllers\Auth\ConfirmablePasswordController;
-// use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
-// use App\Http\Controllers\Auth\NewPasswordController;
-// use App\Http\Controllers\Auth\PasswordController;
-// use App\Http\Controllers\Auth\PasswordResetLinkController;
-use App\Http\Controllers\Admin\auth\AdminRegisteredUserController;
-use App\Http\Controllers\dashboardController;
-// use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\AdminLoginController;
+use App\Http\Controllers\Auth\AdminRegisterController;
+use App\Http\Controllers\Admin\AdminUserController;
+use App\Http\Controllers\Admin\DocumentApplicationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
-Route::prefix('admin')->middleware('guest:admin')->group(function () {
-    Route::get('register', [AdminRegisteredUserController::class, 'create'])->name('admin.register');
-    Route::post('register', [AdminRegisteredUserController::class, 'store']);
-    Route::get('login', [AdminAuthenticatedSessionController::class, 'create'])->name('admin.login');
-    Route::post('login', [AdminAuthenticatedSessionController::class, 'store']);
+/*
+|--------------------------------------------------------------------------
+| Admin Authentication Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register admin authentication routes for your
+| application. These routes are loaded by the RouteServiceProvider.
+|
+*/
 
+Route::prefix('admin')->name('admin.')->group(function () {
 
-    // Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-    //     ->name('password.request');
+    // Guest admin routes (not authenticated)
+    Route::middleware('guest:admin')->group(function () {
+        // Login Routes
+        Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('login');
+        Route::post('/login', [AdminLoginController::class, 'login']);
 
-    // Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-    //     ->name('password.email');
+        // Registration Routes
+        Route::get('/register', [AdminRegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::post('/register', [AdminRegisterController::class, 'register']);
+    });
 
-    // Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-    //     ->name('password.reset');
+    // Authenticated admin routes
+    Route::middleware('auth:admin')->group(function () {
+        // Logout Route
+        Route::post('/logout', [AdminLoginController::class, 'logout'])->name('logout');
 
-    // Route::post('reset-password', [NewPasswordController::class, 'store'])
-    //     ->name('password.store');
+        // Dashboard Route
+        Route::get('/dashboard', function () {
+            return Inertia::render('admin/admin_Dashboard');
+        })->name('admin_Dashboard');
 
+        // Super Admin only routes
+        Route::middleware('super.admin')->group(function () {
+            Route::resource('users', AdminUserController::class)->except(['show']);
+        });
 
+        // Document Applications routes - All admins can view, specific permissions for actions
+        Route::middleware(['auth:admin'])->prefix('documents')->name('documents.')->group(function () {
+            Route::get('/applications', [DocumentApplicationController::class, 'index'])->name('applications.index');
+            Route::get('/applications/{user}', [DocumentApplicationController::class, 'show'])->name('applications.show');
+            Route::patch('/applications/{user}/approve', [DocumentApplicationController::class, 'approve'])->name('applications.approve');
+            Route::patch('/applications/{user}/reject', [DocumentApplicationController::class, 'reject'])->name('applications.reject');
+            Route::patch('/applications/{user}/suspend', [DocumentApplicationController::class, 'suspend'])->name('applications.suspend');
+            Route::delete('/applications/{user}/delete', [DocumentApplicationController::class, 'destroy'])->name('applications.delete');
+        });
 
-
-
-});
-
-Route::prefix('admin')->middleware('auth:admin')->group(function () {
-    // Route::get('verify-email', EmailVerificationPromptController::class)
-    //     ->name('verification.notice');
-
-    // Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-    //     ->middleware(['signed', 'throttle:6,1'])
-    //     ->name('verification.verify');
-
-    // Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-    //     ->middleware('throttle:6,1')
-    //     ->name('verification.send');
-
-    // Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-    //     ->name('password.confirm');
-
-    // Route::post('confirm-password', [ConfirmablePasswordController::class, 'store']);
-
-    // Route::put('password', [PasswordController::class, 'update'])->name('password.update');
-
-    Route::get('/admin_Dashboard', [dashboardController::class, 'permission'])->name('admin.admin_Dashboard');
-
-
-    Route::get('/admin_Dashboard', function () {
-        return Inertia::render('admin/admin_Dashboard');
-    })->name('admin.admin_Dashboard');
-
-
-
-    Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])
-        ->name('admin.logout');
+    });
 });

@@ -21,10 +21,14 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
-
         admin::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',
+        ]);
+
+        // Call SessionYearSeeder
+        $this->call([
+            SessionYearSeeder::class,
         ]);
     }
 }

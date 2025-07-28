@@ -1,44 +1,243 @@
 <template>
-    <section
-         style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
-    class="py-16 bg-gradient-to-r from-emerald-50 to-emerald-100">
-      <div class="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+  <section
+    style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
+    class="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 relative overflow-hidden">
 
-        <!-- Result Search Panel -->
-        <div class="bg-white p-8 rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center border-r-4 border-emerald-600">
-          <div class="w-16 h-16 mr-6 flex-shrink-0">
-            <svg class="w-full h-full text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M19.5 3h-15A1.5 1.5 0 003 4.5v15A1.5 1.5 0 004.5 21h15a1.5 1.5 0 001.5-1.5v-15A1.5 1.5 0 0019.5 3zm-7 15.75a.75.75 0 110-1.5.75.75 0 010 1.5zm1-4.5v1.5h-2v-1.5a3 3 0 113-3h-1.5a1.5 1.5 0 10-1.5 1.5v1.5z"/>
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-2xl font-bold text-emerald-800 mb-2">ফলাফল অনুসন্ধান</h3>
-            <p class="text-gray-600 mb-4">৪৭ তম কেন্দ্রীয় পরীক্ষার সকল মারহালার ফলাফল দেখুন</p>
-            <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-md transition-colors duration-300 font-medium">
-              ফলাফল দেখুন
-              <span class="inline-block ml-2">→</span>
-            </button>
-          </div>
-        </div>
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-5 pointer-events-none select-none">
+      <div class="absolute top-10 left-10 w-32 h-32 bg-emerald-400 rounded-full blur-3xl"></div>
+      <div class="absolute bottom-10 right-10 w-40 h-40 bg-teal-400 rounded-full blur-3xl"></div>
+    </div>
 
-        <!-- Student Portal Panel -->
-        <div class="bg-white p-8 rounded-md shadow-md hover:shadow-lg transition-shadow duration-300 flex items-center border-r-4 border-emerald-600">
-          <div class="w-16 h-16 mr-6 flex-shrink-0">
-            <svg class="w-full h-full text-emerald-600" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 14l9-5-9-5-9 5 9 5z"/>
-              <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-2xl font-bold text-emerald-800 mb-2">তালিবুল ইলম পোর্টাল</h3>
-            <p class="text-gray-600 mb-4">শিক্ষার্থীর প্রোফাইল ব্যবস্থাপনা ও সনদ প্রাপ্তির আবেদন</p>
-            <button class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-md transition-colors duration-300 font-medium">
-              প্রবেশ করুন
-              <span class="inline-block ml-2">→</span>
-            </button>
-          </div>
-        </div>
-
+    <div class="container mx-auto px-4 relative z-10">
+      <!-- Section Header -->
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4">
+          <i class="pi pi-heart text-emerald-600 mr-3"></i>
+          চ্যারিটি ও দান কার্যক্রম
+        </h2>
+        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+          আবনায়ে জামিয়া ফরিদাবাদের পক্ষ থেকে স্বেচ্ছাসেবী ও দানমূলক নানা কার্যক্রমে অংশগ্রহণ করুন
+        </p>
       </div>
-    </section>
-  </template>
+
+      <!-- Charity Project Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div
+          v-for="(project, index) in charityProjects"
+          :key="project.title"
+          class="transform hover:scale-[1.03] transition-all duration-500"
+        >
+          <Card class="h-full shadow-lg hover:shadow-2xl transition-all duration-500 border-0 overflow-hidden group">
+            <template #header>
+              <div class="relative">
+                <img
+                  :src="project.image"
+                  :alt="project.title"
+                  class="w-full h-52 object-cover rounded-t-xl group-hover:scale-105 transition-transform duration-500"
+                />
+                <div class="absolute top-2 left-2 bg-emerald-600 text-white text-xs px-3 py-1 rounded-full shadow animate-pulse">
+                  {{ project.category }}
+                </div>
+              </div>
+            </template>
+            <template #content>
+              <div class="p-5 flex flex-col h-full">
+                <h3 class="text-xl font-bold text-emerald-800 mb-2 font-bangla">{{ project.title }}</h3>
+                <p class="text-gray-700 font-bangla mb-4 flex-1">{{ project.description }}</p>
+                <div class="flex items-center justify-between mt-2">
+                  <Button
+                    :label="project.buttonText"
+                    icon="pi pi-handshake"
+                    class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-0 px-5 py-2 font-semibold shadow group-hover:scale-105 transition-transform duration-300"
+                    @click="() => handleCharityAction(project)"
+                  />
+                  <span class="text-xs text-gray-500">{{ project.update }}</span>
+                </div>
+              </div>
+            </template>
+          </Card>
+        </div>
+      </div>
+
+      <!-- Quick Actions / Links -->
+      <div class="mt-14">
+  <h3 class="text-2xl font-bold text-center text-gray-800 mb-8 font-bangla">
+    <i class="pi pi-link text-emerald-600 mr-2"></i>
+    আরও কার্যক্রম
+  </h3>
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div
+      v-for="(link, index) in quickLinks"
+      :key="link.title"
+      class="relative group transition-all duration-400 transform hover:-translate-y-2"
+      :style="{ animationDelay: `${index * 100}ms` }"
+    >
+      <Card
+        class="text-center shadow-xl hover:shadow-2xl transition-all duration-400 border-0 cursor-pointer group rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 border border-emerald-100 hover:border-emerald-300"
+      >
+        <template #content>
+          <div class="p-6 relative">
+            <!-- Decorative Islamic Motif Top Right -->
+            <svg class="absolute top-0 right-0 w-14 h-10 opacity-10 pointer-events-none" viewBox="0 0 60 24" fill="none">
+              <ellipse cx="30" cy="12" rx="25" ry="6" fill="#10b981" fill-opacity="0.15"/>
+              <ellipse cx="30" cy="12" rx="16" ry="3" fill="#14b8a6" fill-opacity="0.10"/>
+            </svg>
+            <!-- Decorative Motif Bottom Left -->
+            <svg class="absolute bottom-0 left-0 w-14 h-10 opacity-10 pointer-events-none rotate-180" viewBox="0 0 60 24" fill="none">
+              <ellipse cx="30" cy="12" rx="25" ry="6" fill="#10b981" fill-opacity="0.15"/>
+              <ellipse cx="30" cy="12" rx="16" ry="3" fill="#14b8a6" fill-opacity="0.10"/>
+            </svg>
+            <div class="flex justify-center mb-4">
+              <span class="inline-flex items-center justify-center rounded-full p-2 bg-gradient-to-br from-emerald-200 to-teal-100 shadow-lg border-4 border-white group-hover:scale-110 transition-transform duration-300">
+                <Avatar
+                  :icon="link.icon"
+                  :class="link.avatarClass + ' text-2xl'"
+                  size="large"
+                />
+              </span>
+            </div>
+            <h4 class="text-base font-bold text-emerald-800 mb-1 font-bangla tracking-wide group-hover:text-emerald-600 transition-colors duration-300">
+              {{ link.title }}
+            </h4>
+            <p v-if="link.description" class="text-xs text-gray-500 font-bangla mb-2">{{ link.description }}</p>
+            <!-- Bottom border with Islamic color accent -->
+            <div class="mt-4 h-1 w-1/2 mx-auto rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 group-hover:from-emerald-500 group-hover:to-teal-500 transition-all duration-300"></div>
+          </div>
+        </template>
+      </Card>
+    </div>
+  </div>
+</div>
+    </div>
+  </section>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import Card from 'primevue/card'
+import Button from 'primevue/button'
+import Avatar from 'primevue/avatar'
+
+const charityProjects = ref([
+  {
+    title: 'বৃক্ষরোপণ কর্মসূচি',
+    description: 'পরিবেশ রক্ষায় ও গ্রিন ক্যাম্পাস গড়ে তুলতে বৃক্ষরোপণের উদ্যোগ। চলতি মাসে ২০০টি চারা রোপণ সম্পন্ন হয়েছে।',
+    image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
+    category: 'পরিবেশ',
+    buttonText: 'অংশ নিন',
+    update: 'সর্বশেষ আপডেট: জুলাই ২০২৫'
+  },
+  {
+    title: 'শীতার্তদের মাঝে বস্ত্র বিতরণ',
+    description: 'শীত মৌসুমে অসহায় ও দরিদ্রদের মাঝে কম্বল ও শীতবস্ত্র বিতরণ করা হচ্ছে। আপনিও অংশ নিতে এবং দান করতে পারেন।',
+    image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80',
+    category: 'দাতব্য',
+    buttonText: 'দান করুন',
+    update: 'সর্বশেষ আপডেট: জানুয়ারি ২০২৫'
+  },
+  {
+    title: 'জামিয়া ফরিদাবাদ ফান্ড',
+    description: 'প্রতিষ্ঠানের উন্নয়ন, ছাত্রদের বৃত্তি এবং জরুরী প্রয়োজনে অর্থ সহায়তার জন্য ফান্ড সংগ্রহ চলছে।',
+    image: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80',
+    category: 'ফান্ডরেইজিং',
+    buttonText: 'দান করুন',
+    update: 'সর্বশেষ আপডেট: জুলাই ২০২৫'
+  },
+  {
+    title: 'ফাংশনে দান কার্যক্রম',
+    description: 'বিভিন্ন মিলাদ, সভা ও ইসলামী অনুষ্ঠানে দানের মাধ্যমে সহযোগিতার সুযোগ।',
+    image: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?auto=format&fit=crop&w=600&q=80',
+    category: 'অনুষ্ঠান',
+    buttonText: 'অংশ নিন',
+    update: 'সর্বশেষ আপডেট: জুন ২০২৫'
+  }
+])
+
+const quickLinks = ref([
+  {
+    title: 'যোগাযোগ',
+    icon: 'pi pi-phone',
+    avatarClass: 'bg-green-100 text-green-600'
+  },
+  {
+    title: 'সহায়তা',
+    icon: 'pi pi-question-circle',
+    avatarClass: 'bg-purple-100 text-purple-600'
+  },
+  {
+    title: 'ছবি গ্যালারি',
+    icon: 'pi pi-images',
+    avatarClass: 'bg-blue-100 text-blue-600'
+  },
+  {
+    title: 'স্মৃতিচারণা',
+    icon: 'pi pi-pencil',
+    avatarClass: 'bg-orange-100 text-orange-600'
+  }
+])
+
+const handleCharityAction = (project) => {
+  alert(`"${project.title}" কার্যক্রমে অংশ নিতে কিংবা দান করতে অফিসে যোগাযোগ করুন অথবা নির্ধারিত ফর্ম পূরণ করুন।`);
+}
+</script>
+
+<style scoped>
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Staggered animation for quick links */
+.grid > div {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Custom card hover effects */
+.p-card:hover {
+  transform: translateY(-4px);
+}
+
+/* Gradient text effect */
+.gradient-text {
+  background: linear-gradient(135deg, #10b981, #14b8a6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Floating animation for background elements */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #10b981, #14b8a6);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #059669, #0d9488);
+}
+</style>
