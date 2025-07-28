@@ -2,6 +2,9 @@
 /node_modules
 /public/build
 /public/hot
+*.bat
+!dev-reset.bat
+!prod-build.bat
 /public/storage
 /storage/*.key
 /storage/pail

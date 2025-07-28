@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\userRegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -16,24 +17,34 @@ use Inertia\Inertia;
 Route::middleware('guest')->group(function () {
 
 
-    Route::post('register', [userRegisteredUserController::class, 'store']);
+    Route::post('register', [userRegisteredUserController::class, 'store'])
+        ->name('register');
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
+    Route::get('forgot-password', [ForgotPasswordController::class, 'showEmailForm'])
         ->name('password.request');
 
-    Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
+    Route::post('forgot-password', [ForgotPasswordController::class, 'sendOtp'])
         ->name('password.email');
 
-    Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-        ->name('password.reset');
+    Route::get('verify-otp', [ForgotPasswordController::class, 'showOtpForm'])
+        ->name('password.verify-otp');
 
-    Route::post('reset-password', [NewPasswordController::class, 'store'])
-        ->name('password.store');
+    Route::post('verify-otp', [ForgotPasswordController::class, 'verifyOtp'])
+        ->name('password.verify-otp.post');
+
+    Route::get('reset-password-form', [ForgotPasswordController::class, 'showResetForm'])
+        ->name('password.reset-form');
+
+    Route::post('reset-password-form', [ForgotPasswordController::class, 'resetPassword'])
+        ->name('password.reset-form.post');
+
+    Route::post('resend-otp', [ForgotPasswordController::class, 'resendOtp'])
+        ->name('password.resend-otp');
 
 
 

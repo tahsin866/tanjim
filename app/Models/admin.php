@@ -8,10 +8,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 
-class admin extends Authenticatable
+class Admin extends Authenticatable
 {
     //
-    use HasFactory, Notifiable;
+    use Notifiable;
 
     protected $guard = 'admin';
     /**
@@ -22,14 +22,18 @@ class admin extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'admin_roll',
-        'profile_image',
-        'nid',
-        'brn',
-        'phone',
-        'address',
-        'designation',
         'password',
+        'role',
+        'is_active',
+        'department',
+        'designation',
+        'phone',
+        'graduation_year',
+        'permissions',
+        'last_login_at',
+        'last_login_ip',
+        'created_by',
+        'updated_by',
     ];
 
     /**
@@ -52,15 +56,49 @@ class admin extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'permissions' => 'array',
+            'is_active' => 'boolean',
+            'last_login_at' => 'datetime',
         ];
     }
 
-
-
-    public function activity_log()
+    // Role methods
+    public function isSuperAdmin(): bool
     {
-        return $this->hasMany(activity_log::class, 'madrasha_id', 'id');
+        return $this->role === 'super_admin';
     }
+
+    public function isAdmin(): bool
+    {
+        return in_array($this->role, ['admin', 'super_admin']);
+    }
+
+    public function isModerator(): bool
+    {
+        return $this->role === 'moderator';
+    }
+
+    public function hasPermission(string $permission): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        return in_array($permission, $this->permissions ?? []);
+    }
+
+    // Relationships
+    public function creator()
+    {
+        return $this->belongsTo(Admin::class, 'created_by');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(Admin::class, 'updated_by');
+    }
+
+
 
 
 

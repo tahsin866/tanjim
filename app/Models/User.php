@@ -2,53 +2,36 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    const STATUS_PENDING = 'pending';
+    const STATUS_APPROVED = 'approved';
+    const STATUS_REJECTED = 'rejected';
+    const STATUS_SUSPENDED = 'suspended';
+
     protected $fillable = [
-        'name',
-        'admin_Designation',
-        'NID_no',
-        'Mobile_no',
-        'email',
+        'fullNameBangla',
+        'fullNameEnglish',
+        'fatherName',
+        'phoneNumber',
         'password',
-        'madrasha_id',
-        'custom_code',
-        'madrasha_name',
-        'thana',
-        'post',
-        'markaz_serial',
-            'Stage',
-                'MType'
+        'email',
+        'status',
+        'approved_at',
+        'approved_by',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -57,23 +40,11 @@ class User extends Authenticatable
         ];
     }
 
-
-    public function madrasha()
+    /**
+     * Get the user information associated with the user.
+     */
+    public function information()
     {
-        return $this->belongsTo(Madrasha::class, 'madrasha_id', 'id');
+        return $this->hasOne(UserInformation::class);
     }
-
-
-
-    public function activity_log()
-    {
-        return $this->hasMany(activity_log::class);
-    }
-
-    public function regStuInformation()
-{
-    return $this->hasMany(reg_stu_information::class, 'user_id');
-}
-
-
 }

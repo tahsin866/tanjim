@@ -27,7 +27,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'mobile_no' => ['required', 'string'],
+            'phoneNumber' => ['required', 'string'],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,11 +41,22 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (!Auth::attempt($this->only('mobile_no', 'password'), $this->boolean('remember'))) {
+        // First check if credentials are correct
+        if (!Auth::attempt($this->only('phoneNumber', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'mobile_no' => trans('auth.failed'),
+                'phoneNumber' => trans('auth.failed'),
+            ]);
+        }
+
+        // Check if user is suspended after successful credential verification
+        $user = Auth::user();
+        if ($user && $user->status === 'suspended') {
+            Auth::logout(); // Log out the user immediately
+            
+            throw ValidationException::withMessages([
+                'suspended' => 'আপনার অ্যাকাউন্ট সাসপেন্ড করা হয়েছে। আপনি লগইন করতে পারবেন না।',
             ]);
         }
 
@@ -80,6 +91,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('mobile_no')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('phoneNumber')).'|'.$this->ip());
     }
 }

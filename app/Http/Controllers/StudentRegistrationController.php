@@ -1,655 +1,220 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\reg_stu_information;
-use App\Models\reg_stu_information_log;
-use App\Models\MarkazAgreementMadrasa;
-use Illuminate\Support\Facades\Storage;
 
-use App\Models\student;
 use App\Models\User;
+use App\Models\UserInformation;
 use Illuminate\Http\Request;
-use MirazMac\BanglaString\Translator\BijoyToAvro\Translator;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-use App\Models\admin\marhala_for_admin\ExamFee;
-use App\Models\MarkazAgreement;
-use Illuminate\Support\Facades\DB;
 
 class StudentRegistrationController extends Controller
 {
-
-
-    public function editOldStudent($marhalaId, $roll, $reg_id)
-    {
-        // Find the student from students table
-        $student = Student::where('Roll', $roll)
-            ->where('reg_id', $reg_id)
-            ->first();
-
-        if (!$student) {
-            return redirect()->back()->with('error', 'ছাত্র খুঁজে পাওয়া যায়নি');
-        }
-
-        // Check if student already has data in reg_stu_informations table
-        $studentInfo = reg_stu_information::where('roll', $roll)
-            ->where('reg_id', $reg_id)
-            ->first();
-
-        // Create translator instance for displaying Bengali data
-        $translator = new Translator();
-
-        // Translate the student data
-        $student->Name = $translator->translate($student->Name);
-        $student->Father = $translator->translate($student->Father);
-        $student->Mother = $translator->translate($student->Mother ?? '');
-        $student->DateofBirth = $translator->translate($student->DateofBirth);
-
-        return Inertia::render('StudentRegistration/old_stu_reg_Form', [
-            'student' => $student,
-            'studentInfo' => $studentInfo,
-            'marhalaId' => $marhalaId ?? null
-        ]);
-    }
-
-
-
-
-
-
-    public function updateStudentInfo(Request $request)
-    {
-        $validated = $request->validate([
-            'roll' => 'required',
-            'reg_id' => 'required',
-            'name_bn' => 'required',
-            'name_en' => 'nullable',
-            'name_ar' => 'nullable',
-            'father_name_bn' => 'required',
-            'father_name_en' => 'nullable',
-            'father_name_ar' => 'nullable',
-            'mother_name_bn' => 'nullable',
-            'mother_name_en' => 'nullable',
-            'mother_name_ar' => 'nullable',
-            'BRN_no' => 'nullable',
-            'NID_no' => 'nullable',
-        ]);
-
-        // Update or create record in reg_stu_informations table
-        reg_stu_information::updateOrCreate(
-            ['roll' => $validated['roll'], 'reg_id' => $validated['reg_id']],
-            $validated
-        );
-
-        // Update mother's name in students table if provided
-        if (!empty($validated['mother_name_bn'])) {
-            Student::where('Roll', $validated['roll'])
-                ->where('reg_id', $validated['reg_id'])
-                ->update(['Mother' => $validated['mother_name_bn']]);
-        }
-
-        return redirect()->back()->with('success', 'ছাত্রের তথ্য সফলভাবে আপডেট করা হয়েছে');
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function getStudents()
-    {
-        $students = reg_stu_information::where('user_id', Auth::id())->select(
-            'id',
-            'student_image',
-            'name_bn',
-            'father_name_bn',
-            'current_madrasha',
-            'current_class',
-            'Date_of_birth',
-            'student_type',
-            'exam_name_Bn'
-        )->get();
-
-        // প্রতিটি ছাত্রের জন্য status এবং payment_status যোগ করা
-        foreach ($students as $student) {
-            // রেজিস্ট্রেশন স্ট্যাটাস
-            $log = reg_stu_information_log::where('reg_student_id', $student->id)
-                ->latest()
-                ->first();
-            $student->status = $log ? $log->status : null;
-
-            // পেমেন্ট স্ট্যাটাস
-            $payment = DB::table('student_reg_payments')
-                ->where('students_id', $student->id)
-                ->latest()
-                ->first();
-
-            $student->payment_status = $payment && $payment->payment_status == 1 ? 'পরিশোধিত' : 'অপরিশোধিত';
-            $student->is_paid = $payment && $payment->payment_status == 1;
-        }
-
-        return response()->json($students);
-    }
-
-
-
-
-
-
-
-    public function reg_submitApplication($id)
-    {
-        // 1️⃣ First check markaz_agreements table
-        $registration = reg_stu_information::find($id);
-        if (!$registration) {
-            return back()->withErrors(['error' => 'আবেদন পাওয়া যায়নি!']);
-        }
-
-        // 2️⃣ Now check schedule timing before anything else
-        $schedule = ExamFee::where('exam_setup_id', $registration->exam_id)
-            // ->where('schedule_type', 'মারকায আবেদন')
-            // ->where('is_active', true)
-            ->first();
-
-        if (!$schedule) {
-            return back()->withErrors(['error' => 'সময়সূচী পাওয়া যায়নি!']);
-        }
-
-        $currentDate = now();
-        $startDate = \Carbon\Carbon::parse($schedule->reg_date_from);
-        $endDate = \Carbon\Carbon::parse($schedule->reg_date_to);
-
-        if ($currentDate->lt($startDate)) {
-            return back()->withErrors(['error' => 'আবেদনের সময় শুরু হয়নি! ' . $startDate->format('d-m-Y') . ' তারিখে আবার চেষ্টা করুন।']);
-        }
-
-        if ($currentDate->gt($endDate)) {
-            return back()->withErrors(['error' => 'আবেদনের সময় শেষ! আগামী বছর আবার চেষ্টা করুন।']);
-        }
-
-
-
-        // 4️⃣ If all checks pass, then create activity log
-        reg_stu_information_log::create([
-            'reg_student_id' => $registration->id,
-            'user_id' => Auth::user()->id,
-            'status' => 'বোর্ড দাখিল',
-            'actor_type' => 'user',
-            'user_name' => Auth::user()->name,
-            'user_position' => Auth::user()->admin_Designation,
-            'admin_position' => null,
-            'admin_message' => null,
-            'admin_feedback_image' => null,
-            'created_at' => now(),
-            'updated_at' => now()
-        ]);
-
-        return back()->with('success', 'আবেদন সফলভাবে সাবমিট হয়েছে!');
-    }
-
-
-
-
-
-
-
-    // এডমিন পার্ট
-
-
-
-
-
-
-
-
-
-
-
-
-    public function getMarkazStudents()
-    {
-        $self = $this;
-
-        $students = reg_stu_information::select(
-            'reg_stu_informations.markaz_id as id',
-            'madrasha.MName as madrasha_Name',
-            'madrasha.ElhaqNo as Elhaq_no',
-            'madrasha.Mobile as Mobile',
-            'madrasha.DID',
-            'madrasha.DISID',
-            'madrasha.TID',
-            'division.Division as division_name',
-            'district.District as district_name',
-            'thana.Thana as thana_name',
-            'reg_stu_informations.exam_name_Bn'
-        )
-        ->selectRaw('COUNT(reg_stu_informations.id) as student_count')
-        ->leftJoin('madrasha', 'reg_stu_informations.markaz_id', '=', 'madrasha.id')
-        ->leftJoin('division', 'madrasha.DID', '=', 'division.id')
-        ->leftJoin('district', 'madrasha.DISID', '=', 'district.DesID')
-        ->leftJoin('thana', 'madrasha.TID', '=', 'thana.Thana_ID')
-        ->whereNotNull('reg_stu_informations.markaz_id')
-        ->groupBy(
-            'reg_stu_informations.markaz_id',
-            'reg_stu_informations.exam_name_Bn',
-            'madrasha.MName',
-            'madrasha.ElhaqNo',
-            'madrasha.Mobile',
-            'madrasha.DID',
-            'madrasha.DISID',
-            'madrasha.TID',
-            'division.Division',
-            'district.District',
-            'thana.Thana'
-        )
-        ->havingRaw('COUNT(reg_stu_informations.id) > 0')
-        ->get()
-        ->map(function ($item) use ($self) {
-            return [
-                'id' => $item->id,
-                'madrasha_Name' => $item->madrasha_Name,
-                'Elhaq_no' => $item->Elhaq_no,
-                'Mobile' => $item->Mobile,
-                'DID' => $item->DID,
-                'DISID' => $item->DISID,
-                'TID' => $item->TID,
-                'division_name' => $item->division_name,
-                'district_name' => $item->district_name,
-                'thana_name' => $item->thana_name,
-                'exam_name_Bn' => $item->exam_name_Bn,
-                'student_count' => $item->student_count,
-                'madrasha_code' => $self->getMadrashaCode($item->id)
-            ];
-        });
-
-        return response()->json($students);
-    }
-
-
-
-
-
-
-
-
-    // পাবলিক মেথড হিসেবে ডিফাইন করা
-    public function getMadrashaCode($markazId)
-    {
-        $user = User::whereHas('regStuInformation', function ($query) use ($markazId) {
-            $query->where('markaz_id', $markazId);
-        })
-        ->select('custom_code')
-        ->first();
-
-        return $user ? $user->custom_code : null;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public function getMarkazMadrasaList($markaz_id)
-    {
-        // Get all MRID values from stu_rledger_p table where MDID matches the markaz ID
-        $mridValues = DB::table('stu_rledger_p')
-            ->where('MDID', $markaz_id)
-            ->pluck('MRID')
-            ->unique()
-            ->toArray();
-
-        // Get madrashas where id matches any of the MRID values
-        $madrashaList = DB::table('madrasha')
-            ->whereIn('id', $mridValues)
-            ->select('id', 'MName as name', 'ElhaqNo as Elhaq_no', 'Mobile as mobile_no')
-            ->get();
-
-        // Get the markaz name
-        $markazName = DB::table('madrasha')
-            ->where('id', $markaz_id)
-            ->value('MName');
-
-        return response()->json([
-            'madrashaList' => $madrashaList,
-            'markazName' => $markazName
-        ]);
-    }
-
-
-    public function abandonStuList($markaz_id)
-    {
-        // Just render the view, data will be fetched on the client side
-        return Inertia::render('nibondon_for_admin/abandon_stu_list', [
-            'markaz_id' => $markaz_id
-        ]);
-    }
-
-
-
-
-    public function madrashaWariStuNibondList($madrasha_id = null)
-    {
-        // মাদরাসা আইডি অনুসারে ছাত্রদের তালিকা পাওয়া
-        $students = [];
-
-        if ($madrasha_id) {
-            // Eloquent ব্যবহার করে ছাত্রদের তথ্য সংগ্রহ করা
-            $students = reg_stu_information::with(['latestLog' => function($query) {
-                    $query->latest();
-                }])
-                ->where('madrasha_id', $madrasha_id)
-                ->get()
-                ->map(function($student) {
-                    return [
-                        'id' => $student->id,
-                        'name_bn' => $student->name_bn,
-                        'Date_of_birth' => $student->Date_of_birth,
-                        'father_name_bn' => $student->father_name_bn,
-                        'mother_name_bn' => $student->mother_name_bn,
-                        'current_madrasha' => $student->current_madrasha,
-                        'current_class' => $student->current_class,
-                        'student_image' => $student->student_image,
-                        'status' => $student->latestLog ? $student->latestLog->status : null,
-                        'status_date' => $student->latestLog ? $student->latestLog->created_at : null
-                    ];
-                });
-        }
-
-        return Inertia::render('nibondon_for_admin/madrashaWari_stu_nibond_list', [
-            'students' => $students,
-            'madrasha_id' => $madrasha_id
-        ]);
-    }
-
-
-
-
-
-
-
-
-
-
-    public function editStudentRegistration($id)
-    {
-        // Find the student record
-        $student = reg_stu_information::findOrFail($id);
-
-        // Get marhalas for dropdown
-        $marhalas = DB::table('marhalas')->get();
-
-        // Return Inertia response to render Vue component
-        return Inertia::render('students_registration/student_registration_edit', [
-            'student' => $student,
-            'marhalas' => $marhalas
-        ]);
-    }
-
-    public function updateStudentRegistration(Request $request, $id)
-    {
-        $request->validate([
-            'name_bn' => 'required|string|max:255',
-            'name_en' => 'nullable|string|max:255',
-            'name_ar' => 'nullable|string|max:255',
-            'father_name_bn' => 'required|string|max:255',
-            'father_name_en' => 'nullable|string|max:255',
-            'father_name_ar' => 'nullable|string|max:255',
-            'mother_name_bn' => 'nullable|string|max:255',
-            'mother_name_en' => 'nullable|string|max:255',
-            'mother_name_ar' => 'nullable|string|max:255',
-            'BRN_no' => 'nullable|string|max:255',
-            'NID_no' => 'nullable|string|max:255',
-            'mobile_no' => 'nullable|string|max:255',
-
-        ]);
-
-        // Find the student record
-        $student = reg_stu_information::findOrFail($id);
-
-        // Handle file uploads
-        if ($request->hasFile('student_image')) {
-            // Delete old image if exists
-            if ($student->student_image) {
-                Storage::disk('public')->delete($student->student_image);
-            }
-            $studentImagePath = $request->file('student_image')->store('student_images', 'public');
-            $student->student_image = $studentImagePath;
-        }
-
-        if ($request->hasFile('NID_attach')) {
-            // Delete old attachment if exists
-            if ($student->NID_attach) {
-                Storage::disk('public')->delete($student->NID_attach);
-            }
-            $nidAttachmentPath = $request->file('NID_attach')->store('nid_attachments', 'public');
-            $student->NID_attach = $nidAttachmentPath;
-        }
-
-        // Get marhala information
-        $marhala = null;
-        if ($request->marhala_id) {
-            $marhala = DB::table('marhalas')
-                ->select('id', 'marhala_name_bn')
-                ->where('id', $request->marhala_id)
-                ->first();
-        }
-
-        // Update student information
-        $student->name_bn = $request->name_bn;
-        $student->name_en = $request->name_en;
-        $student->name_ar = $request->name_ar;
-        $student->father_name_bn = $request->father_name_bn;
-        $student->father_name_en = $request->father_name_en;
-        $student->father_name_ar = $request->father_name_ar;
-        $student->mother_name_bn = $request->mother_name_bn;
-        $student->mother_name_en = $request->mother_name_en;
-        $student->mother_name_ar = $request->mother_name_ar;
-        $student->board_name = $request->board_name;
-
-        $student->present_division_name = $request->present_division_name;
-        $student->present_district_name = $request->present_district_name;
-        $student->present_thana_name = $request->present_thana_name;
-        $student->presernt_DID = $request->presernt_DID;
-        $student->present_desId = $request->present_desId;
-        $student->present_TID = $request->present_TID;
-
-        $student->parmanent_division_name = $request->parmanent_division_name;
-        $student->parmanent_district_name = $request->parmanent_district_name;
-        $student->parmanent_thana_name = $request->parmanent_thana_name;
-        $student->parmanent_DID = $request->parmanent_DID;
-        $student->parmanent_desId = $request->parmanent_desId;
-        $student->parmanent_TID = $request->parmanent_TID;
-
-        $student->BRN_no = $request->BRN_no;
-        $student->NID_no = $request->NID_no;
-        $student->mobile_no = $request->mobile_no;
-        $student->Date_of_birth = $request->Date_of_birth;
-        $student->student_type = $request->student_type ?? 'নিয়মিত';
-
-        // Update marhala/class information if provided
-        if ($marhala) {
-            $student->current_class = $marhala->marhala_name_bn;
-            $student->marhala_id = $marhala->id;
-        }
-
-        // Update address information
-
-
-        $student->save();
-
-        return redirect()->back()
-            ->with('success', 'Student information updated successfully');
-
-    }
-
-
-
-
-// for madrasa view
-
-    public function studentRegistrationView($id)
-    {
-        // reg_stu_informations টেবিল থেকে ডাটা নিয়ে আসা
-        $student = reg_stu_information::findOrFail($id);
-
-        // পুরো ডাটা পাঠানো হচ্ছে
-        return inertia('students_registration/student_registraion_view', [
-            'student' => $student
-        ]);
-    }
-
-
-// for admin view
-
-public function AdminstudentRegistrationView($id)
+    public function studentData(Request $request)
 {
-    // reg_stu_informations টেবিল থেকে ডাটা নিয়ে আসা
-    $student = reg_stu_information::findOrFail($id);
+    $students = User::with(['information'])
+        ->where('id', Auth::user()->id) // লগইন ইউজারের তথ্য
+        ->get();
 
-    // পুরো ডাটা পাঠানো হচ্ছে
-    return inertia('nibondon_for_admin/student_detiles_For_nibondon', [
-        'student' => $student
+    $divisions = DB::table('division')->select('ID as id', 'Division as division_name_bangla')->get();
+    $districts = DB::table('district')->select('DesID as id', 'District as district_name_bangla', 'DID as division_id')->get();
+    $thanas = DB::table('thana')->select('Thana_ID as id', 'Thana as thana_name_bangla', 'Des_ID as district_id')->get();
+
+    $students = $students->map(function ($user) {
+        $info = $user->information;
+        return [
+            'id' => $user->id,
+            'fullNameBangla' => $user->fullNameBangla,
+            'fullNameEnglish' => $user->fullNameEnglish,
+            'fatherName' => $user->fatherName,
+            'phoneNumber' => $user->phoneNumber,
+            'alternatePhoneNumber' => optional($info)->alternatePhoneNumber,
+            'dateOfBirth' => optional($info)->dateOfBirth,
+            'bloodGroup' => optional($info)->bloodGroup,
+            'address' => optional($info)->address,
+            'division' => optional($info)->division_id,
+            'district' => optional($info)->district_id,
+            'thana' => optional($info)->thana_id,
+            'classmate1' => optional($info)->classmate1,
+            'classmate2' => optional($info)->classmate2,
+            'classmate3' => optional($info)->classmate3,
+            'dept_takmil' => is_null(optional($info)->dept_takmil) ? false : (bool)optional($info)->dept_takmil,
+            'dept_ifta' => is_null(optional($info)->dept_ifta) ? false : (bool)optional($info)->dept_ifta,
+            'dept_hifz' => is_null(optional($info)->dept_hifz) ? false : (bool)optional($info)->dept_hifz,
+            'dept_qirat' => is_null(optional($info)->dept_qirat) ? false : (bool)optional($info)->dept_qirat,
+            'dept_other' => is_null(optional($info)->dept_other) ? false : (bool)optional($info)->dept_other,
+            'dept_takmil_year_english' => optional($info)->dept_takmil_year_english,
+            'dept_takmil_year_hijri' => optional($info)->dept_takmil_year_hijri,
+            'dept_ifta_year_english' => optional($info)->dept_ifta_year_english,
+            'dept_ifta_year_hijri' => optional($info)->dept_ifta_year_hijri,
+            'dept_hifz_year_english' => optional($info)->dept_hifz_year_english,
+            'dept_hifz_year_hijri' => optional($info)->dept_hifz_year_hijri,
+            'dept_qirat_year_english' => optional($info)->dept_qirat_year_english,
+            'dept_qirat_year_hijri' => optional($info)->dept_qirat_year_hijri,
+
+            'dept_other_class' => optional($info)->dept_other_class,
+            'examType' => optional($info)->examType,
+            'rollNumber' => optional($info)->rollNumber,
+            'workplace' => optional($info)->workplace,
+            'idType' => optional($info)->idType,
+            'birthCertificate' => optional($info)->birthCertificate,
+            'voterId' => optional($info)->voterId,
+            'birthCertificatePhoto' => optional($info)->birthCertificatePhoto,
+            'voterIdPhoto' => optional($info)->voterIdPhoto,
+            'photo' => optional($info)->photo,
+            'status' => $user->status ?? 'pending',
+            'created_at' => $user->created_at,
+            'approved_at' => $user->approved_at,
+        ];
+    });
+
+    return Inertia::render('madrashaDashboard/studentData', [
+        'students' => $students,
+        'divisions' => $divisions,
+        'districts' => $districts,
+        'thanas' => $thanas,
     ]);
 }
 
 
 
-
-
-// for madrahsa delete
-
-    public function studentRegistrationDelete($id)
+    public function editStudentPage(User $student)
     {
-        $student = reg_stu_information::find($id);
+        $student->load('information'); // Eager load the information relationship
 
-        if (!$student) {
-            return response()->json(['error' => 'আবেদন পাওয়া যায়নি!'], 404);
-        }
+        $divisions = DB::table('division')->select('ID as id', 'Division as division_name_bangla')->get();
+        $districts = DB::table('district')->select('DesID as id', 'District as district_name_bangla', 'DID as division_id')->get();
+        $thanas = DB::table('thana')->select('Thana_ID as id', 'Thana as thana_name_bangla', 'Des_ID as district_id')->get();
 
-        $student->delete();
-
-        return redirect()->back()->with('success', 'আবেদন সফলভাবে মুছে ফেলা হয়েছে!');
+        return Inertia::render('madrashaDashboard/StudentEdit', [
+            'student' => $student,
+            'divisions' => $divisions,
+            'districts' => $districts,
+            'thanas' => $thanas,
+        ]);
     }
 
-
-
-
-
-    // for admin student registration aprove
-
-    public function StuApproveApplication(Request $request, $id)
-    {
-        // Find the agreement
-        $student = reg_stu_information::find($id);
-
-        if (!$student) {
-            return back()->withErrors(['error' => 'আবেদন পাওয়া যায়নি!']);
-        }
-
-        $adminId = Auth::guard('admin')->id();
-        $adminName = Auth::guard('admin')->user()->name;
-
-        // Create activity log entry
-        $logData = [
-            'admin_id' => $adminId,
-            'admin_name' => $adminName,
-            'reg_student_id' => $student->id,
-            'status' => 'অনুমোদন',
-            'processed_at' => now(),
-        ];
-
-        // Insert into activity_logs
-        $inserted = reg_stu_information_log::create($logData);
-
-        if ($inserted) {
-            return back()->with('success', 'আবেদন সফলভাবে অনুমোদন করা হয়েছে!');
-        }
-
-        return back()->withErrors(['error' => 'আপডেট করতে সমস্যা হয়েছে!']);
-    }
-
-
-
-// admin return student registration
-
-
-public function studentReturn(Request $request, $id)
+public function updateStudent(Request $request, $id)
 {
-    // Find the agreement by ID
-    $student = reg_stu_information::find($id);
+    $user = User::findOrFail($id);
+    $userInfo = $user->information;
 
-    // If the agreement is not found, return error
-    if (!$student) {
-        return back()->withErrors(['error' => 'আবেদন পাওয়া যায়নি!']);
-    }
+    // Make sure boolean fields are always boolean, not string/null
+    $request->merge([
+        'dept_takmil' => filter_var($request->input('dept_takmil', false), FILTER_VALIDATE_BOOLEAN),
+        'dept_ifta' => filter_var($request->input('dept_ifta', false), FILTER_VALIDATE_BOOLEAN),
+        'dept_hifz' => filter_var($request->input('dept_hifz', false), FILTER_VALIDATE_BOOLEAN),
+        'dept_qirat' => filter_var($request->input('dept_qirat', false), FILTER_VALIDATE_BOOLEAN),
+        'dept_other' => filter_var($request->input('dept_other', false), FILTER_VALIDATE_BOOLEAN),
+    ]);
 
-    $adminId = Auth::guard('admin')->id();
-    $adminName = Auth::guard('admin')->user()->name;
+    // Update User model, fallback to old value if not present
+    $user->update([
+        'fullNameBangla'   => $request->input('fullNameBangla', $user->fullNameBangla),
+        'fullNameEnglish'  => $request->input('fullNameEnglish', $user->fullNameEnglish),
+        'fatherName'       => $request->input('fatherName', $user->fatherName),
+        'phoneNumber'      => $request->input('phoneNumber', $user->phoneNumber),
+    ]);
 
-    // Initialize feedback data
-    $feedbackData = [
-        'admin_id' => $adminId,
-        'admin_name' => $adminName,
-        'reg_student_id' => $student->id,
-        'status' => 'বোর্ড ফেরত', // Update status
-        'admin_message' => $request->message, // Insert the admin's message
-        'processed_at' => now(),
+    // Prepare data for UserInformation model
+    $informationData = [
+        'alternatePhoneNumber'    => $request->input('alternatePhoneNumber', $userInfo ? $userInfo->alternatePhoneNumber : null),
+        'dateOfBirth'             => $request->input('dateOfBirth', $userInfo ? $userInfo->dateOfBirth : null),
+        'bloodGroup'              => $request->input('bloodGroup', $userInfo ? $userInfo->bloodGroup : null),
+        'address'                 => $request->input('address', $userInfo ? $userInfo->address : null),
+        'division_id'             => $request->input('division', $userInfo ? $userInfo->division_id : null),
+        'district_id'             => $request->input('district', $userInfo ? $userInfo->district_id : null),
+        'thana_id'                => $request->input('thana', $userInfo ? $userInfo->thana_id : null),
+        'classmate1'              => $request->input('classmate1', $userInfo ? $userInfo->classmate1 : null),
+        'classmate2'              => $request->input('classmate2', $userInfo ? $userInfo->classmate2 : null),
+        'classmate3'              => $request->input('classmate3', $userInfo ? $userInfo->classmate3 : null),
+        'dept_takmil'             => $request->input('dept_takmil', $userInfo ? $userInfo->dept_takmil : false),
+        'dept_ifta'               => $request->input('dept_ifta', $userInfo ? $userInfo->dept_ifta : false),
+        'dept_hifz'               => $request->input('dept_hifz', $userInfo ? $userInfo->dept_hifz : false),
+        'dept_qirat'              => $request->input('dept_qirat', $userInfo ? $userInfo->dept_qirat : false),
+        'dept_other'              => $request->input('dept_other', $userInfo ? $userInfo->dept_other : false),
+        'dept_takmil_year_english'=> $request->input('dept_takmil_year_english', $userInfo ? $userInfo->dept_takmil_year_english : null),
+        'dept_takmil_year_hijri'  => $request->input('dept_takmil_year_hijri', $userInfo ? $userInfo->dept_takmil_year_hijri : null),
+        'dept_ifta_year_english'  => $request->input('dept_ifta_year_english', $userInfo ? $userInfo->dept_ifta_year_english : null),
+        'dept_ifta_year_hijri'    => $request->input('dept_ifta_year_hijri', $userInfo ? $userInfo->dept_ifta_year_hijri : null),
+        'dept_hifz_year_english'  => $request->input('dept_hifz_year_english', $userInfo ? $userInfo->dept_hifz_year_english : null),
+        'dept_hifz_year_hijri'    => $request->input('dept_hifz_year_hijri', $userInfo ? $userInfo->dept_hifz_year_hijri : null),
+        'dept_qirat_year_english' => $request->input('dept_qirat_year_english', $userInfo ? $userInfo->dept_qirat_year_english : null),
+        'dept_qirat_year_hijri'   => $request->input('dept_qirat_year_hijri', $userInfo ? $userInfo->dept_qirat_year_hijri : null),
+
+        'dept_other_class'        => $request->input('dept_other_class', $userInfo ? $userInfo->dept_other_class : null),
+        'examType'                => $request->input('examType', $userInfo ? $userInfo->examType : null),
+        'rollNumber'              => $request->input('rollNumber', $userInfo ? $userInfo->rollNumber : null),
+        'workplace'               => $request->input('workplace', $userInfo ? $userInfo->workplace : null),
+        'idType'                  => $request->input('idType', $userInfo ? $userInfo->idType : null),
+        'birthCertificate'        => $request->input('birthCertificate', $userInfo ? $userInfo->birthCertificate : null),
+        'voterId'                 => $request->input('voterId', $userInfo ? $userInfo->voterId : null),
     ];
 
-    // Check if an image is uploaded and store it
-    // if ($request->hasFile('image')) {
-    //     $imagePath = $request->file('image')->store('images/feedback', 'public');
-    //     $feedbackData['admin_feedback_image'] = $imagePath; // Store the image path
-    // }
-
-    // Insert the feedback into the activity_logs table
-    $inserted = reg_stu_information_log::create($feedbackData);
-
-    // If the insert was successful, return success message
-    if ($inserted) {
-        return back()->with('success', 'আবেদন সফলভাবে ফেরত পাঠানো হয়েছে!');
-    } else {
-        return back()->withErrors(['error' => 'আপডেট করতে সমস্যা হয়েছে!']);
+    // File upload same as before
+    if ($request->hasFile('birthCertificatePhoto')) {
+        if ($userInfo && $userInfo->birthCertificatePhoto && Storage::disk('public')->exists($userInfo->birthCertificatePhoto)) {
+            Storage::disk('public')->delete($userInfo->birthCertificatePhoto);
+        }
+        $informationData['birthCertificatePhoto'] = $request->file('birthCertificatePhoto')->store('user-documents', 'public');
     }
+    if ($request->hasFile('voterIdPhoto')) {
+        if ($userInfo && $userInfo->voterIdPhoto && Storage::disk('public')->exists($userInfo->voterIdPhoto)) {
+            Storage::disk('public')->delete($userInfo->voterIdPhoto);
+        }
+        $informationData['voterIdPhoto'] = $request->file('voterIdPhoto')->store('user-documents', 'public');
+    }
+    if ($request->hasFile('photo')) {
+        if ($userInfo && $userInfo->photo && Storage::disk('public')->exists($userInfo->photo)) {
+            Storage::disk('public')->delete($userInfo->photo);
+        }
+        $informationData['photo'] = $request->file('photo')->store('user-photos', 'public');
+    }
+
+    // Update or create UserInformation model
+    if ($userInfo) {
+        $userInfo->update($informationData);
+    } else {
+        $user->information()->create($informationData);
+    }
+
+    return redirect()->back()->with('success', 'শিক্ষার্থীর তথ্য সফলভাবে আপডেট করা হয়েছে!');
+}
+
+
+
+public function studentDetails($id)
+{
+    $student = \App\Models\User::select([
+        'users.*',
+        'user_informations.*',
+        'user_informations.created_at as info_created_at',
+        'user_informations.updated_at as info_updated_at',
+        'div.Division as division_name_bangla',
+        'dist.District as district_name_bangla',
+        'th.Thana as thana_name_bangla',
+        'approved_admin.fullNameBangla as approved_by_name'
+    ])
+    ->leftJoin('user_informations', 'users.id', '=', 'user_informations.user_id')
+    ->leftJoin('division as div', 'user_informations.division_id', '=', 'div.ID')
+    ->leftJoin('district as dist', 'user_informations.district_id', '=', 'dist.DesID')
+    ->leftJoin('thana as th', 'user_informations.thana_id', '=', 'th.Thana_ID')
+    ->leftJoin('users as approved_admin', 'users.approved_by', '=', 'approved_admin.id')
+    ->findOrFail($id);
+
+    $divisions = DB::table('division')->select('ID as id', 'Division as division_name_bangla')->get();
+    $districts = DB::table('district')->select('DesID as id', 'District as district_name_bangla', 'DID as division_id')->get();
+    $thanas = DB::table('thana')->select('Thana_ID as id', 'Thana as thana_name_bangla', 'Des_ID as district_id')->get();
+
+    return inertia('madrashaDashboard/StudentDetails', [
+        'student' => $student,
+        'divisions' => $divisions,
+        'districts' => $districts,
+        'thanas' => $thanas,
+    ]);
 }
 
 
 }
-
-
-
-
