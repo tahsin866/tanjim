@@ -42,6 +42,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/student/{student}/edit', [StudentRegistrationController::class, 'editStudentPage'])->name('student.edit');
     Route::put('/student/{student}', [StudentRegistrationController::class, 'updateStudent'])->name('student.update');
     Route::get('/student/{student}', [StudentRegistrationController::class, 'studentDetails'])->name('student.details');
+
+    // User dashboard route
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
 });
 
 
