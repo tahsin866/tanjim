@@ -217,4 +217,17 @@ public function studentDetails($id)
 }
 
 
+/**
+ * Return student stats for dashboard API
+ */
+public function studentStats(Request $request)
+{
+    // Example: return total students and approved students
+    $total = \App\Models\User::count();
+    $approved = \App\Models\User::where('status', 'approved')->count();
+    return response()->json([
+        'total' => $total,
+        'approved' => $approved,
+    ]);
+}
 }

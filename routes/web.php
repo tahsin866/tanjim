@@ -10,7 +10,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\admin\marhala_for_admin\Marhala;
-use App\Http\Controllers\ExamSetupController;
+use AppHttp\Controllers\ExamSetupController;
 use App\Http\Controllers\Auth\madrasha_check_for_userController;
 use App\Http\Controllers\Auth\userRegisteredUserController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -47,15 +47,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    // Student Data route for dashboard
+    Route::get('/Studen/list', [StudentRegistrationController::class, 'studentData'])->name('madrashaDashboard.studentData');
+
+    // API route for student stats (for dashboard)
+    Route::get('/api/dashboard/student-stats', [StudentRegistrationController::class, 'studentStats'])->name('api.dashboard.student-stats');
 });
 
-
-
-
-
-
-
-
+// API route for user centers (dummy, returns empty for now)
+Route::middleware('auth')->get('/api/user-centers', function() {
+    return response()->json([]);
+});
 
 
 
