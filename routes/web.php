@@ -3,7 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-
+use App\Http\Controllers\TestYearController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StudentRegistrationController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -45,6 +45,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 });
 
 // Test routes for SessionYear functionality
+Route::prefix('test-years')->group(function () {
+    Route::get('/', [TestYearController::class, 'index'])->name('test.years.index');
+    Route::get('/all', [TestYearController::class, 'getAllYears'])->name('test.years.all');
+    Route::post('/convert', [TestYearController::class, 'convertYear'])->name('test.years.convert');
+});
 
 
 // Include other route files
