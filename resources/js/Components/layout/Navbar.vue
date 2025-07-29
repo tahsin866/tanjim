@@ -43,7 +43,7 @@
             class="text-emerald-100 hover:text-white px-7 py-3 rounded-lg transition-all duration-300 font-medium relative group border-b-2 border-transparent hover:border-emerald-300"
             icon="pi pi-building"
             style="font-size: 1.45rem; min-width: 170px;"
-            @click="$inertia.visit(route('login'))"
+            @click="goToLogin"
           />
           <Button
             label="ডিজিটাল লাইব্রেরী"
@@ -99,7 +99,7 @@
         icon="pi pi-book" style="font-size: 1.3rem;" />
       <Button label="মাদরাসা পেনেল" text
         class="w-full text-left text-emerald-100 hover:text-white hover:bg-emerald-700/50 p-4 rounded-lg transition-all duration-300 justify-start border border-transparent hover:border-emerald-400/30"
-        icon="pi pi-building" style="font-size: 1.3rem;" @click="$inertia.visit(route('login')); mobileMenuOpen = false" />
+        icon="pi pi-building" style="font-size: 1.3rem;" @click="goToLoginAndCloseMenu" />
       <Button label="শিক্ষক পেনেল" text
         class="w-full text-left text-emerald-100 hover:text-white hover:bg-emerald-700/50 p-4 rounded-lg transition-all duration-300 justify-start border border-transparent hover:border-emerald-400/30"
         icon="pi pi-users" style="font-size: 1.3rem;" />
@@ -283,11 +283,8 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Link } from '@inertiajs/vue3'
-import Menubar from 'primevue/menubar'
 import Button from 'primevue/button'
 import Avatar from 'primevue/avatar'
-import Badge from 'primevue/badge'
 import Sidebar from 'primevue/sidebar'
 import Divider from 'primevue/divider'
 
@@ -333,6 +330,15 @@ onUnmounted(() => {
     clearInterval(imageInterval)
   }
 })
+
+// Replace Inertia navigation with window.location.href
+function goToLogin() {
+  window.location.href = '/login'
+}
+function goToLoginAndCloseMenu() {
+  mobileMenuOpen.value = false
+  window.location.href = '/login'
+}
 </script>
 
 <style scoped>

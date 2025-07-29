@@ -152,7 +152,7 @@
                   icon="pi pi-user-plus"
                   iconPos="right"
                   class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 border-0 p-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                  @click="$inertia.visit(route('register'))" />
+                  @click="$inertia.visit(route('Register'))" />
               </div>
             </template>
           </Card>
@@ -383,6 +383,9 @@ function formatDate(dateStr) {
 function goToNoticePage() {
   window.location.href = '/notices'
 }
+function goToRegister() {
+  window.location.href = '/register'
+}
 
 // Ulama Slider Data
 const ulamaList = [
@@ -400,13 +403,13 @@ const ulamaList = [
   },
   {
     name: 'হাফেজ মাহমুদুল হাসান',
-        photo: '/images/shayekh-sudais.jpeg',
+    photo: '/images/shayekh-sudais.jpeg',
     title: 'সভাপতি, আন্তর্জাতিক হিফজ প্রতিযোগিতা',
     bio: 'হাফেজ সাহেব আন্তর্জাতিক পর্যায়ে কুরআন হিফজ প্রতিযোগিতায় বাংলাদেশের প্রতিনিধিত্ব করেছেন।'
   },
   {
     name: 'মাওলানা মিজানুর রহমান',
-       photo: '/images/Mufti-Muhammad-Taqi-Usmani-scaled.jpg',
+    photo: '/images/Mufti-Muhammad-Taqi-Usmani-scaled.jpg',
     title: 'ইসলামি স্কলার ও লেখক',
     bio: 'মাওলানা মিজানুর রহমান বিভিন্ন ইসলামি বইয়ের লেখক ও সমাজ সংস্কারক।'
   }
