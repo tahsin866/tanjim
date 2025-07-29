@@ -73,6 +73,6 @@ Route::prefix('test-years')->group(function () {
 // Include other route files
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin_auth.php';
-require __DIR__ . '/Madrasha.php';
+
 require __DIR__ . '/Admin.php';
 require __DIR__ . '/api.php';

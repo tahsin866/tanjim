@@ -6,7 +6,7 @@
     <div class="container mx-auto px-4">
       <!-- Section Header -->
       <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-gray-800 mb-4">
+        <h2 class="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center">
           <i class="pi pi-chart-bar text-emerald-600 mr-3"></i>
           আবনায়ে জামিয়া ফরিদাবাদ পরিসংখ্যান ও তথ্য
         </h2>
@@ -49,7 +49,7 @@
                       @click="goToNoticePage"
                     />
                   </div>
-                  <div class="notice-board bg-emerald-50 rounded-xl border border-emerald-100 p-4 max-h-72 overflow-y-auto shadow-inner relative">
+                  <div class="bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-xl border border-emerald-100 p-4 max-h-72 overflow-y-auto shadow-inner relative">
                     <TransitionGroup name="notice-fade" tag="ul">
                       <li
                         v-for="notice in notices"
@@ -152,7 +152,8 @@
                   icon="pi pi-user-plus"
                   iconPos="right"
                   class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 border-0 p-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                  @click="$inertia.visit(route('Register'))" />
+                  @click="goToRegister"
+                />
               </div>
             </template>
           </Card>
@@ -199,14 +200,14 @@
           <h3 class="text-2xl font-bold text-center text-emerald-800 mb-3 flex items-center justify-center">
             <i class="pi pi-users text-emerald-500 mr-2"></i> আমন্ত্রিত ওলামায়ে কেরাম
           </h3>
-          <div class="relative bg-white rounded-md shadow-2xl border-4 border-emerald-100 overflow-hidden ulama-slider-card">
+          <div class="relative bg-white rounded-md shadow-2xl border-4 border-emerald-100 overflow-hidden flex flex-col justify-end min-h-[310px]">
             <div class="relative flex flex-col min-h-[310px]">
               <!-- Half Image (top) -->
-              <div class="relative flex justify-center items-center ulama-slider-img-box">
+              <div class="relative flex justify-center items-center w-full h-[110px] md:h-[110px] bg-gradient-to-br from-emerald-100 via-white to-teal-50">
                 <img
                   :src="currentUlama.photo"
                   :alt="currentUlama.name"
-                  class="ulama-slider-img"
+                  class="w-[110px] h-[110px] md:w-[110px] md:h-[110px] object-cover rounded-full border-4 border-emerald-400 shadow-md bg-white relative top-2"
                 />
                 <!-- Slider Buttons -->
                 <button
@@ -225,7 +226,7 @@
                 </button>
               </div>
               <!-- Details (bottom) -->
-              <div class="ulama-slider-details flex flex-col items-center justify-center px-4 py-4 bg-gradient-to-b from-white/95 via-emerald-50/90 to-teal-50/80 min-h-[100px]">
+              <div class="flex flex-col items-center justify-center px-4 py-4 bg-gradient-to-b from-white/95 via-emerald-50/90 to-teal-50/80 min-h-[100px]">
                 <div class="text-lg font-bold text-emerald-800 mb-0.5 font-bangla text-center">{{ currentUlama.name }}</div>
                 <div class="text-emerald-600 font-semibold text-xs mb-1 text-center">{{ currentUlama.title }}</div>
                 <div class="text-gray-600 font-bangla text-center text-xs">{{ currentUlama.bio }}</div>
@@ -454,77 +455,3 @@ const additionalInfo = [
   }
 ]
 </script>
-
-<style scoped>
-.notice-board {
-  background: linear-gradient(135deg, #f0fdfa 60%, #e0f2fe 100%);
-  backdrop-filter: blur(2px);
-}
-.notice-fade-move, .notice-fade-enter-active, .notice-fade-leave-active {
-  transition: all 0.4s cubic-bezier(.49,.7,.44,1.09);
-}
-.notice-fade-enter-from, .notice-fade-leave-to {
-  opacity: 0;
-  transform: translateY(20px);
-}
-/* Ulama Slider Half Image Card */
-.ulama-slider-card {
-  min-height: 310px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  border-radius: 2rem;
-  overflow: hidden;
-  position: relative;
-  background: linear-gradient(135deg, #f0fdfa 70%, #e0f2fe 100%);
-}
-.ulama-slider-img-box {
-  width: 100%;
-  height: 110px;
-  overflow: hidden;
-  position: relative;
-  background: linear-gradient(135deg, #d1fae5 60%, #f0fdfa 100%);
-  border-bottom-left-radius: 2rem;
-  border-bottom-right-radius: 2rem;
-  z-index: 1;
-}
-.ulama-slider-img {
-  width: 110px;
-  height: 110px;
-  object-fit: cover;
-  border-radius: 50%;
-  border: 4px solid #34d399;
-  box-shadow: 0 6px 16px #05966913;
-  transition: transform 0.4s cubic-bezier(.49,.7,.44,1.09);
-  margin: 0 auto;
-  display: block;
-  background: #f7fafc;
-  position: relative;
-  top: 10px;
-}
-.ulama-slider-details {
-  background: linear-gradient(180deg, #fff 60%, #f0fdfa 100%);
-  border-bottom-left-radius: 2rem;
-  border-bottom-right-radius: 2rem;
-  min-height: 100px;
-  z-index: 2;
-  box-shadow: 0 2px 8px #0596690d;
-}
-@media (max-width: 640px) {
-  .ulama-slider-img-box, .ulama-slider-img {
-    height: 70px;
-    min-height: 70px;
-  }
-  .ulama-slider-img {
-    width: 70px;
-    height: 70px;
-    border-width: 3px;
-    top: 6px;
-  }
-  .ulama-slider-details {
-    min-height: 85px;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-  }
-}
-</style>
