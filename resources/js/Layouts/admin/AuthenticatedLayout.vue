@@ -351,7 +351,7 @@ const hasModuleAccess = (module) => {
     :class="[
         'flex-1',
         'transition-all duration-300 ease-in-out',
-        'md:ml-64',  // Always maintain margin on desktop
+        'lg:ml-64',  // Always maintain margin on desktop
         'w-full',    // Ensure full width
         'overflow-x-hidden' // Prevent horizontal scrolling
     ]"
@@ -363,7 +363,7 @@ const hasModuleAccess = (module) => {
                 <div class="flex">
                     <!-- Hamburger -->
                     <div class="shrink-0 flex items-center lg:hidden">
-                        <button @click="showSidebar = !showSidebar" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                        <button @click="showSidebar = !showSidebar" class="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-800 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-800 transition duration-150 ease-in-out">
                             <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                 <path :class="{'hidden': showSidebar, 'inline-flex': !showSidebar}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                                 <path :class="{'hidden': !showSidebar, 'inline-flex': showSidebar}" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -373,16 +373,16 @@ const hasModuleAccess = (module) => {
                 </div>
 
                 <!-- Settings Dropdown -->
-                <div class="hidden sm:flex sm:items-center sm:ml-6 space-x-3">
+                <div class="flex sm:items-center sm:ml-6 space-x-3">
                     <!-- Prayer Times Button -->
-                    <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                    <button class="hidden sm:inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                     </button>
 
                     <!-- Notification Button -->
-                    <button @click="openNotifications" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150 relative">
+                    <button @click="openNotifications" class="hidden sm:inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150 relative">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                         </svg>
@@ -390,7 +390,7 @@ const hasModuleAccess = (module) => {
                     </button>
 
                     <!-- Messages Button -->
-                    <button @click="openMessages" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150 relative">
+                    <button @click="openMessages" class="hidden sm:inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150 relative">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
@@ -409,7 +409,7 @@ const hasModuleAccess = (module) => {
                                             </svg>
                                         </div>
                                     </div>
-                                    <div>
+                                    <div class="hidden sm:block">
                                         <div>{{ $page.props.auth.admin.name }}</div>
                                         <div class="text-xs text-gray-500">
                                             <span class="px-2 py-0.5 rounded-full text-xs" :class="{
@@ -449,7 +449,7 @@ const hasModuleAccess = (module) => {
         </div>
     </nav>
 
-<main class="flex-1 pt-16 mt-10 p-4">
+<main class="flex-1 pt-16 lg:mt-10 mt-2 p-2 lg:p-4">
                 <slot />
             </main>
         </div>

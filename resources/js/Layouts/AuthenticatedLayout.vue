@@ -191,6 +191,10 @@ watch(isMobile, (newValue) => {
 onMounted(() => {
     fetchCenters()
     window.addEventListener('resize', handleResize)
+    // Show sidebar by default on desktop
+    if (!isMobile.value) {
+        sidebarVisible.value = false
+    }
 })
 
 onUnmounted(() => {
