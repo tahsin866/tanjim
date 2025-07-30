@@ -30,7 +30,7 @@
             <PanelMenu
                 v-else
                 :model="filteredMenuItems"
-                class="bg-transparent border-0"
+                class="bg-transparent border-0 custom-sidebar-menu"
                 @item-click="onMenuItemClick"
             >
                 <template #item="{ item }">
@@ -38,13 +38,14 @@
                         v-if="item.route"
                         :href="item.route"
                         :class="[
-                            'flex items-center w-full text-left px-4 py-3 rounded transition-colors',
+                            'flex items-center w-full text-left px-4 py-2 rounded-lg transition-colors',
                             isActiveRoute(item.routeName)
-                                ? 'bg-gray-900 border-l-4 border-blue-500 font-medium'
-                                : 'hover:bg-gray-600'
+                                ? 'bg-gray-700 border-l-4 border-blue-500 font-semibold shadow-sm'
+                                : 'hover:bg-gray-700 hover:text-white'
                         ]"
+                        style="background: none;"
                     >
-                        <span :class="item.icon"></span>
+                        <span :class="item.icon + ' text-lg'" />
                         <span class="ml-3">{{ item.label }}</span>
                         <Badge
                             v-if="item.badge"
@@ -57,19 +58,20 @@
                         v-else
                         @click="item.command"
                         :class="[
-                            'flex items-center w-full text-left px-4 py-3 rounded transition-colors',
+                            'flex items-center w-full text-left px-4 py-2 rounded-lg transition-colors',
                             isActiveRoute(item.routeName)
-                                ? 'bg-gray-900 border-l-4 border-blue-500 font-medium'
-                                : 'hover:bg-gray-600'
+                                ? 'bg-gray-700 border-l-4 border-blue-500 font-semibold shadow-sm'
+                                : 'hover:bg-gray-700 hover:text-white'
                         ]"
+                        style="background: none;"
                     >
-                        <span :class="item.icon"></span>
+                        <span :class="item.icon + ' text-lg'" />
                         <span class="ml-3">{{ item.label }}</span>
                         <i v-if="item.items" class="pi pi-chevron-down ml-auto"></i>
                     </button>
                 </template>
-            </PanelMenu>
-        </div>
+    </PanelMenu>
+</div>
 
         <!-- Sidebar Footer -->
         <div class="flex-shrink-0 px-4 py-3 border-t border-gray-600">
@@ -170,3 +172,42 @@ const onMenuItemClick = () => {
     }
 }
 </script>
+
+
+<style>
+/* Custom sidebar menu for clean dark look */
+.custom-sidebar-menu .p-panelmenu .p-panelmenu-panel {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.custom-sidebar-menu .p-panelmenu .p-panelmenu-header {
+    background: transparent !important;
+    border: none !important;
+    color: #d1d5db;
+    font-weight: 500;
+    padding: 0;
+}
+.custom-sidebar-menu .p-panelmenu .p-panelmenu-content {
+    background: transparent !important;
+    border: none !important;
+    padding: 0;
+}
+.custom-sidebar-menu .p-panelmenu .p-menuitem-link {
+    background: none !important;
+    color: #d1d5db;
+    border-radius: 0.5rem;
+    margin: 2px 0;
+    font-size: 1rem;
+    transition: background 0.2s, color 0.2s;
+}
+.custom-sidebar-menu .p-panelmenu .p-menuitem-link:hover {
+    background: #374151 !important;
+    color: #fff !important;
+}
+.custom-sidebar-menu .p-panelmenu .p-menuitem-link.p-highlight {
+    background: #374151 !important;
+    color: #fff !important;
+    font-weight: 600;
+}
+</style>
