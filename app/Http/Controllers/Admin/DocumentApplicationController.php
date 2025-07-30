@@ -24,7 +24,11 @@ class DocumentApplicationController extends Controller
 
         // Check if moderator has document management access
         if ($currentAdmin->role === 'moderator') {
-            if (!$currentAdmin->permissions || !$currentAdmin->permissions['document_management_access']) {
+            $permissions = $currentAdmin->permissions;
+            if (is_string($permissions)) {
+                $permissions = json_decode($permissions, true);
+            }
+            if (!is_array($permissions) || empty($permissions['document_management_access'])) {
                 Log::warning('DocumentApplicationController: Moderator ' . $currentAdmin->id . ' lacks document_management_access. Redirecting to dashboard.');
                 return redirect()->route('admin.admin_Dashboard')->withErrors(['error' => 'আপনার দস্তরবন্দি ব্যবস্থাপনার অনুমতি নেই।']);
             }
@@ -200,7 +204,11 @@ class DocumentApplicationController extends Controller
 
         // Check if moderator has document management access
         if ($currentAdmin->role === 'moderator') {
-            if (!$currentAdmin->permissions || !$currentAdmin->permissions['document_management_access']) {
+            $permissions = $currentAdmin->permissions;
+            if (is_string($permissions)) {
+                $permissions = json_decode($permissions, true);
+            }
+            if (!is_array($permissions) || empty($permissions['document_management_access'])) {
                 Log::warning('DocumentApplicationController: Moderator ' . $currentAdmin->id . ' lacks document_management_access. Redirecting to dashboard.');
                 return redirect()->route('admin.admin_Dashboard')->withErrors(['error' => 'আপনার দস্তরবন্দি ব্যবস্থাপনার অনুমতি নেই।']);
             }
