@@ -22,13 +22,25 @@ class DocumentApplicationController extends Controller
     {
         $currentAdmin = Auth::guard('admin')->user();
 
+        // Debug logging
+        Log::info('DocumentApplicationController accessed', [
+            'admin_id' => $currentAdmin->id,
+            'admin_role' => $currentAdmin->role,
+            'permissions' => $currentAdmin->permissions,
+            'permissions_type' => gettype($currentAdmin->permissions)
+        ]);
+
         // Check if moderator has document management access
         if ($currentAdmin->role === 'moderator') {
-            $permissions = $currentAdmin->permissions;
-            if (is_string($permissions)) {
-                $permissions = json_decode($permissions, true);
-            }
-            if (!is_array($permissions) || empty($permissions['document_management_access'])) {
+            $hasAccess = $this->checkPermission($currentAdmin, 'document_management_access');
+            
+            Log::info('Moderator permission check', [
+                'admin_id' => $currentAdmin->id,
+                'has_access' => $hasAccess,
+                'raw_permissions' => $currentAdmin->permissions
+            ]);
+            
+            if (!$hasAccess) {
                 Log::warning('DocumentApplicationController: Moderator ' . $currentAdmin->id . ' lacks document_management_access. Redirecting to dashboard.');
                 return redirect()->route('admin.admin_Dashboard')->withErrors(['error' => 'আপনার দস্তরবন্দি ব্যবস্থাপনার অনুমতি নেই।']);
             }
@@ -204,11 +216,7 @@ class DocumentApplicationController extends Controller
 
         // Check if moderator has document management access
         if ($currentAdmin->role === 'moderator') {
-            $permissions = $currentAdmin->permissions;
-            if (is_string($permissions)) {
-                $permissions = json_decode($permissions, true);
-            }
-            if (!is_array($permissions) || empty($permissions['document_management_access'])) {
+            if (!$this->checkPermission($currentAdmin, 'document_management_access')) {
                 Log::warning('DocumentApplicationController: Moderator ' . $currentAdmin->id . ' lacks document_management_access. Redirecting to dashboard.');
                 return redirect()->route('admin.admin_Dashboard')->withErrors(['error' => 'আপনার দস্তরবন্দি ব্যবস্থাপনার অনুমতি নেই।']);
             }
@@ -369,5 +377,38 @@ class DocumentApplicationController extends Controller
         Log::info("User {$userId} ({$userName}) deleted by super admin {$currentAdmin->id}");
 
         return redirect()->route('admin.documents.applications.index')->with('success', "আবেদনটি ({$userName}) সফলভাবে মুছে ফেলা হয়েছে।");
+    }
+
+    /**
+     * Check if admin has specific permission
+     */
+    private function checkPermission($admin, $permission)
+    {
+        // Super admin has all permissions
+        if ($admin->role === 'super_admin') {
+            return true;
+        }
+
+        $permissions = $admin->permissions;
+        
+        // Handle permissions as both array and object format
+        if (is_string($permissions)) {
+            try {
+                $permissions = json_decode($permissions, true);
+            } catch (\Exception $e) {
+                return false;
+            }
+        }
+        
+        if (is_array($permissions)) {
+            // Check if it's indexed array (like ['permission1', 'permission2'])
+            if (isset($permissions[0])) {
+                return in_array($permission, $permissions);
+            }
+            // Check if it's associative array (like ['permission1' => true])
+            return isset($permissions[$permission]) && $permissions[$permission] === true;
+        }
+        
+        return false;
     }
 }

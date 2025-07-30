@@ -74,7 +74,7 @@
         <!-- Sidebar Footer -->
         <div class="flex-shrink-0 px-4 py-3 border-t border-gray-600">
             <div class="text-center text-gray-300 text-sm">
-                <p>© ২০২৫ WEMS</p>
+                <p>© ২০২৫ আবনায়ে ফরিদাবাদ</p>
                 <p>সংস্করণ ২.০</p>
             </div>
         </div>

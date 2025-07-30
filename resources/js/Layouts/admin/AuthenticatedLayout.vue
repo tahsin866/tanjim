@@ -95,14 +95,6 @@ const hasPermission = (permission) => {
     // Check if admin has specific permission
     let permissions = admin?.permissions;
     
-    // Debug logging
-    console.log('Debug - hasPermission:', {
-        permission,
-        adminRole: admin?.role,
-        rawPermissions: permissions,
-        permissionsType: typeof permissions
-    });
-    
     // Handle permissions as both array and object format
     if (typeof permissions === 'string') {
         try {
@@ -119,12 +111,6 @@ const hasPermission = (permission) => {
     } else if (permissions && typeof permissions === 'object') {
         hasAccess = permissions[permission] === true;
     }
-    
-    console.log('Debug - Permission result:', {
-        permission,
-        hasAccess,
-        processedPermissions: permissions
-    });
     
     return hasAccess;
 }
