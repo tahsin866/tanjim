@@ -93,7 +93,40 @@ const hasPermission = (permission) => {
     }
 
     // Check if admin has specific permission
-    return admin?.permissions && admin.permissions.includes(permission);
+    let permissions = admin?.permissions;
+    
+    // Debug logging
+    console.log('Debug - hasPermission:', {
+        permission,
+        adminRole: admin?.role,
+        rawPermissions: permissions,
+        permissionsType: typeof permissions
+    });
+    
+    // Handle permissions as both array and object format
+    if (typeof permissions === 'string') {
+        try {
+            permissions = JSON.parse(permissions);
+        } catch (e) {
+            permissions = [];
+        }
+    }
+    
+    let hasAccess = false;
+    
+    if (Array.isArray(permissions)) {
+        hasAccess = permissions.includes(permission);
+    } else if (permissions && typeof permissions === 'object') {
+        hasAccess = permissions[permission] === true;
+    }
+    
+    console.log('Debug - Permission result:', {
+        permission,
+        hasAccess,
+        processedPermissions: permissions
+    });
+    
+    return hasAccess;
 }
 
 // Check if admin has any permission from a list
@@ -213,7 +246,7 @@ const hasModuleAccess = (module) => {
             </button>
             <div v-if="dropdownOpen.document_management" class="pl-6 bg-gray-900">
                 <Link
-                    v-if="hasPermission('document_application_list')"
+                    v-if="hasPermission('document_application_list') || hasModuleAccess('document_management')"
                     :href="route('admin.documents.applications.index')"
                     @click="setSelected('document_application_list')"
                     class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2"
@@ -222,7 +255,7 @@ const hasModuleAccess = (module) => {
                     দস্তরবন্দি আবেদন তালিকা
                 </Link>
                 <Link
-                    v-if="hasPermission('document_approve')"
+                    v-if="hasPermission('document_approve') || hasModuleAccess('document_management')"
                     href="#"
                     @click="setSelected('approval_list')"
                     class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2"
@@ -231,7 +264,7 @@ const hasModuleAccess = (module) => {
                     অনুমোদন তালিকা
                 </Link>
                 <Link
-                    v-if="hasPermission('document_reject')"
+                    v-if="hasPermission('document_reject') || hasModuleAccess('document_management')"
                     href="#"
                     @click="setSelected('cancel_list')"
                     class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2"
@@ -328,7 +361,7 @@ const hasModuleAccess = (module) => {
 
         <Link
             v-if="hasModuleAccess('messaging')"
-            href="route('others.massaging')"
+            href="#"
             class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2">
             <i class="h-6 text-sm w-6 fa-envelope fas"></i>
             মেসেজিং
@@ -336,7 +369,7 @@ const hasModuleAccess = (module) => {
 
         <Link
             v-if="hasModuleAccess('notice')"
-            href="route('others.notice')"
+            href="#"
             class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2">
             <i class="h-6 text-sm w-6 fa-bell fas"></i>
             নোটিস
@@ -431,11 +464,11 @@ const hasModuleAccess = (module) => {
                         </template>
 
                         <template #content>
-                            <DropdownLink href="route('profile.edit')" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            <DropdownLink href="#" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 প্রোফাইল
                             </DropdownLink>
 
-                            <DropdownLink href="route('admin.settings')" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                            <DropdownLink href="#" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
                                 সেটিংস
                             </DropdownLink>
 
