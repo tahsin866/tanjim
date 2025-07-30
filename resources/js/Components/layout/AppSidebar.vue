@@ -41,7 +41,7 @@
                             'flex items-center w-full text-left px-4 py-2 rounded-lg transition-colors',
                             isActiveRoute(item.routeName)
                                 ? 'bg-gray-700 border-l-4 border-blue-500 font-semibold shadow-sm'
-                                : 'hover:bg-gray-700 hover:text-white'
+                                : 'hover:bg-gray-700 '
                         ]"
                         style="background: none;"
                     >
@@ -61,7 +61,7 @@
                             'flex items-center w-full text-left px-4 py-2 rounded-lg transition-colors',
                             isActiveRoute(item.routeName)
                                 ? 'bg-gray-700 border-l-4 border-blue-500 font-semibold shadow-sm'
-                                : 'hover:bg-gray-700 hover:text-white'
+                                : 'hover:bg-gray-700 h'
                         ]"
                         style="background: none;"
                     >

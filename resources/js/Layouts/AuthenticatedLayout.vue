@@ -3,7 +3,7 @@
 
         <!-- Suspended User Message -->
         <div v-if="isUserSuspended" class="fixed inset-0 bg-gray-50 flex items-center justify-center z-50">
-            <div class="bg-white p-12 rounded-2xl shadow-2xl max-w-md m-8">
+            <div class=" p-12 rounded-2xl shadow-2xl max-w-md m-8">
                 <div class="text-center">
                     <i class="pi pi-ban text-6xl text-red-500 mb-4"></i>
                     <h2 class="text-2xl font-bold text-red-600 mb-2">অ্যাকাউন্ট স্থগিত</h2>
