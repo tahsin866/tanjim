@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-2">
+  <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 p-6">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
       <i class="pi pi-chart-line text-blue-500"></i>
       মাসিক নিবন্ধন প্রবণতা (১২ মাস)
     </h3>
@@ -19,6 +19,13 @@ const props = defineProps({
 
 const chartCanvas = ref(null);
 
+const getComputedStyleColor = (cssVar, fallback) => {
+  if (typeof window === "undefined") return fallback;
+  const el = document.documentElement;
+  let color = getComputedStyle(el).getPropertyValue(cssVar);
+  return color?.trim() || fallback;
+}
+
 const createChart = () => {
   if (!chartCanvas.value || !props.data?.length) return;
 
@@ -31,12 +38,21 @@ const createChart = () => {
 
   if (!props.data?.length) return;
 
+  // Determine if dark mode is enabled
+  const isDark = document.documentElement.classList.contains('dark');
+
+  // Tailwind colors for light and dark
+  const gridColor = isDark ? '#374151' : '#e5e7eb'; // dark:bg-gray-800 / bg-gray-100
+  const lineColor = isDark ? '#60a5fa' : '#3b82f6'; // dark:text-blue-400 / text-blue-500
+  const pointColor = isDark ? '#60a5fa' : '#3b82f6';
+  const labelColor = isDark ? '#d1d5db' : '#6b7280'; // dark:text-gray-300 / text-gray-500
+
   const maxValue = Math.max(...props.data.map(d => d.count));
   const padding = 40;
   const chartWidth = width - padding * 2;
   const chartHeight = height - padding * 2;
 
-  ctx.strokeStyle = '#e5e7eb';
+  ctx.strokeStyle = gridColor;
   ctx.lineWidth = 1;
 
   for (let i = 0; i <= 5; i++) {
@@ -47,7 +63,7 @@ const createChart = () => {
     ctx.stroke();
   }
 
-  ctx.strokeStyle = '#3b82f6';
+  ctx.strokeStyle = lineColor;
   ctx.lineWidth = 2;
   ctx.beginPath();
 
@@ -61,7 +77,7 @@ const createChart = () => {
       ctx.lineTo(x, y);
     }
 
-    ctx.fillStyle = '#3b82f6';
+    ctx.fillStyle = pointColor;
     ctx.beginPath();
     ctx.arc(x, y, 4, 0, 2 * Math.PI);
     ctx.fill();
@@ -69,7 +85,7 @@ const createChart = () => {
 
   ctx.stroke();
 
-  ctx.fillStyle = '#6b7280';
+  ctx.fillStyle = labelColor;
   ctx.font = '12px Arial';
   ctx.textAlign = 'center';
 
@@ -86,8 +102,12 @@ const createChart = () => {
   }
 };
 
+// Re-draw chart on mount and when data changes or theme changes
 onMounted(() => {
   createChart();
+  // Listen for dark mode toggle
+  const observer = new MutationObserver(() => createChart());
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 });
 
 watch(() => props.data, () => {

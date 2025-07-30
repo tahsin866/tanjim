@@ -36,9 +36,9 @@ const items = (user) => {
     // Permission checking functions
     const hasPermission = (permission) => {
         if (currentAdmin?.role === 'super_admin') return true;
-        
+
         let permissions = currentAdmin?.permissions;
-        
+
         // Handle permissions as both array and object format
         if (typeof permissions === 'string') {
             try {
@@ -47,18 +47,16 @@ const items = (user) => {
                 permissions = [];
             }
         }
-        
+
         if (Array.isArray(permissions)) {
             return permissions.includes(permission);
         } else if (permissions && typeof permissions === 'object') {
             return permissions[permission] === true;
         }
-        
+
         return false;
     };
 
-    // Approve button: Show if user is not approved and admin has document_approve permission
-    // This allows moderators/admins with proper permission to approve applications
     if (user.status !== 'approved' && hasPermission('document_approve')) {
         baseItems.push({
             label: 'অনুমোদন',
@@ -69,7 +67,6 @@ const items = (user) => {
         });
     }
 
-    // Reject button: Only super admin can reject applications
     if (user.status !== 'rejected' && currentAdmin?.role === 'super_admin') {
         baseItems.push({
             label: 'বাতিল করুন',
@@ -80,7 +77,6 @@ const items = (user) => {
         });
     }
 
-    // Suspend button: Only super admin can suspend applications
     if (user.status !== 'suspended' && currentAdmin?.role === 'super_admin') {
         baseItems.push({
             label: 'স্থগিত করুন',
@@ -91,7 +87,6 @@ const items = (user) => {
         });
     }
 
-    // Delete button: Only super admin can delete applications
     if (currentAdmin?.role === 'super_admin') {
         baseItems.push({
             label: 'আবেদন মুছুন',
@@ -120,7 +115,6 @@ const searchForm = useForm({
 const filteredDistricts = ref(props.districts);
 const filteredThanas = ref(props.thanas);
 
-// Destructure props for easier access
 const { bloodGroups, workplaces, departments } = props;
 
 watch(() => searchForm.division_filter, (newDivision) => {
@@ -229,12 +223,12 @@ const getStatusText = (status) => {
 
 const getStatusBadgeClass = (status) => {
     const classMap = {
-        'approved': 'bg-green-100 text-green-800 border border-green-400',
-        'rejected': 'bg-red-100 text-red-800 border border-red-400',
-        'pending': 'bg-yellow-100 text-yellow-800 border border-yellow-400',
-        'suspended': 'bg-gray-100 text-gray-800 border border-gray-400'
+        'approved': 'bg-green-100 text-green-800 border border-green-400 dark:bg-green-900 dark:text-green-200 dark:border-green-700',
+        'rejected': 'bg-red-100 text-red-800 border border-red-400 dark:bg-red-900 dark:text-red-200 dark:border-red-700',
+        'pending': 'bg-yellow-100 text-yellow-800 border border-yellow-400 dark:bg-yellow-900 dark:text-yellow-200 dark:border-yellow-700',
+        'suspended': 'bg-gray-100 text-gray-800 border border-gray-400 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500'
     };
-    return classMap[status] || 'bg-gray-100 text-gray-800 border border-gray-400';
+    return classMap[status] || 'bg-gray-100 text-gray-800 border border-gray-400 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-500';
 };
 
 const onPage = (event) => {
@@ -266,26 +260,26 @@ const highlightMatch = (text, query) => {
     <AuthenticatedLayout>
         <template #header>
             <div class="flex justify-between items-center gap-4 flex-wrap">
-                <h2 class="text-2xl font-bold leading-tight text-gray-800 flex items-center gap-2">
+                <h2 class="text-2xl font-bold leading-tight text-gray-800 dark:text-gray-100 flex items-center gap-2">
                     <i class="pi pi-file-edit text-blue-500 text-lg"></i>
                     দস্তরবন্দি আবেদন তালিকা
                 </h2>
-                <button @click="router.reload()" class="flex items-center px-4 py-2 rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 transition">
+                <button @click="router.reload()" class="flex items-center px-4 py-2 rounded-lg text-blue-700 bg-blue-100 hover:bg-blue-200 dark:text-blue-100 dark:bg-blue-900 dark:hover:bg-blue-800 transition">
                     <i class="pi pi-refresh mr-2"></i> রিফ্রেশ
                 </button>
             </div>
         </template>
 
         <div class="py-12">
-            <div class="mx-auto  px-2 sm:px-6 lg:px-8">
-                <div class="mb-8 rounded-lg shadow-lg bg-gradient-to-br from-blue-50 to-white p-6 border border-blue-100">
-                    <h3 class="mb-2 text-lg font-semibold text-blue-700 flex items-center gap-2">
+            <div class="mx-auto px-2 sm:px-6 lg:px-8">
+                <div class="mb-8 rounded-lg shadow-lg bg-gradient-to-br from-blue-50 to-white dark:from-gray-900 dark:to-gray-800 p-6 border border-blue-100 dark:border-gray-700">
+                    <h3 class="mb-2 text-lg font-semibold text-blue-700 dark:text-blue-200 flex items-center gap-2">
                         <i class="pi pi-search text-blue-500"></i>
                         আবেদন খুঁজুন ও ফিল্টার করুন
                     </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-0">
                         <div>
-                            <label for="search-input" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="search-input" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 নাম/আইডি দিয়ে খুঁজুন
                             </label>
                             <input
@@ -293,18 +287,18 @@ const highlightMatch = (text, query) => {
                                 type="text"
                                 v-model="searchForm.search"
                                 placeholder="নাম অথবা রেজিস্ট্রেশন আইডি লিখুন..."
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition"
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition"
                                 @keyup.enter="applyFilters"
                             />
                         </div>
                         <div>
-                            <label for="graduation-year-select" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="graduation-year-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 পাস বছর
                             </label>
                             <select
                                 id="graduation-year-select"
                                 v-model="searchForm.graduation_year"
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition">
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition">
                                 <option value="">সব বছর</option>
                                 <option v-for="year in graduationYears" :key="year" :value="year">
                                     {{ year }}
@@ -312,13 +306,13 @@ const highlightMatch = (text, query) => {
                             </select>
                         </div>
                         <div>
-                            <label for="status-filter-select" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="status-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 স্ট্যাটাস
                             </label>
                             <select
                                 id="status-filter-select"
                                 v-model="searchForm.status_filter"
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition">
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition">
                                 <option value="">সব স্ট্যাটাস</option>
                                 <option v-for="status in statusOptions" :key="status.value" :value="status.value">
                                     {{ status.label }}
@@ -326,13 +320,13 @@ const highlightMatch = (text, query) => {
                             </select>
                         </div>
                         <div>
-                            <label for="division-filter-select" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="division-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 বিভাগ
                             </label>
                             <select
                                 id="division-filter-select"
                                 v-model="searchForm.division_filter"
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition">
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition">
                                 <option value="">সব বিভাগ</option>
                                 <option v-for="division in divisions" :key="division.id" :value="division.id">
                                     {{ division.division_name_bangla }}
@@ -342,13 +336,13 @@ const highlightMatch = (text, query) => {
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-3 mt-2">
                         <div>
-                            <label for="district-filter-select" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="district-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 জেলা
                             </label>
                             <select
                                 id="district-filter-select"
                                 v-model="searchForm.district_filter"
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition"
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition"
                                 :disabled="!searchForm.division_filter">
                                 <option value="">সব জেলা</option>
                                 <option v-for="district in filteredDistricts" :key="district.id" :value="district.id">
@@ -357,13 +351,13 @@ const highlightMatch = (text, query) => {
                             </select>
                         </div>
                         <div>
-                            <label for="thana-filter-select" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="thana-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 থানা
                             </label>
                             <select
                                 id="thana-filter-select"
                                 v-model="searchForm.thana_filter"
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition"
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition"
                                 :disabled="!searchForm.district_filter">
                                 <option value="">সব থানা</option>
                                 <option v-for="thana in filteredThanas" :key="thana.id" :value="thana.id">
@@ -372,13 +366,13 @@ const highlightMatch = (text, query) => {
                             </select>
                         </div>
                         <div>
-                            <label for="blood-group-filter-select" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="blood-group-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 রক্তের গ্রুপ
                             </label>
                             <select
                                 id="blood-group-filter-select"
                                 v-model="searchForm.blood_group_filter"
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition">
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition">
                                 <option value="">সব গ্রুপ</option>
                                 <option v-for="bloodGroup in bloodGroups" :key="bloodGroup" :value="bloodGroup">
                                     {{ bloodGroup }}
@@ -386,13 +380,13 @@ const highlightMatch = (text, query) => {
                             </select>
                         </div>
                         <div>
-                            <label for="workplace-filter-select" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="workplace-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 পেশা
                             </label>
                             <select
                                 id="workplace-filter-select"
                                 v-model="searchForm.workplace_filter"
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition">
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition">
                                 <option value="">সব পেশা</option>
                                 <option v-for="workplace in workplaces" :key="workplace" :value="workplace">
                                     {{ workplace }}
@@ -400,13 +394,13 @@ const highlightMatch = (text, query) => {
                             </select>
                         </div>
                         <div>
-                            <label for="department-filter-select" class="mb-1 block text-sm font-medium text-gray-700">
+                            <label for="department-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-200">
                                 বিভাগ
                             </label>
                             <select
                                 id="department-filter-select"
                                 v-model="searchForm.department_filter"
-                                class="w-full rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition">
+                                class="w-full rounded-lg border border-blue-200 dark:border-gray-600 bg-blue-50 dark:bg-gray-900 px-3 py-2 shadow-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-200 dark:focus:border-blue-300 transition">
                                 <option value="">সব বিভাগ</option>
                                 <option v-for="department in departments" :key="department.value" :value="department.value">
                                     {{ department.label }}
@@ -417,13 +411,13 @@ const highlightMatch = (text, query) => {
                             <div class="flex gap-2 w-full mt-6">
                                 <button
                                     @click="applyFilters"
-                                    class="flex-1 flex items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                    class="flex-1 flex items-center justify-center rounded-lg bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 px-4 py-2 text-sm font-medium text-white shadow transition dark:bg-blue-800 dark:hover:bg-blue-900 dark:focus:ring-blue-700">
                                     <i class="pi pi-search mr-2"></i>
                                     খুঁজুন
                                 </button>
                                 <button
                                     @click="clearFilters"
-                                    class="flex-1 flex items-center justify-center rounded-lg border border-gray-300 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 shadow transition hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400">
+                                    class="flex-1 flex items-center justify-center rounded-lg border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 shadow transition hover:bg-gray-200 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600">
                                     <i class="pi pi-times mr-2"></i>
                                     রিসেট
                                 </button>
@@ -432,9 +426,9 @@ const highlightMatch = (text, query) => {
                         <div></div>
                     </div>
                 </div>
-                <div class="overflow-hidden rounded-lg mt-8 bg-white shadow-lg border border-gray-200">
+                <div class="overflow-hidden rounded-lg mt-8 bg-white dark:bg-gray-900 shadow-lg border border-gray-200 dark:border-gray-700">
                     <div class="p-4 flex flex-col md:flex-row items-center justify-between gap-3">
-                        <div class="flex flex-wrap gap-2 text-xs">
+                        <div class="flex flex-wrap gap-2 text-xs dark:text-gray-300">
                             <span>মোট <span class="font-semibold">{{ users.total }}</span> আবেদন</span>
                             <span v-if="users.total > 0">| পৃষ্ঠা <span class="font-semibold">{{ users.current_page }}</span> / {{ users.last_page }}</span>
                         </div>
@@ -451,51 +445,51 @@ const highlightMatch = (text, query) => {
                         />
                     </div>
                     <div class="overflow-x-auto rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200 text-sm">
-                            <thead class="bg-blue-50 sticky top-0 z-10">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                            <thead class="bg-blue-50 dark:bg-gray-800 sticky top-0 z-10">
                                 <tr>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">নাম</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">রেজিস্ট্রেশন আইডি</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">পিতার নাম</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">জন্মতারিখ</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">রক্তের গ্রুপ</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">পেশা</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">বিভাগ</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">জেলা</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">থানা</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">শিক্ষাগত বিভাগ</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">স্ট্যাটাস</th>
-                                    <th class="px-4 py-3 text-left font-semibold text-blue-700">পেমেন্ট স্ট্যাটাস</th>
-                                    <th class="px-4 py-3 text-right font-semibold text-blue-700">কার্যক্রম</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">নাম</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">রেজিস্ট্রেশন আইডি</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">পিতার নাম</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">জন্মতারিখ</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">রক্তের গ্রুপ</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">পেশা</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">বিভাগ</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">জেলা</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">থানা</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">শিক্ষাগত বিভাগ</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">স্ট্যাটাস</th>
+                                    <th class="px-4 py-3 text-left font-semibold text-blue-700 dark:text-blue-200">পেমেন্ট স্ট্যাটাস</th>
+                                    <th class="px-4 py-3 text-right font-semibold text-blue-700 dark:text-blue-200">কার্যক্রম</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100 bg-white">
-                                <tr v-for="user in users.data" :key="user.id" class="hover:bg-blue-50 transition group">
-                                    <td class="whitespace-nowrap px-4 py-3 font-bold text-gray-900">
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-800 bg-white dark:bg-gray-900">
+                                <tr v-for="user in users.data" :key="user.id" class="hover:bg-blue-50 dark:hover:bg-gray-800 transition group">
+                                    <td class="whitespace-nowrap px-4 py-3 font-bold text-gray-900 dark:text-gray-100">
                                         <span v-html="highlightMatch(user.full_name_bangla, searchForm.search)"/>
                                     </td>
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">
-                                        <span class="font-mono bg-gray-100 px-2 py-1 rounded text-blue-600">{{ user.id }}</span>
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200">
+                                        <span class="font-mono bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded text-blue-600 dark:text-blue-300">{{ user.id }}</span>
                                     </td>
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700" v-html="highlightMatch(user.father_name, searchForm.search)" />
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ user.date_of_birth || 'N/A' }}</td>
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ user.bloodGroup || 'N/A' }}</td>
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700" v-html="highlightMatch(user.workplace, searchForm.search)" />
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ user.division_name || 'N/A' }}</td>
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ user.district_name || 'N/A' }}</td>
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">{{ user.thana_name || 'N/A' }}</td>
-                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700">
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200" v-html="highlightMatch(user.father_name, searchForm.search)" />
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200">{{ user.date_of_birth || 'N/A' }}</td>
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200">{{ user.bloodGroup || 'N/A' }}</td>
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200" v-html="highlightMatch(user.workplace, searchForm.search)" />
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200">{{ user.division_name || 'N/A' }}</td>
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200">{{ user.district_name || 'N/A' }}</td>
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200">{{ user.thana_name || 'N/A' }}</td>
+                                    <td class="whitespace-nowrap px-4 py-3 text-gray-700 dark:text-gray-200">
                                         <div class="flex flex-wrap gap-1">
-                                            <span v-if="user.dept_takmil" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 shadow">
+                                            <span v-if="user.dept_takmil" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-blue-200 shadow">
                                                 তাকমিল ({{ user.dept_takmil_year_english }})
                                             </span>
-                                            <span v-if="user.dept_ifta" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 shadow">
+                                            <span v-if="user.dept_ifta" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 shadow">
                                                 ইফতা ({{ user.dept_ifta_year_english }})
                                             </span>
-                                            <span v-if="user.dept_hifz" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800 shadow">
+                                            <span v-if="user.dept_hifz" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 shadow">
                                                 হিফজ ({{ user.dept_hifz_year_english }})
                                             </span>
-                                            <span v-if="user.dept_qirat" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800 shadow">
+                                            <span v-if="user.dept_qirat" class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 dark:bg-orange-900 text-orange-800 dark:text-orange-200 shadow">
                                                 কিরাআত ({{ user.dept_qirat_year_english }})
                                             </span>
                                         </div>
@@ -507,7 +501,7 @@ const highlightMatch = (text, query) => {
                                         </span>
                                     </td>
                                     <td class="whitespace-nowrap px-4 py-3">
-                                        <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 border border-yellow-400">
+                                        <span class="inline-flex rounded-full px-2 py-1 text-xs font-semibold bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 border border-yellow-400 dark:border-yellow-700">
                                             পেন্ডিং
                                         </span>
                                     </td>
@@ -516,7 +510,7 @@ const highlightMatch = (text, query) => {
                                     </td>
                                 </tr>
                                 <tr v-if="!users.data.length">
-                                    <td colspan="13" class="text-center py-8 text-gray-400"><i class="pi pi-info-circle"></i> কোনো আবেদন পাওয়া যায়নি</td>
+                                    <td colspan="13" class="text-center py-8 text-gray-400 dark:text-gray-500"><i class="pi pi-info-circle"></i> কোনো আবেদন পাওয়া যায়নি</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -539,39 +533,3 @@ const highlightMatch = (text, query) => {
         </div>
     </AuthenticatedLayout>
 </template>
-
-<style scoped>
-* {
-    font-family: 'Merriweather', 'SolaimanLipi', sans-serif;
-}
-.p-splitbutton {
-    background: transparent !important;
-    border: none !important;
-}
-.p-splitbutton .p-button {
-    background: #1976d2 !important;
-    border: none !important;
-    font-weight: 500;
-}
-.p-splitbutton .p-button:hover {
-    background: #115293 !important;
-}
-::-webkit-scrollbar {
-    height: 6px;
-    width: 6px;
-}
-::-webkit-scrollbar-thumb {
-    background: #d1d5db;
-    border-radius: 4px;
-}
-table thead th {
-    position: sticky;
-    top: 0;
-    z-index: 2;
-}
-mark {
-    background: #ffe082;
-    padding: 0 2px;
-    border-radius: 2px;
-}
-</style>

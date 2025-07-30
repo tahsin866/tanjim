@@ -1,6 +1,6 @@
 <template>
-  <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">
-    <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-2">
+  <div class="bg-white dark:bg-gray-900 rounded-lg shadow-sm border border-gray-100 dark:border-gray-800 p-6">
+    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-6 flex items-center gap-2">
       <i class="pi pi-chart-line text-blue-500"></i>
       মাসিক নিবন্ধন প্রবণতা (১২ মাস)
     </h3>
@@ -10,7 +10,6 @@
   </div>
 </template>
 
-
 <script setup>
 import { ref, onMounted, watch } from 'vue';
 
@@ -19,22 +18,27 @@ const props = defineProps({
 });
 
 const chartCanvas = ref(null);
-let chartInstance = null;
 
 const createChart = () => {
   if (!chartCanvas.value || !props.data?.length) return;
 
   const ctx = chartCanvas.value.getContext('2d');
-
-  // Simple canvas chart implementation (without Chart.js dependency)
   const canvas = chartCanvas.value;
   const width = canvas.width = canvas.offsetWidth;
   const height = canvas.height = canvas.offsetHeight;
 
-  // Clear canvas
   ctx.clearRect(0, 0, width, height);
 
   if (!props.data?.length) return;
+
+  // Detect dark mode
+  const isDark = document.documentElement.classList.contains('dark');
+
+  // Tailwind-friendly colors for dark/light mode
+  const gridColor = isDark ? '#374151' : '#e5e7eb';        // dark:bg-gray-800 / bg-gray-100
+  const lineColor = isDark ? '#60a5fa' : '#3b82f6';        // dark:text-blue-400 / text-blue-500
+  const pointColor = isDark ? '#60a5fa' : '#3b82f6';
+  const labelColor = isDark ? '#d1d5db' : '#6b7280';       // dark:text-gray-300 / text-gray-500
 
   const maxValue = Math.max(...props.data.map(d => d.count));
   const padding = 40;
@@ -42,9 +46,8 @@ const createChart = () => {
   const chartHeight = height - padding * 2;
 
   // Draw grid lines
-  ctx.strokeStyle = '#e5e7eb';
+  ctx.strokeStyle = gridColor;
   ctx.lineWidth = 1;
-
   for (let i = 0; i <= 5; i++) {
     const y = padding + (chartHeight / 5) * i;
     ctx.beginPath();
@@ -54,7 +57,7 @@ const createChart = () => {
   }
 
   // Draw line chart
-  ctx.strokeStyle = '#3b82f6';
+  ctx.strokeStyle = lineColor;
   ctx.lineWidth = 2;
   ctx.beginPath();
 
@@ -69,7 +72,7 @@ const createChart = () => {
     }
 
     // Draw point
-    ctx.fillStyle = '#3b82f6';
+    ctx.fillStyle = pointColor;
     ctx.beginPath();
     ctx.arc(x, y, 4, 0, 2 * Math.PI);
     ctx.fill();
@@ -78,7 +81,7 @@ const createChart = () => {
   ctx.stroke();
 
   // Draw labels
-  ctx.fillStyle = '#6b7280';
+  ctx.fillStyle = labelColor;
   ctx.font = '12px Arial';
   ctx.textAlign = 'center';
 
@@ -98,10 +101,12 @@ const createChart = () => {
 
 onMounted(() => {
   createChart();
+  // If the theme changes (dark/light), redraw chart
+  const observer = new MutationObserver(() => createChart());
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 });
 
 watch(() => props.data, () => {
   createChart();
 }, { deep: true });
 </script>
-
