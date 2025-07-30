@@ -36,11 +36,30 @@ const items = (user) => {
     // Permission checking functions
     const hasPermission = (permission) => {
         if (currentAdmin?.role === 'super_admin') return true;
-        return currentAdmin?.permissions?.includes(permission) || false;
+        
+        let permissions = currentAdmin?.permissions;
+        
+        // Handle permissions as both array and object format
+        if (typeof permissions === 'string') {
+            try {
+                permissions = JSON.parse(permissions);
+            } catch (e) {
+                permissions = [];
+            }
+        }
+        
+        if (Array.isArray(permissions)) {
+            return permissions.includes(permission);
+        } else if (permissions && typeof permissions === 'object') {
+            return permissions[permission] === true;
+        }
+        
+        return false;
     };
 
-    // Check for approve permission
-    if (hasPermission('application_management.approve_applications')) {
+    // Approve button: Show if user is not approved and admin has document_approve permission
+    // This allows moderators/admins with proper permission to approve applications
+    if (user.status !== 'approved' && hasPermission('document_approve')) {
         baseItems.push({
             label: 'অনুমোদন',
             icon: 'pi pi-check',
@@ -50,10 +69,10 @@ const items = (user) => {
         });
     }
 
-    // Check for reject permission
-    if (hasPermission('application_management.reject_applications')) {
+    // Reject button: Only super admin can reject applications
+    if (user.status !== 'rejected' && currentAdmin?.role === 'super_admin') {
         baseItems.push({
-            label: 'স্থগিত করুন',
+            label: 'বাতিল করুন',
             icon: 'pi pi-times',
             command: () => {
                 rejectApplication(user.id);
@@ -61,10 +80,10 @@ const items = (user) => {
         });
     }
 
-    // Check for suspend permission
-    if (hasPermission('application_management.suspend_applications')) {
+    // Suspend button: Only super admin can suspend applications
+    if (user.status !== 'suspended' && currentAdmin?.role === 'super_admin') {
         baseItems.push({
-            label: 'বাতিল করুন',
+            label: 'স্থগিত করুন',
             icon: 'pi pi-pause',
             command: () => {
                 suspendApplication(user.id);
@@ -72,8 +91,8 @@ const items = (user) => {
         });
     }
 
-    // Check for delete permission
-    if (hasPermission('application_management.delete_applications')) {
+    // Delete button: Only super admin can delete applications
+    if (currentAdmin?.role === 'super_admin') {
         baseItems.push({
             label: 'আবেদন মুছুন',
             icon: 'pi pi-trash',
