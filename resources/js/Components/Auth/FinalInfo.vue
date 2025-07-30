@@ -59,7 +59,7 @@ const handleSubmit = () => {
         <!-- Form Actions -->
         <div class="mt-8 pt-6 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0 sm:space-x-4">
             <Link
-                :href="route('admin.login')"
+                :href="route('login')"
                 class="text-emerald-600 hover:text-emerald-800 font-medium transition-colors underline"
             >
                 ইতিমধ্যে রেজিস্ট্রেশন করেছেন? লগইন করুন
