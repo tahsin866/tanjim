@@ -219,7 +219,53 @@
             </div>
             <!-- Settings Dropdown/User Info -->
             <div class="flex sm:items-center sm:ml-6 space-x-3">
-              <!-- (User info & dropdown here, as per your previous code) -->
+                            <Dropdown align="right" width="48">
+                        <template #trigger>
+                            <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+                                <div class="flex items-center">
+                                    <div class="mr-2 h-8 w-8 rounded-full overflow-hidden border border-gray-200">
+                                        <img v-if="$page.props.auth.admin.profile_image" :src="`/storage/${$page.props.auth.admin.profile_image}`" alt="Profile" class="h-full w-full object-cover">
+                                        <div v-else class="h-full w-full flex items-center justify-center bg-gray-100 text-gray-600">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div class="hidden sm:block">
+                                        <div>{{ $page.props.auth.admin.name }}</div>
+                                        <div class="text-xs text-gray-500">
+                                            <span class="px-2 py-0.5 rounded-full text-xs" :class="{
+                                                'bg-purple-100 text-purple-800': $page.props.auth.admin.role === 'super_admin',
+                                                'bg-green-100 text-green-800': $page.props.auth.admin.role === 'admin',
+                                                'bg-blue-100 text-blue-800': $page.props.auth.admin.role === 'moderator'
+                                            }">
+                                                {{ $page.props.auth.admin.role === 'super_admin' ? 'সুপার এডমিন' :
+                                                   $page.props.auth.admin.role === 'admin' ? 'এডমিন' : 'মডারেটর' }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </button>
+                        </template>
+
+                        <template #content>
+                            <DropdownLink href="route('profile.edit')" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                প্রোফাইল
+                            </DropdownLink>
+
+                            <DropdownLink href="route('admin.settings')" class="block px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                সেটিংস
+                            </DropdownLink>
+
+                            <DropdownLink :href="route('admin.logout')" method="post" as="button" class="block w-full text-left px-4 py-2 text-sm leading-5 text-gray-700 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 transition duration-150 ease-in-out">
+                                লগ আউট
+                            </DropdownLink>
+                        </template>
+                    </Dropdown> <!-- (User info & dropdown here, as per your previous code) -->
             </div>
           </div>
         </div>
