@@ -175,7 +175,7 @@
         <!-- Messaging -->
         <Link
           v-if="hasPermission('messaging_access')"
-          :href="route('others.massaging')"
+          href="route('others.massaging')"
           class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2">
           <i class="h-6 text-sm w-6 fa-envelope fas"></i>
           মেসেজিং
@@ -184,7 +184,7 @@
         <!-- Notice -->
         <Link
           v-if="hasPermission('notice_access')"
-          :href="route('others.notice')"
+          href="route('others.notice')"
           class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2">
           <i class="h-6 text-sm w-6 fa-bell fas"></i>
           নোটিস
