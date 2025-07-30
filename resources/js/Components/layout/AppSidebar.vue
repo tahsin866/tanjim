@@ -1,12 +1,14 @@
 <template>
     <div
         :class="[
-            'layout-sidebar',
-            { 'layout-sidebar-mobile-active': visible }
+            'fixed top-0 left-0 h-screen w-64 bg-gray-800 text-white z-40 flex flex-col transition-transform duration-300 ease-in-out',
+            isMobile
+                ? (visible ? 'translate-x-0' : '-translate-x-full')
+                : 'translate-x-0'
         ]"
     >
         <!-- Logo Header -->
-        <div class="layout-sidebar-header">
+        <div class="bg-gray-900 border-b border-gray-700 flex-shrink-0">
             <div class="flex items-center gap-2 px-4 py-3">
                 <i class="pi pi-home text-2xl text-white"></i>
                 <span class="text-lg font-bold text-white">তানজিমে আবনায়ে ফরিদাবাদ</span>
@@ -14,7 +16,7 @@
         </div>
 
         <!-- Navigation Menu -->
-        <div class="layout-sidebar-content">
+        <div class="flex-1 overflow-y-auto overflow-x-hidden">
             <!-- Show message for suspended users -->
             <div v-if="isUserSuspended" class="px-4 py-6 text-center">
                 <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
@@ -28,7 +30,7 @@
             <PanelMenu
                 v-else
                 :model="filteredMenuItems"
-                class="sidebar-menu"
+                class="bg-transparent border-0"
                 @item-click="onMenuItemClick"
             >
                 <template #item="{ item }">
@@ -36,8 +38,10 @@
                         v-if="item.route"
                         :href="item.route"
                         :class="[
-                            'p-menuitem-link',
-                            { 'active-menu-item': isActiveRoute(item.routeName) }
+                            'flex items-center w-full text-left px-4 py-3 rounded transition-colors',
+                            isActiveRoute(item.routeName)
+                                ? 'bg-gray-900 border-l-4 border-blue-500 font-medium'
+                                : 'hover:bg-gray-600'
                         ]"
                     >
                         <span :class="item.icon"></span>
@@ -53,8 +57,10 @@
                         v-else
                         @click="item.command"
                         :class="[
-                            'p-menuitem-link w-full text-left',
-                            { 'active-menu-item': isActiveRoute(item.routeName) }
+                            'flex items-center w-full text-left px-4 py-3 rounded transition-colors',
+                            isActiveRoute(item.routeName)
+                                ? 'bg-gray-900 border-l-4 border-blue-500 font-medium'
+                                : 'hover:bg-gray-600'
                         ]"
                     >
                         <span :class="item.icon"></span>
@@ -66,12 +72,10 @@
         </div>
 
         <!-- Sidebar Footer -->
-        <div class="layout-sidebar-footer">
-            <div class="px-4 py-3 border-t border-gray-600">
-                <div class="text-center text-gray-300 text-sm">
-                    <p>© ২০২৫ WEMS</p>
-                    <p>সংস্করণ ২.০</p>
-                </div>
+        <div class="flex-shrink-0 px-4 py-3 border-t border-gray-600">
+            <div class="text-center text-gray-300 text-sm">
+                <p>© ২০২৫ WEMS</p>
+                <p>সংস্করণ ২.০</p>
             </div>
         </div>
     </div>
@@ -79,7 +83,7 @@
     <!-- Mobile overlay -->
     <div
         v-if="visible && isMobile"
-        class="layout-sidebar-mask"
+        class="fixed inset-0 bg-black bg-opacity-50 z-30"
         @click="$emit('hide')"
     ></div>
 </template>
@@ -130,26 +134,6 @@ const menuItems = ref([
                 route: route('madrashaDashboard.studentData'),
                 routeName: 'madrashaDashboard.studentData'
             },
-            // {
-            //     label: 'মারকায পরিবর্তন',
-            //     icon: 'pi pi-refresh',
-            //     // route: route('Markaz.markaz_change_table'),
-            //     // routeName: 'Markaz.markaz_change_table',
-            //     visible: !page.props.auth.user.markaz_serial
-            // },
-            // {
-            //     label: 'বিষয় সেটাপ',
-            //     icon: 'pi pi-cog',
-            //     // route: route('Markaz.subjectSettings_for_madrasha'),
-            //     // routeName: 'Markaz.subjectSettings_for_madrasha'
-            // },
-            // {
-            //     label: 'মারহালা পরিবর্তন',
-            //     icon: 'pi pi-arrows-h',
-            //     // route: route('Markaz.marhala_change_table'),
-            //     // routeName: 'Markaz.marhala_change_table'
-            // },
-
         ]
     },
     {
@@ -162,23 +146,15 @@ const menuItems = ref([
                 route: route('madrashaDashboard.studentData'),
                 routeName: 'madrashaDashboard.studentData'
             },
-
-
         ]
     },
-
-
-
-
 ])
 
 // Filter menu items based on visibility and user status
 const filteredMenuItems = computed(() => {
-    // If user is suspended, return empty array (no menu items)
     if (isUserSuspended.value) {
         return []
     }
-
     return menuItems.value.filter(item => {
         if (item.visible === false) return false
         if (item.items) {
@@ -194,163 +170,3 @@ const onMenuItemClick = () => {
     }
 }
 </script>
-
-<style scoped>
-.layout-sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100vh; /* Changed from 100% to 100vh */
-    width: 16rem; /* w-64 */
-    background-color: #1f2937; /* bg-gray-800 */
-    color: #fff; /* text-white */
-    z-index: 40;
-    transform: translateX(0);
-    transition-property: transform;
-    transition-duration: 300ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); /* ease-in-out */
-    display: flex;
-    flex-direction: column;
-    margin: 0;
-    padding: 0;
-}
-
-.layout-sidebar-mobile-active {
-    transform: translateX(0);
-}
-
-@media (max-width: 1024px) {
-    .layout-sidebar {
-        transform: translateX(-100%);
-    }
-}
-
-@media (min-width: 1024px) {
-    .layout-sidebar {
-        transform: translateX(0);
-    }
-}
-
-.layout-sidebar-header {
-    background-color: #111827; /* bg-gray-900 */
-    border-bottom: 1px solid #374151; /* border-b border-gray-700 */
-    flex-shrink: 0;
-}
-
-.layout-sidebar-content {
-    flex: 1;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scrollbar-width: thin;
-    scrollbar-color: #4B5563 #374151;
-}
-
-.layout-sidebar-content::-webkit-scrollbar {
-    width: 6px;
-}
-
-.layout-sidebar-content::-webkit-scrollbar-track {
-    background: #374151;
-}
-
-.layout-sidebar-content::-webkit-scrollbar-thumb {
-    background: #4B5563;
-    border-radius: 3px;
-}
-
-.layout-sidebar-footer {
-    flex-shrink: 0;
-}
-
-.layout-sidebar-mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    z-index: 30;
-}
-
-/* PrimeVue Menu Customization */
-:deep(.p-panelmenu) {
-    border: 0;
-    background-color: transparent;
-}
-
-:deep(.p-panelmenu .p-panelmenu-panel) {
-    border: 0;
-    background-color: transparent;
-}
-
-:deep(.p-panelmenu .p-panelmenu-header) {
-    border: 0;
-    background-color: transparent;
-}
-
-:deep(.p-panelmenu .p-panelmenu-header-link) {
-    background-color: transparent;
-    border: 0;
-    color: #fff;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    transition-property: background-color;
-    transition-duration: 200ms;
-}
-:deep(.p-panelmenu .p-panelmenu-header-link:hover) {
-    background-color: #374151; /* bg-gray-700 */
-}
-
-:deep(.p-panelmenu .p-panelmenu-content) {
-    border: 0;
-    background-color: #374151; /* bg-gray-700 */
-}
-
-:deep(.p-menuitem-link) {
-    color: #fff;
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    border: 0;
-    background-color: transparent;
-    transition-property: background-color;
-    transition-duration: 200ms;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    text-align: left;
-}
-:deep(.p-menuitem-link:hover) {
-    background-color: #4b5563; /* bg-gray-600 */
-}
-
-:deep(.active-menu-item) {
-    background-color: #111827; /* bg-gray-900 */
-    border-left: 4px solid #3b82f6; /* border-blue-500 */
-    font-weight: 500;
-}
-
-:deep(.p-panelmenu .p-menuitem-text) {
-    color: #fff;
-}
-
-:deep(.p-panelmenu .p-menuitem-icon) {
-    color: #fff;
-    margin-right: 0.75rem;
-}
-
-:deep(.p-panelmenu .p-panelmenu-header-icon) {
-    color: #fff;
-}
-
-:deep(.p-submenu-list) {
-    background-color: #374151; /* bg-gray-700 */
-}
-
-:deep(.p-menuitem) {
-    border: 0;
-}
-</style>
