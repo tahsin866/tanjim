@@ -44,6 +44,16 @@ export default {
                     950: '#030712',
                 },
             },
+            animation: {
+                'spin-slower': 'spin 8s linear infinite',
+                'spin-reverse-slow': 'spin-reverse 10s linear infinite',
+            },
+            keyframes: {
+                'spin-reverse': {
+                    from: { transform: 'rotate(360deg)' },
+                    to: { transform: 'rotate(0deg)' },
+                },
+            },
         },
     },
     plugins: [forms],

@@ -30,26 +30,28 @@ class AdminLoginController extends Controller
         $credentials = $request->only('email', 'password');
         $remember = $request->boolean('remember');
 
-        if (Auth::guard('admin')->attempt($credentials, $remember)) {
-            $admin = Auth::guard('admin')->user();
-            
-            // Check if admin is active
-            if (!$admin->is_active) {
-                Auth::guard('admin')->logout();
-                return back()->withErrors(['email' => 'Your account is inactive.']);
-            }
+if (Auth::guard('admin')->attempt($credentials, $remember)) {
+    $admin = Auth::guard('admin')->user();
 
-            // Update last login info
-            $admin->update([
-                'last_login_at' => now(),
-                'last_login_ip' => $request->ip(),
-            ]);
+    // Check if admin is active
+    if (!$admin->is_active) {
+        Auth::guard('admin')->logout();
+        return back()->withErrors(['email' => 'Your account is inactive.']);
+    }
 
-            $request->session()->regenerate();
+    // Retrieve the Eloquent admin model to update last login info
+    $adminModel = \App\Models\Admin::find($admin->id);
+    if ($adminModel) {
+        $adminModel->last_login_at = now();
+        $adminModel->last_login_ip = $request->ip();
+        $adminModel->save();
+    }
 
-            return redirect()->intended(route('admin.admin_Dashboard'))
-                ->with('success', 'Welcome back, ' . $admin->name);
-        }
+    $request->session()->regenerate();
+
+    return redirect()->intended(route('admin.admin_Dashboard'))
+        ->with('success', 'Welcome back, ' . $admin->name);
+}
 
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',

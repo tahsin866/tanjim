@@ -298,16 +298,16 @@ onMounted(async () => {
 
 <template>
     <div class="mb-8">
-        <h3 class="text-xl font-semibold text-gray-800 mb-6 border-b pb-2">ব্যক্তিগত তথ্য</h3>
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-6 border-b pb-2">ব্যক্তিগত তথ্য</h3>
 
         <!-- পূর্ণ নাম, ইংরেজি নাম -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-                <InputLabel for="fullNameBangla" class="text-lg font-medium" value="পূর্ণ নাম (বাংলা)" />
+                <InputLabel for="fullNameBangla" class="text-lg font-medium dark:text-white" value="পূর্ণ নাম (বাংলা)" />
                 <input
                     id="fullNameBangla"
                     type="text"
-                    :class="getFieldErrorClass('fullNameBangla')"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getFieldErrorClass('fullNameBangla'), 'dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
                     v-model="form.fullNameBangla"
                     placeholder="বাংলায় পূর্ণ নাম লিখুন"
                     required
@@ -315,11 +315,11 @@ onMounted(async () => {
                 <InputError class="mt-2" :message="fieldValidation.fullNameBangla" />
             </div>
             <div>
-                <InputLabel for="fullNameEnglish" class="text-lg font-medium" value="পূর্ণ নাম (ইংরেজি)" />
+                <InputLabel for="fullNameEnglish" class="text-lg font-medium dark:text-white" value="পূর্ণ নাম (ইংরেজি)" />
                 <input
                     id="fullNameEnglish"
                     type="text"
-                    :class="getFieldErrorClass('fullNameEnglish')"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getFieldErrorClass('fullNameEnglish'), 'dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
                     v-model="form.fullNameEnglish"
                     placeholder="Full Name in English"
                     required
@@ -331,11 +331,11 @@ onMounted(async () => {
         <!-- পিতার নাম, ইমেইল -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-                <InputLabel for="fatherName" class="text-lg font-medium" value="পিতার নাম" />
+                <InputLabel for="fatherName" class="text-lg font-medium dark:text-white" value="পিতার নাম" />
                 <input
                     id="fatherName"
                     type="text"
-                    :class="getFieldErrorClass('fatherName')"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getFieldErrorClass('fatherName'), 'dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
                     v-model="form.fatherName"
                     placeholder="পিতার নাম লিখুন"
                     required
@@ -343,11 +343,11 @@ onMounted(async () => {
                 <InputError class="mt-2" :message="fieldValidation.fatherName" />
             </div>
             <div>
-                <InputLabel for="email" class="text-lg font-medium" value="ইমেইল ঠিকানা" />
+                <InputLabel for="email" class="text-lg font-medium dark:text-white" value="ইমেইল ঠিকানা" />
                 <input
                     id="email"
                     type="email"
-                    :class="getFieldErrorClass('email')"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getFieldErrorClass('email'), 'dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
                     v-model="form.email"
                     placeholder="ইমেইল ঠিকানা লিখুন (যেমন: example@gmail.com)"
                     required
@@ -359,11 +359,11 @@ onMounted(async () => {
         <!-- ফোন নাম্বার, বিকল্প ফোন নাম্বার -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-                <InputLabel for="phoneNumber" class="text-lg font-medium" value="ফোন নাম্বর" />
+                <InputLabel for="phoneNumber" class="text-lg font-medium dark:text-white" value="ফোন নাম্বর" />
                 <input
                     id="phoneNumber"
                     type="tel"
-                    :class="getFieldErrorClass('phoneNumber')"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getFieldErrorClass('phoneNumber'), 'dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
                     v-model="form.phoneNumber"
                     placeholder="মোবাইল নাম্বর লিখুন (যেমন: 01712345678)"
                     required
@@ -371,11 +371,11 @@ onMounted(async () => {
                 <InputError class="mt-2" :message="fieldValidation.phoneNumber" />
             </div>
             <div>
-                <InputLabel for="alternatePhoneNumber" class="text-lg font-medium" value="বিকল্প ফোন নাম্বার" />
+                <InputLabel for="alternatePhoneNumber" class="text-lg font-medium dark:text-white" value="বিকল্প ফোন নাম্বার" />
                 <TextInput
                     id="alternatePhoneNumber"
                     type="tel"
-                    class="mt-1 block w-full"
+                    class="mt-1 block w-full dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400"
                     v-model="form.alternatePhoneNumber"
                     placeholder="বিকল্প ফোন নাম্বার (যদি থাকে)"
                 />
@@ -386,22 +386,22 @@ onMounted(async () => {
         <!-- জন্মতারিখ, ব্লাড গ্রুপ -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
-                <InputLabel for="dateOfBirth" class="text-lg font-medium" value="জন্মতারিখ" />
+                <InputLabel for="dateOfBirth" class="text-lg font-medium dark:text-white" value="জন্মতারিখ" />
                 <input
                     id="dateOfBirth"
                     type="date"
-                    :class="getFieldErrorClass('dateOfBirth')"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getFieldErrorClass('dateOfBirth'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
                     v-model="form.dateOfBirth"
                     required
                 />
                 <InputError class="mt-2" :message="fieldValidation.dateOfBirth" />
             </div>
             <div>
-                <InputLabel for="bloodGroup" class="text-lg font-medium" value="ব্লাড গ্রুপ" />
+                <InputLabel for="bloodGroup" class="text-lg font-medium dark:text-white" value="ব্লাড গ্রুপ" />
                 <select
                     id="bloodGroup"
                     v-model="form.bloodGroup"
-                    :class="getSelectErrorClass('bloodGroup')"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getSelectErrorClass('bloodGroup'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
                 >
                     <option value="">ব্লাড গ্রুপ নির্বাচন করুন</option>
                     <option value="A+">A+</option>
@@ -420,12 +420,12 @@ onMounted(async () => {
 
         <!-- বিস্তারিত ঠিকানা -->
         <div class="mb-6">
-            <InputLabel for="address" class="text-lg font-medium" value="বিস্তারিত ঠিকানা" />
+            <InputLabel for="address" class="text-lg font-medium dark:text-white" value="বিস্তারিত ঠিকানা" />
             <textarea
                 id="address"
                 v-model="form.address"
                 placeholder="গ্রাম/মহল্লা, ওয়ার্ড নং, ইত্যাদি"
-                :class="getTextareaErrorClass('address')"
+                :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getTextareaErrorClass('address'), 'dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
                 rows="3"
                 required
             ></textarea>
@@ -435,52 +435,52 @@ onMounted(async () => {
         <!-- বিভাগ, জেলা, থানা (Dependent Dropdowns) -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div>
-                <InputLabel for="division" class="text-lg font-medium" value="বিভাগ" />
+                <InputLabel for="division" class="text-lg font-medium dark:text-white" value="বিভাগ" />
                 <select
-                id="division"
-                v-model="form.division"
-                :class="getSelectErrorClass('division')"
-                required
-                :disabled="loading"
+                    id="division"
+                    v-model="form.division"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getSelectErrorClass('division'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
+                    required
+                    :disabled="loading"
                 >
-                <option value="">বিভাগ নির্বাচন করুন</option>
-                <option v-for="division in divisions" :key="division.id" :value="division.id">
-                    {{ division.Division }}
+                    <option value="">বিভাগ নির্বাচন করুন</option>
+                    <option v-for="division in divisions" :key="division.id" :value="division.id">
+                        {{ division.Division }}
                     </option>
                 </select>
                 <InputError class="mt-2" :message="fieldValidation.division" />
             </div>
 
             <div>
-                <InputLabel for="district" class="text-lg font-medium" value="জেলা" />
+                <InputLabel for="district" class="text-lg font-medium dark:text-white" value="জেলা" />
                 <select
-                id="district"
-                v-model="form.district"
-                :class="getSelectErrorClass('district')"
-                :disabled="!form.division || loading"
-                required
+                    id="district"
+                    v-model="form.district"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getSelectErrorClass('district'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
+                    :disabled="!form.division || loading"
+                    required
                 >
-                <option value="">জেলা নির্বাচন করুন</option>
-                <option v-for="district in availableDistricts" :key="district.DesID" :value="district.DesID">
-                {{ district.District }}
-                </option>
+                    <option value="">জেলা নির্বাচন করুন</option>
+                    <option v-for="district in availableDistricts" :key="district.DesID" :value="district.DesID">
+                        {{ district.District }}
+                    </option>
                 </select>
                 <InputError class="mt-2" :message="fieldValidation.district" />
             </div>
 
             <div>
-                <InputLabel for="thana" class="text-lg font-medium" value="থানা/উপজেলা" />
+                <InputLabel for="thana" class="text-lg font-medium dark:text-white" value="থানা/উপজেলা" />
                 <select
-                id="thana"
-                v-model="form.thana"
-                :class="getSelectErrorClass('thana')"
-                :disabled="!form.district || loading"
-                required
+                    id="thana"
+                    v-model="form.thana"
+                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getSelectErrorClass('thana'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
+                    :disabled="!form.district || loading"
+                    required
                 >
-                <option value="">থানা নির্বাচন করুন</option>
-                <option v-for="thana in availableThanas" :key="thana.Thana_ID" :value="thana.Thana_ID">
-                {{ thana.Thana }}
-                </option>
+                    <option value="">থানা নির্বাচন করুন</option>
+                    <option v-for="thana in availableThanas" :key="thana.Thana_ID" :value="thana.Thana_ID">
+                        {{ thana.Thana }}
+                    </option>
                 </select>
                 <InputError class="mt-2" :message="fieldValidation.thana" />
             </div>
@@ -488,13 +488,13 @@ onMounted(async () => {
 
         <!-- ✅ সাথী ভাইয়ের নামসমূহ (দুই কলামে) -->
         <div class="mb-6">
-            <InputLabel class="text-lg font-medium mb-3" value="নিজ জামাতে তিনজন সাথী ভাইয়ের নাম" />
+            <InputLabel class="text-lg font-medium mb-3 dark:text-white" value="নিজ জামাতে তিনজন সাথী ভাইয়ের নাম" />
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <TextInput
                         id="classmate1"
                         type="text"
-                        class="block w-full"
+                        class="block w-full dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400"
                         v-model="form.classmate1"
                         placeholder="প্রথম সাথী ভাইয়ের নাম"
                     />
@@ -504,7 +504,7 @@ onMounted(async () => {
                     <TextInput
                         id="classmate2"
                         type="text"
-                        class="block w-full"
+                        class="block w-full dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400"
                         v-model="form.classmate2"
                         placeholder="দ্বিতীয় সাথী ভাইয়ের নাম"
                     />
@@ -516,7 +516,7 @@ onMounted(async () => {
                     <TextInput
                         id="classmate3"
                         type="text"
-                        class="block w-full"
+                        class="block w-full dark:bg-gray-800 dark:text-white dark:placeholder-gray-400 dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400"
                         v-model="form.classmate3"
                         placeholder="তৃতীয় সাথী ভাইয়ের নাম"
                     />

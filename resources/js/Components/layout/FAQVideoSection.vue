@@ -1,22 +1,22 @@
 <template>
   <section
     style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
-    class="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 relative overflow-hidden">
+    class="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 relative overflow-hidden transition-colors duration-300">
 
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-10 pointer-events-none select-none">
-      <div class="absolute top-20 left-20 w-64 h-64 bg-emerald-300 rounded-full blur-3xl animate-pulse"></div>
-      <div class="absolute bottom-20 right-20 w-80 h-80 bg-teal-300 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
+      <div class="absolute top-20 left-20 w-64 h-64 bg-emerald-300 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite]"></div>
+      <div class="absolute bottom-20 right-20 w-80 h-80 bg-teal-300 rounded-full blur-3xl animate-[float_7s_ease-in-out_infinite]" style="animation-delay: 1s;"></div>
     </div>
 
     <div class="container mx-auto px-4 relative z-10">
       <!-- Section Header -->
       <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-gray-800 mb-4">
-          <i class="pi pi-comments text-emerald-600 mr-3"></i>
+        <h2 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">
+          <i class="pi pi-comments text-emerald-600 dark:text-emerald-400 mr-3"></i>
           প্রশ্ন ও ছবি গ্যালারি
         </h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           ৭০ বছর পূর্তি উপলক্ষে সম্মাননা অনুষ্ঠান, প্রশ্ন-উত্তর, ও অনুষ্ঠানের মুহূর্তগুলো দেখুন
         </p>
       </div>
@@ -24,9 +24,9 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <!-- Questions (FAQ) Section -->
         <div class="transform hover:scale-[1.01] transition-all duration-500">
-          <Card class="shadow-xl hover:shadow-2xl transition-all duration-500 border-0 h-full">
+          <Card class="shadow-xl hover:shadow-2xl transition-all duration-500 border-0 h-full dark:bg-gray-900/90">
             <template #header>
-              <div class="bg-gradient-to-r from-emerald-500 to-teal-500 p-6 text-white relative overflow-hidden">
+              <div class="bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-700 dark:to-teal-800 p-6 text-white relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 translate-x-8"></div>
                 <div class="flex items-center relative z-10">
                   <Avatar
@@ -47,18 +47,19 @@
                     v-for="(faq, index) in faqs"
                     :key="index"
                     :header="faq.question"
-                    class="mb-2">
+                    class="mb-2"
+                  >
                     <template #header>
                       <div class="flex items-center w-full">
                         <Avatar
                           :label="(index + 1).toString()"
                           class="bg-emerald-100 text-emerald-600 mr-3"
                           size="small" />
-                        <span class="font-semibold text-gray-800">{{ faq.question }}</span>
+                        <span class="font-semibold text-gray-800 dark:text-gray-100">{{ faq.question }}</span>
                       </div>
                     </template>
-                    <div class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg">
-                      <p class="text-gray-700 leading-relaxed">{{ faq.answer }}</p>
+                    <div class="p-4 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-gray-800 dark:to-gray-900 rounded-lg">
+                      <p class="text-gray-700 dark:text-gray-200 leading-relaxed">{{ faq.answer }}</p>
                       <!-- Action buttons for each FAQ -->
                       <div class="flex gap-2 mt-4">
                         <Button
@@ -73,15 +74,15 @@
                   </AccordionTab>
                 </Accordion>
                 <!-- Contact for more info -->
-                <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+                <div class="mt-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900 rounded-lg border border-blue-200 dark:border-blue-900">
                   <div class="flex items-center mb-3">
-                    <i class="pi pi-headphones text-blue-600 mr-2"></i>
-                    <span class="font-semibold text-blue-800">বিশেষ তথ্য জানতে চান?</span>
+                    <i class="pi pi-headphones text-blue-600 dark:text-blue-300 mr-2"></i>
+                    <span class="font-semibold text-blue-800 dark:text-blue-200">বিশেষ তথ্য জানতে চান?</span>
                   </div>
                   <Button
                     label="অনুষ্ঠান কমিটির সাথে যোগাযোগ"
                     icon="pi pi-phone"
-                    class="w-full bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 border-0"
+                    class="w-full bg-gradient-to-r from-blue-500 to-indigo-500 dark:from-blue-900 dark:to-indigo-900 hover:from-blue-600 hover:to-indigo-600 border-0"
                     @click="contactSupport" />
                 </div>
               </div>
@@ -91,9 +92,9 @@
 
         <!-- Gallery Section -->
         <div class="transform hover:scale-[1.01] transition-all duration-500">
-          <Card class="shadow-xl hover:shadow-2xl transition-all duration-500 border-0 h-full">
+          <Card class="shadow-xl hover:shadow-2xl transition-all duration-500 border-0 h-full dark:bg-gray-900/90">
             <template #header>
-              <div class="bg-gradient-to-r from-teal-500 to-cyan-500 p-6 text-white relative overflow-hidden">
+              <div class="bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-800 dark:to-cyan-900 p-6 text-white relative overflow-hidden">
                 <div class="absolute top-0 left-0 w-32 h-32 bg-white/10 rounded-full -translate-y-8 -translate-x-8"></div>
                 <div class="flex items-center relative z-10">
                   <Avatar
@@ -125,7 +126,7 @@
                   <Button
                     label="আরো ছবি দেখুন"
                     icon="pi pi-images"
-                    class="bg-gradient-to-r from-teal-500 to-cyan-500 hover:from-emerald-500 hover:to-teal-600 border-0"
+                    class="bg-gradient-to-r from-teal-500 to-cyan-500 dark:from-teal-800 dark:to-cyan-900 hover:from-emerald-500 hover:to-teal-600 border-0"
                     @click="showGalleryModal = true"
                   />
                 </div>
@@ -137,8 +138,8 @@
 
       <!-- Quick Actions / Info -->
       <div class="mt-12">
-        <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">
-          <i class="pi pi-bolt text-emerald-600 mr-2"></i>
+        <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-white mb-8">
+          <i class="pi pi-bolt text-emerald-600 dark:text-emerald-400 mr-2"></i>
           দ্রুত তথ্য ও কার্যক্রম
         </h3>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -147,18 +148,19 @@
             :key="action.title"
             class="transform hover:scale-105 transition-all duration-300 cursor-pointer"
             @click="handleQuickAction(action)"
+            :class="`animate-[fadeInUp_0.6s_ease-out_forwards]`"
             :style="{ animationDelay: `${index * 100}ms` }"
           >
-            <Card class="text-center shadow-md hover:shadow-xl transition-all duration-300 border-0 group h-full">
+            <Card class="text-center shadow-md hover:shadow-xl transition-all duration-300 border-0 group h-full dark:bg-gray-900/90">
               <template #content>
                 <div class="p-6">
                   <Avatar
                     :icon="action.icon"
-                    :class="action.avatarClass"
+                    :class="action.avatarClass + ' dark:bg-gray-800 dark:text-emerald-400'"
                     size="xlarge"
                     class="mb-4 group-hover:scale-110 transition-transform duration-300" />
-                  <h4 class="font-semibold text-gray-800 mb-2">{{ action.title }}</h4>
-                  <p class="text-sm text-gray-600">{{ action.description }}</p>
+                  <h4 class="font-semibold text-gray-800 dark:text-gray-100 mb-2">{{ action.title }}</h4>
+                  <p class="text-sm text-gray-600 dark:text-gray-300">{{ action.description }}</p>
                 </div>
               </template>
             </Card>
@@ -174,7 +176,7 @@
       modal
       maximizable
       header="ছবি গ্যালারি"
-      class="gallery-modal"
+      class="gallery-modal dark:bg-gray-900"
     >
       <div class="grid grid-cols-2 gap-4">
         <div
@@ -195,10 +197,10 @@
       :style="{ width: '50vw', maxWidth: '480px' }"
       modal
       header="ছবি"
-      class="gallery-modal"
+      class="gallery-modal dark:bg-gray-900"
     >
       <img :src="selectedImage?.url" :alt="selectedImage?.caption" class="rounded-lg w-full shadow-lg mb-3" />
-      <div class="text-center text-gray-700">{{ selectedImage?.caption }}</div>
+      <div class="text-center text-gray-700 dark:text-gray-200">{{ selectedImage?.caption }}</div>
     </Dialog>
   </section>
 </template>
@@ -255,28 +257,28 @@ const quickActions = ref([
     title: 'প্রশ্ন করুন',
     description: 'অনুষ্ঠান সংক্রান্ত যে কোন প্রশ্ন করুন',
     icon: 'pi pi-question-circle',
-    avatarClass: 'bg-emerald-100 text-emerald-600',
+    avatarClass: 'bg-emerald-100 text-emerald-600 dark:bg-emerald-900 dark:text-emerald-300',
     action: 'ask'
   },
   {
     title: 'ছবি আপলোড',
     description: 'আপনার স্মৃতিময় ছবি শেয়ার করুন',
     icon: 'pi pi-upload',
-    avatarClass: 'bg-teal-100 text-teal-600',
+    avatarClass: 'bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300',
     action: 'upload'
   },
   {
     title: 'স্মৃতিচারণ',
     description: 'আপনার অনুভূতি ও গল্প লিখুন',
     icon: 'pi pi-pencil',
-    avatarClass: 'bg-cyan-100 text-cyan-600',
+    avatarClass: 'bg-cyan-100 text-cyan-600 dark:bg-cyan-900 dark:text-cyan-300',
     action: 'share'
   },
   {
     title: 'যোগাযোগ',
     description: 'অনুষ্ঠান কমিটির সাথে যোগাযোগ করুন',
     icon: 'pi pi-phone',
-    avatarClass: 'bg-blue-100 text-blue-600',
+    avatarClass: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300',
     action: 'contact'
   }
 ])
@@ -286,7 +288,6 @@ const showImageSingleModal = ref(false)
 const selectedImage = ref(null)
 
 const contactSupport = () => {
-  // যোগাযোগ ফাংশন
   alert('অনুষ্ঠান কমিটির সাথে যোগাযোগের জন্য ফোন বা ইমেইল ব্যবহার করুন।');
 }
 
@@ -314,48 +315,3 @@ const showImageModal = (image) => {
   showImageSingleModal.value = true
 }
 </script>
-
-<style scoped>
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px);}
-  to { opacity: 1; transform: translateY(0);}
-}
-.animate-fade-in-up { animation: fadeInUp 0.6s ease-out forwards;}
-.grid > div { opacity: 0; animation: fadeInUp 0.6s ease-out forwards;}
-:deep(.faq-accordion .p-accordion-tab) {
-  margin-bottom: 0.5rem;
-  border-radius: 0.5rem;
-  overflow: hidden;
-  border: 1px solid #d1fae5;
-}
-:deep(.faq-accordion .p-accordion-header) {
-  background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
-  border: none;
-}
-:deep(.faq-accordion .p-accordion-header:hover) {
-  background: linear-gradient(135deg, #dcfce7, #d1fae5);
-}
-:deep(.faq-accordion .p-accordion-header-link) {
-  padding: 1rem 1.5rem;
-  color: #065f46;
-  font-weight: 600;
-}
-:deep(.faq-accordion .p-accordion-content) {
-  background: #ffffff;
-  border: none;
-  padding: 0;
-}
-.p-card:hover { transform: translateY(-4px);}
-:deep(.gallery-modal .p-dialog-header) {
-  background: linear-gradient(135deg, #0f766e, #0d9488);
-  color: white;
-}
-:deep(.gallery-modal .p-dialog-content) {
-  padding: 1.5rem;
-}
-@media (max-width: 768px) {
-  .container { padding-left: 1rem; padding-right: 1rem; }
-  .grid { gap: 1rem; }
-  :deep(.gallery-modal) { width: 95vw !important;}
-}
-</style>

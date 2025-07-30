@@ -1,16 +1,16 @@
 <template>
   <section
     style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
-    class="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50">
+    class="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300">
 
     <div class="container mx-auto px-4">
       <!-- Section Header -->
       <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-gray-800 mb-4 flex items-center justify-center">
-          <i class="pi pi-chart-bar text-emerald-600 mr-3"></i>
+        <h2 class="text-4xl font-bold text-gray-800 dark:text-white mb-4 flex items-center justify-center">
+          <i class="pi pi-chart-bar text-emerald-600 dark:text-emerald-400 mr-3"></i>
           আবনায়ে জামিয়া ফরিদাবাদ পরিসংখ্যান ও তথ্য
         </h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           ক্লাসভিত্তিক ছাত্র রেজিস্ট্রেশন, বছরের উপস্থিতি, এবং আবনা রেজিস্ট্রেশন ও অ্যাপ সংক্রান্ত সকল তথ্য
         </p>
       </div>
@@ -19,9 +19,9 @@
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <!-- Notice Board Grid -->
         <div class="lg:col-span-2">
-          <Card class="shadow-lg hover:shadow-xl transition-all duration-300 border-0">
+          <Card class="shadow-lg hover:shadow-xl transition-all duration-300 border-0 dark:bg-gray-900/95">
             <template #header>
-              <div class="bg-gradient-to-r from-emerald-500 to-teal-500 p-6 text-white">
+              <div class="bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-700 dark:to-teal-800 p-6 text-white">
                 <div class="flex items-center">
                   <Avatar
                     icon="pi pi-bell"
@@ -39,8 +39,8 @@
                 <!-- Notice Board System -->
                 <div>
                   <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-lg font-bold text-emerald-700 flex items-center">
-                      <i class="pi pi-bullhorn mr-2 text-emerald-500"></i> সর্বশেষ নোটিসসমূহ
+                    <h4 class="text-lg font-bold text-emerald-700 dark:text-emerald-300 flex items-center">
+                      <i class="pi pi-bullhorn mr-2 text-emerald-500 dark:text-emerald-300"></i> সর্বশেষ নোটিসসমূহ
                     </h4>
                     <Button
                       label="সব নোটিস দেখুন"
@@ -49,48 +49,48 @@
                       @click="goToNoticePage"
                     />
                   </div>
-                  <div class="bg-gradient-to-br from-emerald-50 via-white to-teal-50 rounded-xl border border-emerald-100 p-4 max-h-72 overflow-y-auto shadow-inner relative">
+                  <div class="bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-xl border border-emerald-100 dark:border-emerald-800 p-4 max-h-72 overflow-y-auto shadow-inner relative">
                     <TransitionGroup name="notice-fade" tag="ul">
                       <li
                         v-for="notice in notices"
                         :key="notice.id"
-                        class="flex items-start gap-3 mb-4 bg-white/90 rounded-lg px-4 py-3 shadow group hover:bg-emerald-50 transition-colors duration-200 relative"
+                        class="flex items-start gap-3 mb-4 bg-white/90 dark:bg-gray-900 rounded-lg px-4 py-3 shadow group hover:bg-emerald-50 dark:hover:bg-emerald-900 transition-colors duration-200 relative"
                       >
                         <div class="flex-shrink-0 pt-1">
-                          <i :class="notice.icon + ' text-emerald-500 text-lg'"></i>
+                          <i :class="notice.icon + ' text-emerald-500 dark:text-emerald-300 text-lg'"></i>
                         </div>
                         <div class="flex-1">
-                          <h5 class="font-bold text-emerald-700 mb-1 group-hover:text-teal-700 transition-colors duration-200">
+                          <h5 class="font-bold text-emerald-700 dark:text-emerald-300 mb-1 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors duration-200">
                             {{ notice.title }}
-                            <span v-if="notice.isNew" class="ml-2 px-2 py-0.5 bg-gradient-to-r from-emerald-500 to-cyan-400 text-white text-xs rounded-full font-bold animate-pulse">নতুন</span>
+                            <span v-if="notice.isNew" class="ml-2 px-2 py-0.5 bg-gradient-to-r from-emerald-500 to-cyan-400 dark:from-emerald-700 dark:to-cyan-800 text-white text-xs rounded-full font-bold animate-pulse">নতুন</span>
                           </h5>
-                          <p class="text-gray-700 text-sm font-bangla">{{ notice.body }}</p>
-                          <div class="flex items-center gap-2 mt-1 text-xs text-gray-500">
+                          <p class="text-gray-700 dark:text-gray-200 text-sm font-bangla">{{ notice.body }}</p>
+                          <div class="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
                             <i class="pi pi-clock"></i>
                             <span>{{ formatDate(notice.date) }}</span>
-                            <span v-if="notice.pinned" class="ml-2 px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded-full font-semibold text-xs">Pinned</span>
+                            <span v-if="notice.pinned" class="ml-2 px-2 py-0.5 bg-emerald-200 dark:bg-emerald-700 text-emerald-900 dark:text-emerald-100 rounded-full font-semibold text-xs">Pinned</span>
                           </div>
                           <div v-if="notice.attachment" class="mt-2">
                             <a
                               :href="notice.attachment"
                               target="_blank"
-                              class="inline-flex items-center px-2 py-1 text-xs bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 transition-colors duration-200"
+                              class="inline-flex items-center px-2 py-1 text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200 rounded hover:bg-emerald-200 dark:hover:bg-emerald-800 transition-colors duration-200"
                             >
                               <i class="pi pi-paperclip mr-1"></i> সংযুক্তি দেখুন
                             </a>
                           </div>
                         </div>
                         <div v-if="notice.urgent" class="absolute top-2 right-2">
-                          <i class="pi pi-exclamation-triangle text-red-400 text-xl animate-bounce"></i>
+                          <i class="pi pi-exclamation-triangle text-red-400 dark:text-red-300 text-xl animate-bounce"></i>
                         </div>
                       </li>
                     </TransitionGroup>
-                    <div v-if="notices.length === 0" class="text-center text-gray-400 py-6">
+                    <div v-if="notices.length === 0" class="text-center text-gray-400 dark:text-gray-600 py-6">
                       <i class="pi pi-info-circle text-2xl"></i> কোন নোটিস নেই
                     </div>
                   </div>
                   <div class="flex items-center gap-3 mt-4">
-                    <InputText v-model="noticeSearch" placeholder="নোটিস খুঁজুন..." class="w-full md:w-1/2"/>
+                    <InputText v-model="noticeSearch" placeholder="নোটিস খুঁজুন..." class="w-full md:w-1/2 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"/>
                     <Button
                       label="Pinned"
                       icon="pi pi-thumbtack"
@@ -107,9 +107,9 @@
 
         <!-- Madrasa Signup Card -->
         <div class="lg:col-span-1">
-          <Card class="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-white to-emerald-50">
+          <Card class="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-white to-emerald-50 dark:from-gray-900 dark:to-gray-800">
             <template #header>
-              <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 p-6 text-white text-center">
+              <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 dark:from-emerald-800 dark:to-emerald-900 p-6 text-white text-center">
                 <Avatar
                   icon="pi pi-building"
                   class="bg-white/20 text-white mb-4"
@@ -123,7 +123,7 @@
                 <Message
                   severity="info"
                   :closable="false"
-                  class="mb-6">
+                  class="mb-6 dark:bg-gray-800 dark:text-white">
                   <template #messageicon>
                     <i class="pi pi-info-circle"></i>
                   </template>
@@ -131,27 +131,27 @@
                 </Message>
                 <div class="mb-6 text-left">
                   <div class="flex items-center mb-3">
-                    <i class="pi pi-check-circle text-emerald-600 mr-3"></i>
-                    <span class="text-gray-700">অনলাইনে দ্রুত ফর্ম পূরণ</span>
+                    <i class="pi pi-check-circle text-emerald-600 dark:text-emerald-400 mr-3"></i>
+                    <span class="text-gray-700 dark:text-gray-200">অনলাইনে দ্রুত ফর্ম পূরণ</span>
                   </div>
                   <div class="flex items-center mb-3">
-                    <i class="pi pi-check-circle text-emerald-600 mr-3"></i>
-                    <span class="text-gray-700">প্রোফাইল/তথ্য হালনাগাদ</span>
+                    <i class="pi pi-check-circle text-emerald-600 dark:text-emerald-400 mr-3"></i>
+                    <span class="text-gray-700 dark:text-gray-200">প্রোফাইল/তথ্য হালনাগাদ</span>
                   </div>
                   <div class="flex items-center mb-3">
-                    <i class="pi pi-check-circle text-emerald-600 mr-3"></i>
-                    <span class="text-gray-700">QR কোডের মাধ্যমে ভেরিফিকেশন</span>
+                    <i class="pi pi-check-circle text-emerald-600 dark:text-emerald-400 mr-3"></i>
+                    <span class="text-gray-700 dark:text-gray-200">QR কোডের মাধ্যমে ভেরিফিকেশন</span>
                   </div>
                   <div class="flex items-center">
-                    <i class="pi pi-check-circle text-emerald-600 mr-3"></i>
-                    <span class="text-gray-700">স্মার্ট ড্যাশবোর্ড সুবিধা</span>
+                    <i class="pi pi-check-circle text-emerald-600 dark:text-emerald-400 mr-3"></i>
+                    <span class="text-gray-700 dark:text-gray-200">স্মার্ট ড্যাশবোর্ড সুবিধা</span>
                   </div>
                 </div>
                 <Button
                   label="রেজিস্ট্রেশন করুন"
                   icon="pi pi-user-plus"
                   iconPos="right"
-                  class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 border-0 p-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+                  class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 dark:from-emerald-800 dark:to-emerald-900 dark:hover:from-emerald-700 dark:hover:to-emerald-800 border-0 p-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
                   @click="goToRegister"
                 />
               </div>
@@ -165,31 +165,31 @@
         <!-- Mobile App Section -->
         <div>
           <div class="mb-6">
-            <h3 class="text-2xl font-bold text-emerald-700 mb-2 flex items-center">
-              <i class="pi pi-mobile text-emerald-600 mr-2"></i>
+            <h3 class="text-2xl font-bold text-emerald-700 dark:text-emerald-300 mb-2 flex items-center">
+              <i class="pi pi-mobile text-emerald-600 dark:text-emerald-400 mr-2"></i>
               আবনা মোবাইল অ্যাপ
             </h3>
-            <p class="text-gray-700 text-lg mb-4">এখনই ডাউনলোড করুন — অনুষ্ঠান, ছবি, স্মৃতিচারণা, রেজিস্ট্রেশন ও সকল আপডেট পেতে!</p>
+            <p class="text-gray-700 dark:text-gray-300 text-lg mb-4">এখনই ডাউনলোড করুন — অনুষ্ঠান, ছবি, স্মৃতিচারণা, রেজিস্ট্রেশন ও সকল আপডেট পেতে!</p>
             <Button
               label="এপ ডাউনলোড করুন"
               icon="pi pi-download"
-              class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-800 hover:to-teal-800 border-0 px-6 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300" />
+              class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-800 hover:to-teal-800 dark:from-emerald-800 dark:to-teal-900 dark:hover:from-emerald-700 dark:hover:to-teal-800 border-0 px-6 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300" />
           </div>
-          <ul class="space-y-3 text-gray-700">
+          <ul class="space-y-3 text-gray-700 dark:text-gray-200">
             <li class="flex items-center">
-              <i class="pi pi-check-circle text-emerald-500 mr-3"></i>
+              <i class="pi pi-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
               স্মার্ট রেজিস্ট্রেশন ও লগইন
             </li>
             <li class="flex items-center">
-              <i class="pi pi-check-circle text-emerald-500 mr-3"></i>
+              <i class="pi pi-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
               ছবি, স্মৃতিচারণা, এবং আপডেট গ্যালারি
             </li>
             <li class="flex items-center">
-              <i class="pi pi-check-circle text-emerald-500 mr-3"></i>
+              <i class="pi pi-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
               QR যাচাইকরণ ও নোটিফিকেশন
             </li>
             <li class="flex items-center">
-              <i class="pi pi-check-circle text-emerald-500 mr-3"></i>
+              <i class="pi pi-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
               ৭০ সালানা অনুষ্ঠানের সব আপডেট পুশ
             </li>
           </ul>
@@ -197,13 +197,13 @@
         <!-- Ulama Slider Section (Half Image Card Style) -->
         <div>
           <!-- Ulama Title outside card -->
-          <h3 class="text-2xl font-bold text-center text-emerald-800 mb-3 flex items-center justify-center">
-            <i class="pi pi-users text-emerald-500 mr-2"></i> আমন্ত্রিত ওলামায়ে কেরাম
+          <h3 class="text-2xl font-bold text-center text-emerald-800 dark:text-emerald-200 mb-3 flex items-center justify-center">
+            <i class="pi pi-users text-emerald-500 dark:text-emerald-300 mr-2"></i> আমন্ত্রিত ওলামায়ে কেরাম
           </h3>
-          <div class="relative bg-white rounded-md shadow-2xl border-4 border-emerald-100 overflow-hidden flex flex-col justify-end min-h-[310px]">
+          <div class="relative bg-white dark:bg-gray-900 rounded-md shadow-2xl border-4 border-emerald-100 dark:border-emerald-900 overflow-hidden flex flex-col justify-end min-h-[310px]">
             <div class="relative flex flex-col min-h-[310px]">
               <!-- Half Image (top) -->
-              <div class="relative flex justify-center items-center w-full h-[110px] md:h-[110px] bg-gradient-to-br from-emerald-100 via-white to-teal-50">
+              <div class="relative flex justify-center items-center w-full h-[110px] md:h-[110px] bg-gradient-to-br from-emerald-100 via-white to-teal-50 dark:from-emerald-900 dark:via-gray-900 dark:to-teal-900">
                 <img
                   :src="currentUlama.photo"
                   :alt="currentUlama.name"
@@ -212,31 +212,31 @@
                 <!-- Slider Buttons -->
                 <button
                   @click="prevUlama"
-                  class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-full p-2 shadow"
+                  class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-emerald-100 dark:bg-emerald-800 hover:bg-emerald-200 dark:hover:bg-emerald-700 text-emerald-700 dark:text-emerald-200 rounded-full p-2 shadow"
                   aria-label="Previous Ulama"
                 >
                   <i class="pi pi-chevron-left text-2xl"></i>
                 </button>
                 <button
                   @click="nextUlama"
-                  class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-emerald-100 hover:bg-emerald-200 text-emerald-700 rounded-full p-2 shadow"
+                  class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-emerald-100 dark:bg-emerald-800 hover:bg-emerald-200 dark:hover:bg-emerald-700 text-emerald-700 dark:text-emerald-200 rounded-full p-2 shadow"
                   aria-label="Next Ulama"
                 >
                   <i class="pi pi-chevron-right text-2xl"></i>
                 </button>
               </div>
               <!-- Details (bottom) -->
-              <div class="flex flex-col items-center justify-center px-4 py-4 bg-gradient-to-b from-white/95 via-emerald-50/90 to-teal-50/80 min-h-[100px]">
-                <div class="text-lg font-bold text-emerald-800 mb-0.5 font-bangla text-center">{{ currentUlama.name }}</div>
-                <div class="text-emerald-600 font-semibold text-xs mb-1 text-center">{{ currentUlama.title }}</div>
-                <div class="text-gray-600 font-bangla text-center text-xs">{{ currentUlama.bio }}</div>
+              <div class="flex flex-col items-center justify-center px-4 py-4 bg-gradient-to-b from-white/95 via-emerald-50/90 to-teal-50/80 dark:from-gray-900 dark:via-gray-800 dark:to-teal-950 min-h-[100px]">
+                <div class="text-lg font-bold text-emerald-800 dark:text-emerald-200 mb-0.5 font-bangla text-center">{{ currentUlama.name }}</div>
+                <div class="text-emerald-600 dark:text-emerald-400 font-semibold text-xs mb-1 text-center">{{ currentUlama.title }}</div>
+                <div class="text-gray-600 dark:text-gray-300 font-bangla text-center text-xs">{{ currentUlama.bio }}</div>
                 <!-- Slide indicators -->
                 <div class="flex justify-center gap-1 mt-4">
                   <span
                     v-for="(ulama, idx) in ulamaList"
                     :key="ulama.name"
                     :class="['inline-block h-2 w-6 rounded-full transition-all duration-300',
-                              idx === currentUlamaIndex ? 'bg-emerald-500' : 'bg-emerald-200']"
+                              idx === currentUlamaIndex ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-emerald-200 dark:bg-emerald-800']"
                   ></span>
                 </div>
               </div>
@@ -250,7 +250,7 @@
         <Card
           v-for="info in additionalInfo"
           :key="info.title"
-          class="relative text-center shadow-md hover:shadow-2xl border-0 transition-all duration-300 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 group"
+          class="relative text-center shadow-md hover:shadow-2xl border-0 transition-all duration-300 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-teal-900 group"
         >
           <template #content>
             <div class="p-8 relative">
@@ -265,7 +265,7 @@
                 <ellipse cx="40" cy="20" rx="27" ry="5" fill="#14b8a6" fill-opacity="0.12"/>
               </svg>
               <div class="flex justify-center mb-4">
-                <div class="bg-gradient-to-br from-emerald-200 via-teal-200 to-cyan-100 rounded-full p-2 shadow-lg border-4 border-white group-hover:scale-110 transition-transform duration-300">
+                <div class="bg-gradient-to-br from-emerald-200 via-teal-200 to-cyan-100 dark:from-emerald-800 dark:via-teal-900 dark:to-cyan-900 rounded-full p-2 shadow-lg border-4 border-white dark:border-gray-900 group-hover:scale-110 transition-transform duration-300">
                   <Avatar
                     :icon="info.icon"
                     :class="info.avatarClass + ' text-2xl'"
@@ -273,11 +273,11 @@
                   />
                 </div>
               </div>
-              <h4 class="text-xl font-bold text-emerald-900 mb-2 font-bangla tracking-wide group-hover:text-emerald-700 transition-colors duration-300">
+              <h4 class="text-xl font-bold text-emerald-900 dark:text-emerald-200 mb-2 font-bangla tracking-wide group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors duration-300">
                 {{ info.title }}
               </h4>
-              <p class="text-gray-600 font-bangla">{{ info.description }}</p>
-              <div class="mt-6 h-1 w-2/3 mx-auto rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 group-hover:from-emerald-500 group-hover:to-teal-500 transition-all duration-300"></div>
+              <p class="text-gray-600 dark:text-gray-300 font-bangla">{{ info.description }}</p>
+              <div class="mt-6 h-1 w-2/3 mx-auto rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 dark:from-emerald-700 dark:via-teal-700 dark:to-cyan-700 group-hover:from-emerald-500 group-hover:to-teal-500 transition-all duration-300"></div>
             </div>
           </template>
         </Card>

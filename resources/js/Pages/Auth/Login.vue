@@ -1,6 +1,6 @@
 <script setup>
 import { Head, Link, useForm } from '@inertiajs/vue3';
-import { ref, onMounted, computed } from 'vue';
+import { ref, computed } from 'vue';
 
 defineProps({
     canResetPassword: Boolean,
@@ -13,23 +13,13 @@ const form = useForm({
     remember: false,
 });
 
-// Check if account is suspended based on error
-const isSuspendedAccount = computed(() => {
-    return form.errors.suspended ? true : false;
-});
+const isSuspendedAccount = computed(() => !!form.errors.suspended);
 
 const showPassword = ref(false);
 const togglePassword = () => {
     showPassword.value = !showPassword.value;
 };
 
-// Body background always white and no margin
-onMounted(() => {
-    document.body.style.background = '#fff';
-    document.body.style.margin = '0';
-    document.documentElement.style.background = '#fff';
-    document.documentElement.style.margin = '0';
-});
 const submit = () => {
     form.post(route('login'), {
         onFinish: () => form.reset('password'),
@@ -39,39 +29,42 @@ const submit = () => {
 
 <template>
     <div
-        style="background: #fff; font-family: 'Merriweather','SolaimanLipi',sans-serif;"
-        class=" flex items-center justify-center p-0 bg-white"
+        class="flex items-center justify-center min-h-screen p-0 bg-white dark:bg-gray-950 font-[Merriweather,SolaimanLipi,sans-serif]"
     >
         <Head title="Login to WEMS" />
 
-        <div class="w-full max-w-md bg-white rounded-lg shadow-lg overflow-hidden">
+        <div class="w-full max-w-md bg-white dark:bg-gray-900 rounded-lg shadow-lg overflow-hidden">
 
             <!-- Logo Section -->
             <div class="text-center pt-8 pb-4">
                 <div class="relative inline-block">
-                    <div class="relative mx-auto w-32 h-32 mb-4">
+                    <div class="relative mx-auto w-32 h-32 mb-4 group">
+                        <!-- Logo Image -->
                         <img
                             src="/images/tanjim.png"
                             alt="তানযিমে আবনায়ে ফরিদাবাদ"
-                            class="w-full h-full object-cover rounded-full border-4 border-emerald-500 shadow-2xl hover:shadow-emerald-500/50 transition-all duration-500 hover:scale-105"
+                            class="w-full h-full object-cover rounded-full border-4 border-emerald-500 shadow-2xl transition-all duration-500 group-hover:scale-105 group-hover:shadow-emerald-500/50"
                             style="background: linear-gradient(135deg, #059669, #10b981, #34d399);"
                         />
-                        <div class="absolute inset-0 rounded-full bg-emerald-400 opacity-20 blur-xl animate-pulse"></div>
-                        <div class="absolute -inset-2 rounded-full border-2 border-emerald-300/30 animate-spin-slow"></div>
-                        <div class="absolute -inset-1 rounded-full border border-emerald-400/40 animate-spin-reverse"></div>
+                        <!-- Animated Emerald Blur -->
+                        <div class="absolute inset-0 rounded-full bg-emerald-400 opacity-20 blur-2xl animate-pulse pointer-events-none"></div>
+                        <!-- Spinning Border (slow) -->
+                        <div class="absolute -inset-2 rounded-full border-2 border-emerald-300/30 animate-spin-slower pointer-events-none"></div>
+                        <!-- Reverse Spinning Border -->
+                        <div class="absolute -inset-1 rounded-full border border-emerald-400/40 animate-spin-reverse-slow pointer-events-none"></div>
                     </div>
                     <div class="space-y-2">
-                        <h1 class="text-2xl font-bold text-emerald-800 font-bangla">তানযিমে আবনায়ে ফরিদাবাদ</h1>
+                        <h1 class="text-2xl font-bold text-emerald-800 dark:text-emerald-300 font-bangla">তানযিমে আবনায়ে ফরিদাবাদ</h1>
                     </div>
                 </div>
             </div>
 
-            <div class="text-center px-6 pb-6 border-b border-gray-200">
-                <h2 class="text-2xl font-bold text-emerald-800 font-bangla">আবনা লগইন</h2>
+            <div class="text-center px-6 pb-6 border-b border-gray-200 dark:border-gray-700">
+                <h2 class="text-2xl font-bold text-emerald-800 dark:text-emerald-200 font-bangla">আবনা লগইন</h2>
             </div>
 
             <div class="p-6">
-                <div v-if="status" class="mb-6 p-4 bg-emerald-50/80 rounded-lg border-l-4 border-emerald-500 text-emerald-700 flex items-center">
+                <div v-if="status" class="mb-6 p-4 bg-emerald-50/80 dark:bg-emerald-900/60 rounded-lg border-l-4 border-emerald-500 text-emerald-700 dark:text-emerald-200 flex items-center">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                     </svg>
@@ -79,7 +72,7 @@ const submit = () => {
                 </div>
 
                 <!-- Suspended Account Error Message -->
-                <div v-if="form.errors.suspended" class="mb-6 p-4 bg-red-50/80 rounded-lg border-l-4 border-red-500 text-red-700">
+                <div v-if="form.errors.suspended" class="mb-6 p-4 bg-red-50/80 dark:bg-red-900/60 rounded-lg border-l-4 border-red-500 text-red-700 dark:text-red-200">
                     <div class="flex items-center mb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
@@ -91,7 +84,7 @@ const submit = () => {
                 </div>
 
                 <!-- General Login Error Message -->
-                <div v-if="form.errors.email || form.errors.phoneNumber" class="mb-6 p-4 bg-red-50/80 rounded-lg border-l-4 border-red-500 text-red-700">
+                <div v-if="form.errors.email || form.errors.phoneNumber" class="mb-6 p-4 bg-red-50/80 dark:bg-red-900/60 rounded-lg border-l-4 border-red-500 text-red-700 dark:text-red-200">
                     <div class="flex items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
@@ -103,7 +96,7 @@ const submit = () => {
                 <form @submit.prevent="submit" class="space-y-6">
                     <!-- Mobile Number Field -->
                     <div class="group">
-                        <label for="phone_number" class="block text-gray-700 font-medium mb-2 font-bangla">মোবাইল নম্বর</label>
+                        <label for="phone_number" class="block text-gray-700 dark:text-gray-200 font-medium mb-2 font-bangla">মোবাইল নম্বর</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
@@ -114,7 +107,7 @@ const submit = () => {
                                 id="phone_number"
                                 type="text"
                                 v-model="form.phoneNumber"
-                                class="pl-10 block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 bg-white/50 shadow-sm font-bangla"
+                                class="pl-10 block w-full rounded-md border-emerald-300 dark:border-emerald-700 focus:border-emerald-500 focus:ring-emerald-500 bg-white/50 dark:bg-gray-800 shadow-sm font-bangla dark:text-white"
                                 :class="{ 'opacity-50 cursor-not-allowed': isSuspendedAccount }"
                                 placeholder="০১XXXXXXXXX"
                                 required
@@ -122,12 +115,12 @@ const submit = () => {
                                 :disabled="isSuspendedAccount"
                             />
                         </div>
-                        <p v-if="form.errors.phoneNumber" class="mt-2 text-sm text-red-600">{{ form.errors.phoneNumber }}</p>
+                        <p v-if="form.errors.phoneNumber" class="mt-2 text-sm text-red-600 dark:text-red-300">{{ form.errors.phoneNumber }}</p>
                     </div>
 
                     <!-- Password Field with Show/Hide Toggle -->
                     <div class="group">
-                        <label for="password" class="block text-gray-700 font-medium mb-2 font-bangla">পাসওয়ার্ড</label>
+                        <label for="password" class="block text-gray-700 dark:text-gray-200 font-medium mb-2 font-bangla">পাসওয়ার্ড</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
@@ -138,7 +131,7 @@ const submit = () => {
                                 id="password"
                                 :type="showPassword ? 'text' : 'password'"
                                 v-model="form.password"
-                                class="pl-10 pr-10 block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 bg-white/50 shadow-sm font-bangla"
+                                class="pl-10 pr-10 block w-full rounded-md border-emerald-300 dark:border-emerald-700 focus:border-emerald-500 focus:ring-emerald-500 bg-white/50 dark:bg-gray-800 shadow-sm font-bangla dark:text-white"
                                 :class="{ 'opacity-50 cursor-not-allowed': isSuspendedAccount }"
                                 placeholder="আপনার পাসওয়ার্ড লিখুন"
                                 required
@@ -161,7 +154,7 @@ const submit = () => {
                                 </button>
                             </div>
                         </div>
-                        <p v-if="form.errors.password" class="mt-2 text-sm text-red-600">{{ form.errors.password }}</p>
+                        <p v-if="form.errors.password" class="mt-2 text-sm text-red-600 dark:text-red-300">{{ form.errors.password }}</p>
                     </div>
 
                     <div class="flex items-center justify-between">
@@ -169,10 +162,10 @@ const submit = () => {
                             <input
                                 type="checkbox"
                                 v-model="form.remember"
-                                class="rounded border-gray-300 text-emerald-600 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50"
+                                class="rounded border-gray-300 dark:border-gray-700 text-emerald-600 shadow-sm focus:border-emerald-300 focus:ring focus:ring-emerald-200 focus:ring-opacity-50 dark:bg-gray-800"
                                 :disabled="isSuspendedAccount"
                             />
-                            <span class="ml-2 text-sm text-gray-600 font-bangla">মনে রাখুন</span>
+                            <span class="ml-2 text-sm text-gray-600 dark:text-gray-300 font-bangla">মনে রাখুন</span>
                         </label>
                         <Link
                             v-if="canResetPassword && !isSuspendedAccount"
@@ -186,10 +179,10 @@ const submit = () => {
                     <div class="space-y-4">
                         <button
                             type="submit"
-                            class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-300 text-lg font-medium font-bangla"
+                            class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all duration-300 text-lg font-medium font-bangla dark:bg-emerald-700 dark:hover:bg-emerald-800"
                             :class="{
                                 'opacity-75 cursor-not-allowed': form.processing || isSuspendedAccount,
-                                'bg-red-500 hover:bg-red-600': isSuspendedAccount
+                                'bg-red-500 hover:bg-red-600 dark:bg-red-700 dark:hover:bg-red-800': isSuspendedAccount
                             }"
                             :disabled="form.processing || isSuspendedAccount"
                         >
@@ -203,85 +196,12 @@ const submit = () => {
                         </button>
 
                         <div class="relative flex items-center justify-center w-full mt-6">
-                            <div class="w-full h-px bg-gray-200"></div>
-                            <div class="absolute px-3 font-medium text-gray-500 bg-white font-bangla">অথবা</div>
+                            <div class="w-full h-px bg-gray-200 dark:bg-gray-700"></div>
+                            <div class="absolute px-3 font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 font-bangla">অথবা</div>
                         </div>
-
-                        <!-- <div class="text-sm text-center text-gray-600 mt-6 font-bangla" :class="{ 'opacity-50': isSuspendedAccount }">
-                            অ্যাকাউন্ট নেই?
-                            <Link
-                                v-if="!isSuspendedAccount"
-                                :href="route('register')"
-                                class="font-medium text-emerald-600 hover:text-emerald-700 transition-colors duration-200 ml-1 font-bangla"
-                            >
-                                নিবন্ধন করুন
-                            </Link>
-                            <span v-else class="font-medium text-gray-400 ml-1 font-bangla">
-                                নিবন্ধন করুন
-                            </span>
-                        </div> -->
                     </div>
                 </form>
             </div>
         </div>
     </div>
 </template>
-
-<style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Mukti:wght@400;500;600;700&display=swap');
-@import url('https://fonts.maateen.me/kalpurush/font.css');
-
-.font-bangla {
-    font-family: 'Hind Siliguri', 'Kalpurush', 'SolaimanLipi', 'Mukti', 'SutonnyMJ', 'Nikosh', serif;
-    line-height: 1.4;
-    letter-spacing: 0.5px;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-weight: 500;
-}
-
-@keyframes spin-slow {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-@keyframes spin-reverse {
-    from { transform: rotate(360deg); }
-    to { transform: rotate(0deg); }
-}
-.animate-spin-slow {
-    animation: spin-slow 8s linear infinite;
-}
-.animate-spin-reverse {
-    animation: spin-reverse 10s linear infinite;
-}
-.logo-container {
-    position: relative;
-    transition: all 0.3s ease;
-}
-.logo-container:hover { transform: translateY(-2px); }
-.font-bangla.text-emerald-800 { text-shadow: 0 2px 4px rgba(5, 150, 105, 0.1);}
-.font-bangla.text-emerald-600 { text-shadow: 0 1px 2px rgba(5, 150, 105, 0.1);}
-.group { position: relative; }
-button[type="submit"] {
-    background: linear-gradient(135deg, #059669, #10b981);
-    transition: all 0.3s ease;
-}
-button[type="submit"]:hover {
-    background: linear-gradient(135deg, #047857, #059669);
-    transform: translateY(-1px);
-    box-shadow: 0 10px 25px rgba(5, 150, 105, 0.3);
-}
-img[alt*="তানযিমে"] {
-    background: linear-gradient(135deg, #059669, #10b981, #34d399);
-}
-/* Remove all dark/gray backgrounds from main wrapper */
-body, html, .min-h-screen, .bg-gray-800, .bg-gray-700, .bg-gray-200 {
-    background: #fff !important;
-    margin: 0 !important;
-}
-/* Remove margin from top so the login is perfectly centered vertically */
-.flex.min-h-screen.items-center.justify-center {
-    padding-top: 0 !important;
-}
-</style>

@@ -1,22 +1,22 @@
 <template>
   <section
     style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
-    class="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 relative overflow-hidden">
+    class="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 relative overflow-hidden transition-colors duration-300">
 
     <!-- Background Pattern -->
     <div class="absolute inset-0 opacity-5 pointer-events-none select-none">
-      <div class="absolute top-10 left-10 w-32 h-32 bg-emerald-400 rounded-full blur-3xl"></div>
-      <div class="absolute bottom-10 right-10 w-40 h-40 bg-teal-400 rounded-full blur-3xl"></div>
+      <div class="absolute top-10 left-10 w-32 h-32 bg-emerald-400 rounded-full blur-3xl animate-[float_6s_ease-in-out_infinite]"></div>
+      <div class="absolute bottom-10 right-10 w-40 h-40 bg-teal-400 rounded-full blur-3xl animate-[float_7s_ease-in-out_infinite]"></div>
     </div>
 
     <div class="container mx-auto px-4 relative z-10">
       <!-- Section Header -->
       <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-gray-800 mb-4">
-          <i class="pi pi-heart text-emerald-600 mr-3"></i>
+        <h2 class="text-4xl font-bold text-gray-800 dark:text-white mb-4">
+          <i class="pi pi-heart text-emerald-600 dark:text-emerald-400 mr-3"></i>
           চ্যারিটি ও দান কার্যক্রম
         </h2>
-        <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           আবনায়ে জামিয়া ফরিদাবাদের পক্ষ থেকে স্বেচ্ছাসেবী ও দানমূলক নানা কার্যক্রমে অংশগ্রহণ করুন
         </p>
       </div>
@@ -27,8 +27,10 @@
           v-for="(project, index) in charityProjects"
           :key="project.title"
           class="transform hover:scale-[1.03] transition-all duration-500"
+          :class="`animate-[fadeInUp_0.6s_ease-out_forwards]`"
+          :style="{ animationDelay: `${index * 120}ms` }"
         >
-          <Card class="h-full shadow-lg hover:shadow-2xl transition-all duration-500 border-0 overflow-hidden group">
+          <Card class="h-full shadow-lg hover:shadow-2xl transition-all duration-500 border-0 overflow-hidden group dark:bg-gray-900/90">
             <template #header>
               <div class="relative">
                 <img
@@ -43,16 +45,16 @@
             </template>
             <template #content>
               <div class="p-5 flex flex-col h-full">
-                <h3 class="text-xl font-bold text-emerald-800 mb-2 font-bangla">{{ project.title }}</h3>
-                <p class="text-gray-700 font-bangla mb-4 flex-1">{{ project.description }}</p>
+                <h3 class="text-xl font-bold text-emerald-800 dark:text-emerald-300 mb-2 font-bangla">{{ project.title }}</h3>
+                <p class="text-gray-700 dark:text-gray-200 font-bangla mb-4 flex-1">{{ project.description }}</p>
                 <div class="flex items-center justify-between mt-2">
                   <Button
                     :label="project.buttonText"
                     icon="pi pi-handshake"
-                    class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-0 px-5 py-2 font-semibold shadow group-hover:scale-105 transition-transform duration-300"
+                    class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 dark:from-emerald-700 dark:to-teal-700 dark:hover:from-emerald-800 dark:hover:to-teal-800 border-0 px-5 py-2 font-semibold shadow group-hover:scale-105 transition-transform duration-300"
                     @click="() => handleCharityAction(project)"
                   />
-                  <span class="text-xs text-gray-500">{{ project.update }}</span>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ project.update }}</span>
                 </div>
               </div>
             </template>
@@ -62,53 +64,54 @@
 
       <!-- Quick Actions / Links -->
       <div class="mt-14">
-  <h3 class="text-2xl font-bold text-center text-gray-800 mb-8 font-bangla">
-    <i class="pi pi-link text-emerald-600 mr-2"></i>
-    আরও কার্যক্রম
-  </h3>
-  <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-    <div
-      v-for="(link, index) in quickLinks"
-      :key="link.title"
-      class="relative group transition-all duration-400 transform hover:-translate-y-2"
-      :style="{ animationDelay: `${index * 100}ms` }"
-    >
-      <Card
-        class="text-center shadow-xl hover:shadow-2xl transition-all duration-400 border-0 cursor-pointer group rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 border border-emerald-100 hover:border-emerald-300"
-      >
-        <template #content>
-          <div class="p-6 relative">
-            <!-- Decorative Islamic Motif Top Right -->
-            <svg class="absolute top-0 right-0 w-14 h-10 opacity-10 pointer-events-none" viewBox="0 0 60 24" fill="none">
-              <ellipse cx="30" cy="12" rx="25" ry="6" fill="#10b981" fill-opacity="0.15"/>
-              <ellipse cx="30" cy="12" rx="16" ry="3" fill="#14b8a6" fill-opacity="0.10"/>
-            </svg>
-            <!-- Decorative Motif Bottom Left -->
-            <svg class="absolute bottom-0 left-0 w-14 h-10 opacity-10 pointer-events-none rotate-180" viewBox="0 0 60 24" fill="none">
-              <ellipse cx="30" cy="12" rx="25" ry="6" fill="#10b981" fill-opacity="0.15"/>
-              <ellipse cx="30" cy="12" rx="16" ry="3" fill="#14b8a6" fill-opacity="0.10"/>
-            </svg>
-            <div class="flex justify-center mb-4">
-              <span class="inline-flex items-center justify-center rounded-full p-2 bg-gradient-to-br from-emerald-200 to-teal-100 shadow-lg border-4 border-white group-hover:scale-110 transition-transform duration-300">
-                <Avatar
-                  :icon="link.icon"
-                  :class="link.avatarClass + ' text-2xl'"
-                  size="large"
-                />
-              </span>
-            </div>
-            <h4 class="text-base font-bold text-emerald-800 mb-1 font-bangla tracking-wide group-hover:text-emerald-600 transition-colors duration-300">
-              {{ link.title }}
-            </h4>
-            <p v-if="link.description" class="text-xs text-gray-500 font-bangla mb-2">{{ link.description }}</p>
-            <!-- Bottom border with Islamic color accent -->
-            <div class="mt-4 h-1 w-1/2 mx-auto rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 group-hover:from-emerald-500 group-hover:to-teal-500 transition-all duration-300"></div>
+        <h3 class="text-2xl font-bold text-center text-gray-800 dark:text-white mb-8 font-bangla">
+          <i class="pi pi-link text-emerald-600 dark:text-emerald-400 mr-2"></i>
+          আরও কার্যক্রম
+        </h3>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div
+            v-for="(link, index) in quickLinks"
+            :key="link.title"
+            class="relative group transition-all duration-400 transform hover:-translate-y-2"
+            :class="`animate-[fadeInUp_0.6s_ease-out_forwards]`"
+            :style="{ animationDelay: `${index * 100}ms` }"
+          >
+            <Card
+              class="text-center shadow-xl hover:shadow-2xl transition-all duration-400 border-0 cursor-pointer group rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-teal-900 border border-emerald-100 dark:border-emerald-900 hover:border-emerald-300 dark:hover:border-emerald-700"
+            >
+              <template #content>
+                <div class="p-6 relative">
+                  <!-- Decorative Islamic Motif Top Right -->
+                  <svg class="absolute top-0 right-0 w-14 h-10 opacity-10 pointer-events-none" viewBox="0 0 60 24" fill="none">
+                    <ellipse cx="30" cy="12" rx="25" ry="6" fill="#10b981" fill-opacity="0.15"/>
+                    <ellipse cx="30" cy="12" rx="16" ry="3" fill="#14b8a6" fill-opacity="0.10"/>
+                  </svg>
+                  <!-- Decorative Motif Bottom Left -->
+                  <svg class="absolute bottom-0 left-0 w-14 h-10 opacity-10 pointer-events-none rotate-180" viewBox="0 0 60 24" fill="none">
+                    <ellipse cx="30" cy="12" rx="25" ry="6" fill="#10b981" fill-opacity="0.15"/>
+                    <ellipse cx="30" cy="12" rx="16" ry="3" fill="#14b8a6" fill-opacity="0.10"/>
+                  </svg>
+                  <div class="flex justify-center mb-4">
+                    <span class="inline-flex items-center justify-center rounded-full p-2 bg-gradient-to-br from-emerald-200 to-teal-100 dark:from-emerald-800 dark:to-teal-900 shadow-lg border-4 border-white dark:border-gray-900 group-hover:scale-110 transition-transform duration-300">
+                      <Avatar
+                        :icon="link.icon"
+                        :class="link.avatarClass + ' text-2xl'"
+                        size="large"
+                      />
+                    </span>
+                  </div>
+                  <h4 class="text-base font-bold text-emerald-800 dark:text-emerald-300 mb-1 font-bangla tracking-wide group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors duration-300">
+                    {{ link.title }}
+                  </h4>
+                  <p v-if="link.description" class="text-xs text-gray-500 dark:text-gray-400 font-bangla mb-2">{{ link.description }}</p>
+                  <!-- Bottom border with Islamic color accent -->
+                  <div class="mt-4 h-1 w-1/2 mx-auto rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 dark:from-emerald-700 dark:via-teal-700 dark:to-cyan-700 group-hover:from-emerald-500 group-hover:to-teal-500 transition-all duration-300"></div>
+                </div>
+              </template>
+            </Card>
           </div>
-        </template>
-      </Card>
-    </div>
-  </div>
-</div>
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -158,22 +161,22 @@ const quickLinks = ref([
   {
     title: 'যোগাযোগ',
     icon: 'pi pi-phone',
-    avatarClass: 'bg-green-100 text-green-600'
+    avatarClass: 'bg-green-100 text-green-600 dark:bg-emerald-900 dark:text-emerald-300'
   },
   {
     title: 'সহায়তা',
     icon: 'pi pi-question-circle',
-    avatarClass: 'bg-purple-100 text-purple-600'
+    avatarClass: 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300'
   },
   {
     title: 'ছবি গ্যালারি',
     icon: 'pi pi-images',
-    avatarClass: 'bg-blue-100 text-blue-600'
+    avatarClass: 'bg-blue-100 text-blue-600 dark:bg-blue-900 dark:text-blue-300'
   },
   {
     title: 'স্মৃতিচারণা',
     icon: 'pi pi-pencil',
-    avatarClass: 'bg-orange-100 text-orange-600'
+    avatarClass: 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300'
   }
 ])
 
@@ -182,62 +185,4 @@ const handleCharityAction = (project) => {
 }
 </script>
 
-<style scoped>
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-.animate-fade-in-up {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* Staggered animation for quick links */
-.grid > div {
-  opacity: 0;
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/* Custom card hover effects */
-.p-card:hover {
-  transform: translateY(-4px);
-}
-
-/* Gradient text effect */
-.gradient-text {
-  background: linear-gradient(135deg, #10b981, #14b8a6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-/* Floating animation for background elements */
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-.animate-float {
-  animation: float 6s ease-in-out infinite;
-}
-
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb {
-  background: linear-gradient(135deg, #10b981, #14b8a6);
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(135deg, #059669, #0d9488);
-}
-</style>
