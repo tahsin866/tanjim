@@ -181,10 +181,10 @@
         </div>
         <!-- Tab Content, white background always -->
         <div class="p-8 bg-white">
-          <div class="min-h-[500px] relative">
+          <div class="min-h-[600px] relative overflow-y-auto">
             <!-- Login Tab -->
             <transition name="fade" mode="out-in">
-              <div v-if="activeTab === 'login'" key="login" class="space-y-6 absolute inset-0">
+              <div v-if="activeTab === 'login'" key="login" class="space-y-6 absolute inset-0 pb-8">
                 <div class="text-center mb-6">
                 <h3 class="text-2xl font-bold text-emerald-800 font-bangla mb-2">আবনা লগইন</h3>
                 <p class="text-gray-600 font-bangla">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
@@ -307,7 +307,7 @@
           </transition>
           <!-- Registration Tab -->
           <transition name="fade" mode="out-in">
-            <div v-if="activeTab === 'register'" key="register" class="space-y-6 absolute inset-0">
+            <div v-if="activeTab === 'register'" key="register" class="space-y-6 absolute inset-0 pb-8">
               <div class="text-center mb-6">
                 <h3 class="text-2xl font-bold text-emerald-800 font-bangla mb-2">আবনা রেজিস্ট্রেশন</h3>
                 <p class="text-gray-600 font-bangla">আবনা হওয়ার জন্য নিম্নলিখিত শর্তাবলী পূরণ করতে হবে</p>
