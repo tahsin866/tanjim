@@ -1,320 +1,465 @@
 <template>
-    <!-- Enhanced Seamless Navbar -->
-    <nav :class="[
-        'fixed top-0 w-full z-50 transition-all duration-300 ease-in-out border-b',
-        scrolled ? 'bg-gradient-to-br from-emerald-900/95 via-emerald-800/95 to-teal-900/95 backdrop-blur-xl border-emerald-700/50' : 'bg-gradient-to-br from-emerald-900/20 via-emerald-800/20 to-teal-900/20 backdrop-blur-sm border-transparent'
-    ]" style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;">
-        <div class="container mx-auto px-4 mt-10">
-            <!-- Mobile Layout -->
-            <div v-if="windowWidth < 1024" class="flex flex-col items-center py-4 space-y-4">
-                <div class="flex items-center justify-between w-full">
-                    <div class="w-12"></div>
-                    <div class="flex flex-col items-center">
-                        <Avatar :image="logoImage" shape="circle"
-                                class="bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-700 border-4 border-emerald-400 shadow-2xl hover:shadow-emerald-500/50 transition-all duration-500 hover:scale-110 mb-2"
-                                @error="onImageError"
-                                :style="{
-                                    width: windowWidth < 640 ? '60px' : '80px',
-                                    height: windowWidth < 640 ? '60px' : '80px'
-                                }" />
-                        <div class="text-center">
-                            <div class="text-white font-bold font-bangla" :style="{
-                                fontSize: windowWidth < 640 ? '1.1rem' : '1.4rem',
-                                lineHeight: 1.2
-                            }">
-                                তানযীমে আবনায়ে জামিয়া ফরিদাবাদ
-                            </div>
-                            <div class="text-emerald-300 font-medium font-bangla mt-1" :style="{
-                                fontSize: windowWidth < 640 ? '0.8rem' : '1rem',
-                                lineHeight: 1.1
-                            }">
-                                ৭০ সালানা দস্তরবিন্দি সম্মেলন
-                            </div>
-                        </div>
-                    </div>
-                    <Button @click="mobileMenuOpen = true"
-                        class="text-white hover:text-white hover:bg-emerald-700/50 p-3 rounded-lg transition-all duration-300 border border-emerald-400/50 hover:border-emerald-300"
-                        icon="pi pi-bars" text />
-                </div>
-            </div>
+  <!-- Navbar -->
+  <nav
+    class="relative mx-auto mt-10 mb-9 w-[90vw] max-w-[1250px] min-w-[320px] h-20 rounded-3xl shadow-lg border transition-all duration-300 ease-in-out flex items-center bg-white/80 backdrop-blur-xl border-emerald-700/20"
+    :class="{ 'shadow-xl bg-white/90': scrolled }"
+    style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
+  >
+    <div class="relative flex items-center w-full h-20 px-4 lg:px-12">
+      <!-- Logo (left, overlaps navbar) -->
+      <div class="absolute left-0 z-50 flex flex-col items-center -top-7 mx-5">
+        <img
+          src="/images/tanjim.png"
+          alt="Logo"
+          class="h-24 w-24 lg:h-32 lg:w-32 rounded-full object-cover shadow-2xl border-4 border-white ring-4 ring-emerald-400/30 transition-all duration-300"
+        />
 
-            <!-- Desktop Layout -->
-            <div v-else class="flex items-center justify-between h-24 relative">
-                <div class="flex items-center">
-                    <Avatar :image="logoImage" shape="circle"
-                            class="bg-gradient-to-br from-emerald-700 via-emerald-600 to-teal-700 border-6 border-emerald-400 shadow-2xl hover:shadow-emerald-500/50 transition-all duration-500 hover:scale-110 mr-6"
-                            @error="onImageError" style="width: 160px; height: 160px;" />
-                    <div class="flex flex-col justify-center">
-                        <span class="text-white font-bold font-bangla text-3xl leading-tight">
-                    তানযীমে আবনায়ে জামিয়া ফরিদাবাদ
-                        </span>
-                        <span class="text-emerald-300 font-medium font-bangla text-xl mt-2">
-                         ৭০ সালানা দস্তরবিন্দি সম্মেলন
-                        </span>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <Button label="কোরআন" text class="text-white text-2xl hover:text-emerald-300 px-7 py-3 font-medium border-b-2 border-transparent hover:border-emerald-300 transition-all duration-300"
-                        icon="pi pi-book" style="font-size: 1.45rem; min-width: 140px;" />
-                    <Button :label="'আবনা পেনেল'" text class="text-white hover:text-emerald-300 px-7 py-3 rounded-lg transition-all duration-300 font-medium border-b-2 border-transparent hover:border-emerald-300"
-                        icon="pi pi-building" style="font-size: 1.45rem; min-width: 170px;" @click="goToLogin" />
-                    <Button label="ডিজিটাল লাইব্রেরী" text class="text-white hover:text-emerald-300 px-7 py-3 rounded-lg transition-all duration-300 font-medium border-b-2 border-transparent hover:border-emerald-300"
-                        icon="pi pi-users" style="font-size: 1.45rem; min-width: 170px;" />
-                    <Button label="অনুদানে পেনেল" text class="text-white hover:text-emerald-300 px-7 py-3 rounded-lg transition-all duration-300 font-medium border-b-2 border-transparent hover:border-emerald-300"
-                        icon="pi pi-user" style="font-size: 1.45rem; min-width: 170px;" />
-                    <Button label="নেয়ামত" text class="text-white hover:text-emerald-300 px-7 py-3 rounded-lg transition-all duration-300 font-medium border-b-2 border-transparent hover:border-emerald-300 hover:bg-emerald-900/50"
-                        icon="pi pi-globe" style="font-size: 1.45rem; min-width: 130px;" />
-                </div>
-            </div>
+      </div>
+      <div class="lg:ml-36 ml-28"></div>
+      <!-- Main Menu -->
+      <div class="hidden lg:flex items-center gap-3 flex-1 justify-center">
+        <a href="#" class="px-3 py-2 text-base font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">হোম</a>
+        <a href="#" class="px-3 py-2 text-base font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">আমাদের সম্পর্কে</a>
+        <a href="#" class="px-3 py-2 text-base font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">কার্যক্রমসমূহ</a>
+        <a href="#" class="px-3 py-2 text-base font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">ডিজিটাল লাইব্রেরী</a>
+        <a href="#" class="px-3 py-2 text-base font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">বয়ান</a>
+        <a href="#" class="px-3 py-2 text-base font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">মাসিক নেয়ামত</a>
+        <a href="#" class="px-3 py-2 text-base font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">জামিয়ার ওয়েবসাইট</a>
+      </div>
+      <!-- Hamburger (Mobile) -->
+      <button class="block lg:hidden p-2 ml-2" @click="mobileMenu = true">
+        <i class="pi pi-bars text-2xl text-emerald-900"></i>
+      </button>
+    </div>
+    <!-- Mobile Logo & Text -->
+    <div class="lg:hidden absolute left-4 top-16 flex flex-col items-center z-20">
+      <div class="text-center mt-1">
+        <h3 class="text-xs font-bold text-emerald-900 font-bangla">তানযিমে আবনায়ে ফরিদাবাদ</h3>
+        <p class="text-xs text-emerald-700 font-bangla">৭০ সালানা আবনায়ে তানজিম সম্মেলন</p>
+      </div>
+    </div>
+    <!-- Mobile Menu Sidebar -->
+    <Sidebar v-model:visible="mobileMenu" position="right">
+      <div class="p-4 flex flex-col gap-2">
+        <a href="#" class="py-2 text- font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">হোম</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">আমাদের সম্পর্কে</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">কার্যক্রমসমূহ</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">গ্যালারি</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">আমাদের সাথে যুক্ত হন</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">ব্লগ</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">যোগাযোগ</a>
+        <div class="flex gap-2 mt-4">
+          <button class="bg-gray-100 hover:bg-emerald-100 text-emerald-900 font-semibold px-3 py-1 rounded transition">বাং</button>
+          <button class="bg-gray-100 hover:bg-emerald-100 text-emerald-900 font-semibold px-3 py-1 rounded transition">EN</button>
+          <button class="bg-yellow-400/80 hover:bg-yellow-500 text-emerald-900 font-bold px-4 py-2 rounded transition flex items-center gap-1">
+            <i class="pi pi-user"></i>
+          </button>
         </div>
-    </nav>
-
-    <!-- Mobile Sidebar -->
-    <Sidebar v-model:visible="mobileMenuOpen" position="right" :showCloseIcon="true"
-        style="backdrop-filter: blur(12px);">
-        <template #header>
-            <div class="flex items-center space-x-3 p-4">
-                <Avatar :image="logoImage" size="large" shape="circle"
-                    class="bg-emerald-800 border-2 border-emerald-600" />
-                <div>
-                    <h3 class="text-emerald-200 text-xl font-bold font-bangla"> তানযীমে আবনায়ে জামিয়া ফরিদাবাদ</h3>
-                    <p class="text-emerald-400 text-sm font-bangla">৭০ সালানা দস্তরবিন্দি অনুষ্ঠান</p>
-                </div>
-            </div>
-        </template>
-        <div class="p-4 space-y-3">
-            <div class="text-center py-3 bg-emerald-800/70 rounded-lg mb-4"></div>
-            <Button label="কোরআন" text :style="{
-                fontFamily: 'SolaimanLipi, sans-serif',
-                fontSize: windowWidth < 640 ? '1.1rem' : '1.45rem'
-            }" class="text-white text-2xl hover:text-emerald-300 px-7 py-3 font-medium border-b-2 border-transparent hover:border-emerald-300 transition-all duration-300"
-                icon="pi pi-book" />
-            <Button :label="'আবনা পেনেল'" text :style="{
-                fontFamily: 'SolaimanLipi, sans-serif',
-                fontSize: windowWidth < 640 ? '1.1rem' : '1.45rem'
-            }" class="text-white hover:text-emerald-300 px-7 py-3 rounded-lg transition-all duration-300 font-medium border-b-2 border-transparent hover:border-emerald-300"
-                icon="pi pi-building" @click="goToLogin" />
-            <Button label="ডিজিটাল লাইব্রেরী" text :style="{
-                fontFamily: 'SolaimanLipi, sans-serif',
-                fontSize: windowWidth < 640 ? '1.1rem' : '1.45rem'
-            }" class="text-white hover:text-emerald-300 px-7 py-3 rounded-lg transition-all duration-300 font-medium border-b-2 border-transparent hover:border-emerald-300"
-                icon="pi pi-users" />
-            <Button label="অনুদানে পেনেল" text :style="{
-                fontFamily: 'SolaimanLipi, sans-serif',
-                fontSize: windowWidth < 640 ? '1.1rem' : '1.45rem'
-            }" class="text-white hover:text-emerald-300 px-7 py-3 rounded-lg transition-all duration-300 font-medium border-b-2 border-transparent hover:border-emerald-300"
-                icon="pi pi-user" />
-            <Button label="নেয়ামত" text :style="{
-                fontFamily: 'SolaimanLipi, sans-serif',
-                fontSize: windowWidth < 640 ? '1.1rem' : '1.45rem'
-            }" class="text-white hover:text-emerald-300 px-7 py-3 rounded-lg transition-all duration-300 font-medium border-b-2 border-transparent hover:border-emerald-300 hover:bg-emerald-900/50"
-                icon="pi pi-globe" />
-        </div>
+        <button class="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded transition shadow font-bangla">
+          দান করুন
+        </button>
+      </div>
     </Sidebar>
+  </nav>
 
-    <!-- HERO SECTION - Seamless Integration -->
-    <section
+  <!-- HERO SECTION -->
+  <section
+  style=" font-family: 'SolaimanLipi', sans-serif;
+   "
+  class="relative min-h-[820px] flex flex-col items-center justify-center bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 pt-10 pb-24 overflow-hidden">
 
-    style="font-family: 'SolaimanLipi', sans-serif;"
-        class="relative min-h-screen overflow-hidden bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-900 pt-20">
-        <div class="absolute left-0 top-0 w-full h-full pointer-events-none select-none z-0">
-            <svg class="absolute left-0 top-0 w-96 h-96 opacity-10" viewBox="0 0 512 512" fill="none">
-                <path d="M256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32z"
-                    fill="url(#paint0_radial)" />
-                <defs>
-                    <radialGradient id="paint0_radial" cx="0" cy="0" r="1"
-                        gradientTransform="translate(256 256) scale(230)" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#10b981" />
-                        <stop offset="1" stop-color="#134e4a" />
-                    </radialGradient>
-                </defs>
-            </svg>
-            <svg class="absolute right-0 bottom-0 w-96 h-96 opacity-10 rotate-180" viewBox="0 0 512 512" fill="none">
-                <path d="M256 32C132.3 32 32 132.3 32 256s100.3 224 224 224 224-100.3 224-224S379.7 32 256 32z"
-                    fill="url(#paint1_radial)" />
-                <defs>
-                    <radialGradient id="paint1_radial" cx="0" cy="0" r="1"
-                        gradientTransform="translate(256 256) scale(230)" gradientUnits="userSpaceOnUse">
-                        <stop stop-color="#14b8a6" />
-                        <stop offset="1" stop-color="#082f49" />
-                    </radialGradient>
-                </defs>
-            </svg>
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1920&q=80"
+        alt="Madinah Background"
+        class="w-full h-full object-cover opacity-30"
+      />
+      <!-- Gradient overlay to maintain text readability -->
+      <div class="absolute inset-0 bg-gradient-to-br from-emerald-900/70 via-emerald-800/60 to-teal-900/70"></div>
+    </div>
+
+    <div class="relative z-20 w-full">
+      <div class="container mx-auto px-4 flex flex-col items-center">
+        <h1 class="text-4xl md:text-5xl font-bold text-white text-center font-bangla leading-tight drop-shadow-xl z-30 mb-2 mt-4">
+          আবনায়ে জামিয়া আরাবিয়া ফরিদাবাদ
+        </h1>
+        <p class="text-lg text-white/90 mt-0 mb-6 max-w-2xl text-center font-bangla drop-shadow z-30">
+          জামিয়া আরাবিয়া ইমদাদুল উলূম ফরিদাবাদ এর প্রাক্তন ছাত্রদের জন্য একটি প্ল্যাটফর্ম।
+        </p>
+        <div class="flex flex-col sm:flex-row items-center gap-4 mb-8 z-30">
+          <button
+            class="bg-emerald-600 hover:bg-emerald-700 text-white text-lg font-bold font-bangla px-8 py-3 rounded transition shadow"
+          >
+            তানজিম পরিচিতি
+          </button>
+          <button
+            class="bg-transparent border-2 border-white/80 hover:bg-white/10 text-white font-bangla text-lg px-8 py-3 rounded transition shadow"
+          >
+            কার্যক্রমসমূহ
+          </button>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- Background image carousel (with gradient overlay) -->
-        <div class="absolute inset-0 z-0">
-            <div class="relative w-full h-full">
-                <div v-for="(image, index) in backgroundImages" :key="index" :class="[
-                    'absolute inset-0 transition-opacity duration-1000',
-                    currentImageIndex === index ? 'opacity-100' : 'opacity-0'
-                ]">
-                    <img :src="image.url" :alt="image.alt" class="w-full h-full object-cover opacity-40" />
-                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-900 via-emerald-800/70 to-teal-900/90"></div>
+  <!-- Registration/Login Card (60% Outside Hero Section) -->
+  <div class="relative -mt-48 z-50" style="font-family: 'SolaimanLipi', sans-serif;">
+    <div class="container mx-auto px-4 max-w-5xl">
+      <div class="bg-white rounded-3xl shadow-2xl border border-emerald-200/50 overflow-hidden transition-all duration-300">
+        <!-- Tabs -->
+        <div class="relative bg-gradient-to-br from-emerald-50 via-white to-emerald-50 p-2">
+          <div class="flex bg-gradient-to-r from-gray-100 to-gray-50 rounded-2xl p-1 relative overflow-hidden shadow-inner">
+            <!-- Animated background slider -->
+            <div
+              class="absolute top-1 bottom-1 bg-gradient-to-br from-emerald-600 via-emerald-700 to-emerald-800 rounded-xl shadow-lg transition-all duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)]"
+              :class="activeTab === 'login' ? 'left-1 w-[calc(50%-4px)]' : 'left-[calc(50%+2px)] w-[calc(50%-4px)]'"
+            ></div>
+            <!-- Login Tab -->
+            <button
+              @click="switchTab('login')"
+              :class="[
+                'relative z-10 flex-1 py-4 px-6 font-bangla font-bold text-lg transition-all duration-500 rounded-xl group',
+                activeTab === 'login'
+                  ? 'text-white shadow-lg'
+                  : 'text-emerald-700 hover:text-emerald-800'
+              ]"
+            >
+              <span class="flex items-center justify-center space-x-3">
+                <div class="relative">
+                  <i
+                    :class="[
+                      'pi pi-sign-in text-xl transition-all duration-300',
+                      activeTab === 'login' ? 'animate-pulse' : 'group-hover:scale-110'
+                    ]"
+                  ></i>
+                  <div
+                    v-if="activeTab === 'login'"
+                    class="absolute -inset-1 bg-white/20 rounded-full "
+                  ></div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Content -->
-        <div class="relative z-10 flex items-center min-h-screen pt-0">
-            <div class="container mx-auto px-4 lg:px-8">
-                <div class="grid lg:grid-cols-2 gap-12 items-center">
-                    <!-- Left Content -->
-                    <div class="text-white space-y-8">
-                        <div class="inline-flex items-center space-x-2 bg-emerald-700/30 backdrop-blur-sm border border-emerald-500/30 rounded-full px-4 py-2 shadow">
-                            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
-                            <span class="text-emerald-300 text-sm font-medium">ইসলামিক শিক্ষা প্রতিষ্ঠান</span>
-                        </div>
-
-                        <div class="space-y-4">
-                            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight font-bangla">
-                                <span class="block text-white">আবনায়ে জামিয়া</span>
-                                <span class="mt-3 block bg-gradient-to-r from-emerald-400 via-teal-300 to-emerald-400 bg-clip-text text-transparent">
-                                    আরাবিয়া ফরিদাবাদ
-                                </span>
-                            </h1>
-                            <div class="flex items-center space-x-4">
-                                <div class="h-1 w-20 bg-gradient-to-r from-emerald-500 to-teal-400 rounded-full"></div>
-                                <div class="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-                            </div>
-                        </div>
-
-                        <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 shadow-lg">
-                            <h2 class="text-xl md:text-2xl text-emerald-200 font-semibold font-bangla">
-                                শতবর্ষী ইসলামী শিক্ষা প্রতিষ্ঠান
-                            </h2>
-                            <p class="text-gray-300 mt-2 text-lg font-bangla">
-                                ইসলামিক শিক্ষার আলোয় আলোকিত একটি আধুনিক প্রতিষ্ঠান
-                            </p>
-                        </div>
-
-                        <div class="flex flex-col sm:flex-row gap-4">
-                            <button class="group relative px-8 py-4 bg-emerald-700 hover:bg-teal-700 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-2xl ring-1 ring-emerald-500/30">
-                                <span class="relative z-10 flex items-center justify-center space-x-2">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M8 5v10l7-5-7-5z" />
-                                    </svg>
-                                    <span>প্রতিষ্ঠান পরিচিতি</span>
-                                </span>
-                                <div class="absolute inset-0 bg-gradient-to-r from-emerald-700 to-teal-700 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            </button>
-                            <button class="px-8 py-4 border-2 border-emerald-400/30 hover:border-emerald-500 rounded-xl font-semibold text-white hover:text-emerald-400 transition-all duration-300 backdrop-blur-sm hover:bg-white/10">
-                                আরও জানুন
-                            </button>
-                        </div>
-                        <div class="grid grid-cols-3 gap-6 pt-8">
-                            <div class="text-center">
-                                <div class="text-2xl md:text-3xl font-bold text-emerald-400">১০০+</div>
-                                <div class="text-emerald-200 text-sm font-bangla">অধিভুক্ত মাদরাসা</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-2xl md:text-3xl font-bold text-emerald-400">৫০০০+</div>
-                                <div class="text-emerald-200 text-sm font-bangla">শিক্ষার্থী</div>
-                            </div>
-                            <div class="text-center">
-                                <div class="text-2xl md:text-3xl font-bold text-emerald-400">২৫+</div>
-                                <div class="text-emerald-200 text-sm font-bangla">বছরের অভিজ্ঞতা</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Right Content - Featured Card -->
-                    <div class="lg:block hidden">
-                        <div class="relative">
-                            <div class="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-emerald-400/30 rounded-3xl p-8 shadow-2xl">
-                                <div class="aspect-video rounded-2xl overflow-hidden mb-6">
-                                    <img :src="featuredImage" alt="Featured Mosque"
-                                        class="w-full h-full object-cover" />
-                                </div>
-                                <div class="space-y-4">
-                                    <div class="flex items-center justify-between">
-                                        <span class="bg-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-sm">
-                                            বৈশিষ্ট্য
-                                        </span>
-                                        <div class="flex space-x-1">
-                                            <div class="w-2 h-2 bg-emerald-400 rounded-full"></div>
-                                            <div class="w-2 h-2 bg-emerald-400/50 rounded-full"></div>
-                                            <div class="w-2 h-2 bg-emerald-400/30 rounded-full"></div>
-                                        </div>
-                                    </div>
-                                    <h3 class="text-xl font-bold text-white font-bangla">
-                                        আধুনিক ইসলামিক শিক্ষা
-                                    </h3>
-                                    <p class="text-gray-300 text-sm leading-relaxed font-bangla">
-                                        ঐতিহ্যবাহী ইসলামিক শিক্ষার সাথে আধুনিক প্রযুক্তির সমন্বয়ে গড়ে তোলা একটি অনন্য শিক্ষা ব্যবস্থা।
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="absolute -top-4 -right-4 w-24 h-24 bg-emerald-500/20 rounded-full blur-xl"></div>
-                            <div class="absolute -bottom-4 -left-4 w-32 h-32 bg-teal-500/20 rounded-full blur-xl"></div>
-                        </div>
-                    </div>
+                <span class="transition-all duration-300">লগইন</span>
+              </span>
+              <div
+                v-if="activeTab === 'login'"
+                class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-bounce border-2 border-white shadow"
+              ></div>
+            </button>
+            <!-- Registration Tab -->
+            <button
+              @click="switchTab('register')"
+              :class="[
+                'relative z-10 flex-1 py-4 px-6 font-bangla font-bold text-lg transition-all duration-500 rounded-xl group',
+                activeTab === 'register'
+                  ? 'text-white shadow-lg'
+                  : 'text-emerald-700 hover:text-emerald-800'
+              ]"
+            >
+              <span class="flex items-center justify-center space-x-3">
+                <div class="relative">
+                  <i
+                    :class="[
+                      'pi pi-user-plus text-xl transition-all duration-300',
+                      activeTab === 'register' ? 'animate-pulse' : 'group-hover:scale-110'
+                    ]"
+                  ></i>
+                  <div
+                    v-if="activeTab === 'register'"
+                    class="absolute -inset-1 bg-white/20 rounded-full"
+                  ></div>
                 </div>
-            </div>
+                <span class="transition-all duration-300">রেজিস্ট্রেশন</span>
+              </span>
+              <div
+                v-if="activeTab === 'register'"
+                class="absolute -top-1 -right-1 w-3 h-3 bg-yellow-400 rounded-full animate-bounce border-2 border-white shadow"
+              ></div>
+            </button>
+          </div>
+          <!-- Tab status indicators -->
+          <div class="flex justify-center mt-3 space-x-2">
+            <div
+              :class="[
+                'w-2 h-2 rounded-full transition-all duration-300',
+                activeTab === 'login' ? 'bg-emerald-600 scale-125' : 'bg-gray-300'
+              ]"
+            ></div>
+            <div
+              :class="[
+                'w-2 h-2 rounded-full transition-all duration-300',
+                activeTab === 'register' ? 'bg-emerald-600 scale-125' : 'bg-gray-300'
+              ]"
+            ></div>
+          </div>
         </div>
-        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-emerald-900 via-emerald-800 to-transparent"></div>
-        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-20">
-            <div class="w-6 h-10 border-2 border-emerald-300 rounded-full flex justify-center">
-                <div class="w-1 h-3 bg-emerald-300 rounded-full mt-2 animate-pulse"></div>
+        <!-- Tab Content, white background always -->
+        <div class="p-8 bg-white">
+          <div class="min-h-[500px] relative">
+            <!-- Login Tab -->
+            <transition name="fade" mode="out-in">
+              <div v-if="activeTab === 'login'" key="login" class="space-y-6 absolute inset-0">
+                <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-emerald-800 font-bangla mb-2">আবনা লগইন</h3>
+                <p class="text-gray-600 font-bangla">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+              </div>
+
+              <!-- Status Message -->
+              <div v-if="form.errors.suspended" class="mb-6 p-4 bg-red-50 rounded-lg border-l-4 border-red-500 text-red-700">
+                <div class="flex items-center mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="font-bold font-bangla">অ্যাকাউন্ট সাসপেন্ড</span>
+                </div>
+                <p class="text-sm font-bangla">{{ form.errors.suspended }}</p>
+              </div>
+
+              <!-- General Login Error -->
+              <div v-if="form.errors.email || form.errors.phoneNumber" class="mb-6 p-4 bg-red-50 rounded-lg border-l-4 border-red-500 text-red-700">
+                <div class="flex items-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                  </svg>
+                  <span class="font-bangla">লগইনে সমস্যা হয়েছে</span>
+                </div>
+              </div>
+
+              <form @submit.prevent="submitLogin" class="space-y-4">
+                <!-- Mobile Number Field -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 font-bangla mb-2">মোবাইল নম্বর</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                      </svg>
+                    </div>
+                    <input
+                      type="text"
+                      v-model="form.phoneNumber"
+                      class="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-bangla"
+                      :class="{ 'opacity-50 cursor-not-allowed': isSuspendedAccount }"
+                      placeholder="০১XXXXXXXXX"
+                      required
+                      :disabled="isSuspendedAccount"
+                    />
+                  </div>
+                  <p v-if="form.errors.phoneNumber" class="mt-2 text-sm text-red-600">{{ form.errors.phoneNumber }}</p>
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                  <label class="block text-sm font-medium text-gray-700 font-bangla mb-2">পাসওয়ার্ড</label>
+                  <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+                      </svg>
+                    </div>
+                    <input
+                      :type="showPassword ? 'text' : 'password'"
+                      v-model="form.password"
+                      class="pl-10 pr-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 font-bangla"
+                      :class="{ 'opacity-50 cursor-not-allowed': isSuspendedAccount }"
+                      placeholder="আপনার পাসওয়ার্ড লিখুন"
+                      required
+                      :disabled="isSuspendedAccount"
+                    />
+                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                      <button
+                        type="button"
+                        @click="togglePassword"
+                        class="text-emerald-600 hover:text-emerald-800 focus:outline-none"
+                      >
+                        <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                          <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+                        </svg>
+                        <svg v-else xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd" />
+                          <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                  <p v-if="form.errors.password" class="mt-2 text-sm text-red-600">{{ form.errors.password }}</p>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <label class="flex items-center" :class="{ 'opacity-50 cursor-not-allowed': isSuspendedAccount }">
+                    <input
+                      type="checkbox"
+                      v-model="form.remember"
+                      class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                      :disabled="isSuspendedAccount"
+                    >
+                    <span class="ml-2 text-sm text-gray-600 font-bangla">মনে রাখুন</span>
+                  </label>
+                  <a href="/password/reset" class="text-sm text-emerald-600 hover:text-emerald-800 font-bangla">পাসওয়ার্ড ভুলে গেছেন?</a>
+                </div>
+
+                <button
+                  type="submit"
+                  class="w-full flex justify-center items-center py-3 px-6 border border-transparent rounded-lg shadow text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-300 font-bangla font-bold"
+                  :class="{
+                    'opacity-75 cursor-not-allowed': form.processing || isSuspendedAccount,
+                    'bg-red-500 hover:bg-red-600': isSuspendedAccount
+                  }"
+                  :disabled="form.processing || isSuspendedAccount"
+                >
+                  <svg v-if="form.processing" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l-3-2.647z"></path>
+                  </svg>
+                  <span class="font-bangla">
+                    {{ isSuspendedAccount ? 'অ্যাকাউন্ট সাসপেন্ড' : 'প্রবেশ করুন' }}
+                  </span>
+                </button>
+              </form>
             </div>
+          </transition>
+          <!-- Registration Tab -->
+          <transition name="fade" mode="out-in">
+            <div v-if="activeTab === 'register'" key="register" class="space-y-6 absolute inset-0">
+              <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-emerald-800 font-bangla mb-2">আবনা রেজিস্ট্রেশন</h3>
+                <p class="text-gray-600 font-bangla">আবনা হওয়ার জন্য নিম্নলিখিত শর্তাবলী পূরণ করতে হবে</p>
+              </div>
+              <div class="bg-gradient-to-br from-emerald-50 to-green-50 rounded-xl p-6 border-l-4 border-emerald-500">
+                <h4 class="text-lg font-bold text-emerald-800 font-bangla mb-4 flex items-center">
+                  <i class="pi pi-check-circle text-emerald-600 mr-2"></i>
+                  রেজিস্ট্রেশনের শর্তাবলী
+                </h4>
+                <div class="space-y-3">
+                  <div class="flex items-start">
+                    <i class="pi pi-arrow-right text-emerald-600 mt-1 mr-3 text-sm"></i>
+                    <p class="text-gray-700 font-bangla">আহলে সুন্নাত ওয়াল জামাতের আকিদা ও মানহাজের অনুসারী হতে হবে</p>
+                  </div>
+                  <div class="flex items-start">
+                    <i class="pi pi-arrow-right text-emerald-600 mt-1 mr-3 text-sm"></i>
+                    <p class="text-gray-700 font-bangla">জামিয়া আরাবিয়া ইমদাদুল উলূম ফরিদাবাদ এর প্রাক্তন ছাত্র হতে হবে</p>
+                  </div>
+                  <div class="flex items-start">
+                    <i class="pi pi-arrow-right text-emerald-600 mt-1 mr-3 text-sm"></i>
+                    <p class="text-gray-700 font-bangla">জামিয়া থেকে বহিষ্কৃত বা শাস্তিপ্রাপ্ত ছাত্র হতে পারবেন না</p>
+                  </div>
+                  <div class="flex items-start">
+                    <i class="pi pi-arrow-right text-emerald-600 mt-1 mr-3 text-sm"></i>
+                    <p class="text-gray-700 font-bangla">কুরআন ও সুন্নাহ বিরোধী কোনো কার্যকলাপে জড়িত থাকা যাবে না</p>
+                  </div>
+                  <div class="flex items-start">
+                    <i class="pi pi-arrow-right text-emerald-600 mt-1 mr-3 text-sm"></i>
+                    <p class="text-gray-700 font-bangla">ইসলামী আদব-আখলাক ও শিষ্টাচার মেনে চলতে হবে</p>
+                  </div>
+                  <div class="flex items-start">
+                    <i class="pi pi-arrow-right text-emerald-600 mt-1 mr-3 text-sm"></i>
+                    <p class="text-gray-700 font-bangla">তানজিমের নিয়ম-কানুন ও সিদ্ধান্ত মেনে চলতে হবে</p>
+                  </div>
+                </div>
+              </div>
+              <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <label class="flex items-start">
+                  <input
+                    type="checkbox"
+                    v-model="agreedToTerms"
+                    class="mt-1 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500"
+                  >
+                  <span class="ml-3 text-sm text-gray-800 font-bangla">
+                    আমি উপরোক্ত সকল শর্তাবলী পড়েছি, বুঝেছি এবং সম্পূর্ণভাবে মেনে চলতে সম্মত আছি। আমি সত্যায়ন করছি যে, আমি উল্লেখিত সকল যোগ্যতা পূরণ করি এবং কোনো বিধিনিষেধের আওতায় পড়ি না।
+                  </span>
+                </label>
+              </div>
+              <div class="text-center">
+                <button
+                  :disabled="!agreedToTerms"
+                  :class="[
+                    'px-8 py-4 rounded-lg font-bold font-bangla text-lg transition-all duration-300 shadow',
+                    agreedToTerms
+                      ? 'bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white'
+                      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                  ]"
+                  @click="goToRegistration"
+                >
+                  <i class="pi pi-user-plus mr-2"></i>
+                  রেজিস্ট্রেশন শুরু করুন
+                </button>
+                <p class="text-xs text-gray-600 font-bangla mt-3">
+                  শর্তাবলী মেনে নিয়ে এগিয়ে যান
+                </p>
+              </div>
+            </div>
+          </transition>
         </div>
-    </section>
+      </div>
+    </div>
+  </div>
+    </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import Button from 'primevue/button'
-import Avatar from 'primevue/avatar'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { useForm } from '@inertiajs/vue3'
 import Sidebar from 'primevue/sidebar'
 
-const mobileMenuOpen = ref(false)
-const logoImage = '/images/tanjim.png'
+const mobileMenu = ref(false)
 const scrolled = ref(false)
+const activeTab = ref('login')
+const agreedToTerms = ref(false)
+const showPassword = ref(false)
 
-const onImageError = (event) => {
-    event.target.src = '/storage/images/tanjim.png'
-}
+// Login form using Inertia
+const form = useForm({
+    phoneNumber: '',
+    password: '',
+    remember: false,
+});
 
-const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
+const isSuspendedAccount = computed(() => !!form.errors.suspended);
 
-const onResize = () => {
-    windowWidth.value = window.innerWidth
-}
+const togglePassword = () => {
+    showPassword.value = !showPassword.value;
+};
+
+const submitLogin = () => {
+    form.post(route('login'), {
+        onFinish: () => form.reset('password'),
+    });
+};
 
 const handleScroll = () => {
-    scrolled.value = window.scrollY > 20
+  scrolled.value = window.scrollY > 12
 }
-
+const goToRegistration = () => {
+  if (agreedToTerms.value) {
+    window.location.href = '/register'
+  }
+}
+const switchTab = (tab) => {
+  activeTab.value = tab
+}
 onMounted(() => {
-    window.addEventListener('resize', onResize)
-    window.addEventListener('scroll', handleScroll)
-    startImageRotation()
+  window.addEventListener('scroll', handleScroll)
 })
-
 onUnmounted(() => {
-    window.removeEventListener('resize', onResize)
-    window.removeEventListener('scroll', handleScroll)
-    if (imageInterval) clearInterval(imageInterval)
+  window.removeEventListener('scroll', handleScroll)
 })
-
-const backgroundImages = ref([
-    { url: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80', alt: 'Beautiful Mosque at Sunset' },
-    { url: 'https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80', alt: 'Islamic Architecture' },
-    { url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80', alt: 'Mosque Interior' },
-    { url: 'https://images.unsplash.com/photo-1542816417-0983c9c9ad53?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80', alt: 'Islamic Calligraphy' }
-])
-const featuredImage = ref('https://images.unsplash.com/photo-1542816417-0983c9c9ad53?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')
-const currentImageIndex = ref(0)
-let imageInterval = null
-
-const startImageRotation = () => {
-    imageInterval = setInterval(() => {
-        currentImageIndex.value = (currentImageIndex.value + 1) % backgroundImages.value.length
-    }, 5000)
-}
-
-function goToLogin() {
-    window.location.href = '/login'
-}
 </script>
 
-<!-- No additional style block. All design is handled by TailwindCSS utility classes in the template. -->
+<style scoped>
+.font-bangla {
+  font-family: 'SolaimanLipi', 'Noto Sans Bengali', 'Hind Siliguri', sans-serif;
+}
+
+/* Smooth tab transition with fixed height */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
+}
+</style>

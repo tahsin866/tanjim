@@ -1,7 +1,7 @@
 <template>
   <section
     style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
-    class="py-16 bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300">
+    class="pt-16 pb-16  via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300">
 
     <div class="container mx-auto px-4">
       <!-- Section Header -->
