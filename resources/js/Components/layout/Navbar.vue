@@ -32,12 +32,7 @@
       </button>
     </div>
     <!-- Mobile Logo & Text -->
-    <div class="lg:hidden absolute left-4 top-16 flex flex-col items-center z-20">
-      <div class="text-center mt-1">
-        <h3 class="text-xs font-bold text-emerald-900 font-bangla">তানযিমে আবনায়ে ফরিদাবাদ</h3>
-        <p class="text-xs text-emerald-700 font-bangla">৭০ সালানা আবনায়ে তানজিম সম্মেলন</p>
-      </div>
-    </div>
+
     <!-- Mobile Menu Sidebar -->
     <Sidebar v-model:visible="mobileMenu" position="right">
       <div class="p-4 flex flex-col gap-2">
@@ -48,16 +43,8 @@
         <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">আমাদের সাথে যুক্ত হন</a>
         <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">ব্লগ</a>
         <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">যোগাযোগ</a>
-        <div class="flex gap-2 mt-4">
-          <button class="bg-gray-100 hover:bg-emerald-100 text-emerald-900 font-semibold px-3 py-1 rounded transition">বাং</button>
-          <button class="bg-gray-100 hover:bg-emerald-100 text-emerald-900 font-semibold px-3 py-1 rounded transition">EN</button>
-          <button class="bg-yellow-400/80 hover:bg-yellow-500 text-emerald-900 font-bold px-4 py-2 rounded transition flex items-center gap-1">
-            <i class="pi pi-user"></i>
-          </button>
-        </div>
-        <button class="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded transition shadow font-bangla">
-          দান করুন
-        </button>
+
+
       </div>
     </Sidebar>
   </nav>
