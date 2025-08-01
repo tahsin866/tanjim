@@ -22,13 +22,13 @@
                                 fontSize: windowWidth < 640 ? '1.1rem' : '1.4rem',
                                 lineHeight: 1.2
                             }">
-                                তানযিমে আবনায়ে ফরিদাবাদ
+                                তানযীমে আবনায়ে জামিয়া ফরিদাবাদ
                             </div>
                             <div class="text-emerald-300 font-medium font-bangla mt-1" :style="{
                                 fontSize: windowWidth < 640 ? '0.8rem' : '1rem',
                                 lineHeight: 1.1
                             }">
-                                ৭০ সালানা আবনায়ে তানজিম সম্মেলন
+                                ৭০ সালানা দস্তরবিন্দি সম্মেলন
                             </div>
                         </div>
                     </div>
@@ -46,10 +46,10 @@
                             @error="onImageError" style="width: 160px; height: 160px;" />
                     <div class="flex flex-col justify-center">
                         <span class="text-white font-bold font-bangla text-3xl leading-tight">
-                            তানযিমে আবনায়ে ফরিদাবাদ
+                    তানযীমে আবনায়ে জামিয়া ফরিদাবাদ
                         </span>
                         <span class="text-emerald-300 font-medium font-bangla text-xl mt-2">
-                            ৭০ সালানা আবনায়ে তানজিম সম্মেলন
+                         ৭০ সালানা দস্তরবিন্দি সম্মেলন
                         </span>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
                 <Avatar :image="logoImage" size="large" shape="circle"
                     class="bg-emerald-800 border-2 border-emerald-600" />
                 <div>
-                    <h3 class="text-emerald-200 text-xl font-bold font-bangla">তানযিমে আবনায়ে ফরিদাবাদ</h3>
+                    <h3 class="text-emerald-200 text-xl font-bold font-bangla"> তানযীমে আবনায়ে জামিয়া ফরিদাবাদ</h3>
                     <p class="text-emerald-400 text-sm font-bangla">৭০ সালানা দস্তরবিন্দি অনুষ্ঠান</p>
                 </div>
             </div>

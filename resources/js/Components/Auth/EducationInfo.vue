@@ -395,24 +395,33 @@ onMounted(async () => {
 
         <!-- বিভাগ সেকশন -->
         <div class="mb-6">
-            <InputLabel class="text-lg font-medium mb-3 dark:text-white" value="শিক্ষা বিভাগ (একাধিক নির্বাচন করা যাবে)" />
+            <InputLabel class="text-lg font-medium mb-3 dark:text-white"
+                value="শিক্ষা বিভাগ (একাধিক নির্বাচন করা যাবে)" />
 
             <!-- Loading indicator -->
-            <div v-if="loading" class="mb-4 p-3 bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-gray-700 rounded-md">
+            <div v-if="loading"
+                class="mb-4 p-3 bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-gray-700 rounded-md">
                 <div class="flex items-center text-blue-700 dark:text-blue-300">
-                    <svg class="animate-spin -ml-1 mr-3 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <svg class="animate-spin -ml-1 mr-3 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
                     </svg>
                     সন তথ্য লোড হচ্ছে...
                 </div>
             </div>
 
             <!-- Error message -->
-            <div v-else-if="error" class="mb-4 p-3 bg-red-50 dark:bg-gray-800 border border-red-200 dark:border-red-700 rounded-md">
+            <div v-else-if="error"
+                class="mb-4 p-3 bg-red-50 dark:bg-gray-800 border border-red-200 dark:border-red-700 rounded-md">
                 <div class="flex items-center text-red-700 dark:text-red-300">
                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clip-rule="evenodd" />
                     </svg>
                     {{ error }}
                 </div>
@@ -427,9 +436,12 @@ onMounted(async () => {
                 </div>
                 <div v-if="form.dept_takmil" class="ml-6">
                     <!-- Helpful hint -->
-                    <div class="mb-3 p-2 bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-gray-700 rounded text-xs text-blue-700 dark:text-blue-300">
+                    <div
+                        class="mb-3 p-2 bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-gray-700 rounded text-xs text-blue-700 dark:text-blue-300">
                         <svg class="w-4 h-4 inline mr-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                                clip-rule="evenodd" />
                         </svg>
                         টিপস: ইংরেজি সন নির্বাচন করলে হিজরি সন স্বয়ংক্রিয়ভাবে আপডেট হবে এবং বিপরীতভাবেও।
                     </div>
@@ -437,16 +449,12 @@ onMounted(async () => {
                     <div class="grid grid-cols-2 gap-4">
                         <div>
                             <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (ইংরেজি)" />
-                            <select
-                                v-model="form.dept_takmil_year_english"
+                            <select v-model="form.dept_takmil_year_english"
                                 @change="handleEnglishYearChange(form.dept_takmil_year_english, 'takmil')"
                                 :class="[getFieldErrorClass('dept_takmil_year_english'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                                 :disabled="loading">
                                 <option value="">সন নির্বাচন করুন</option>
-                                <option
-                                    v-for="year in englishYearOptions"
-                                    :key="year.value"
-                                    :value="year.value">
+                                <option v-for="year in englishYearOptions" :key="year.value" :value="year.value">
                                     {{ year.label }}
                                 </option>
                             </select>
@@ -454,16 +462,12 @@ onMounted(async () => {
                         </div>
                         <div>
                             <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (হিজরি)" />
-                            <select
-                                v-model="form.dept_takmil_year_hijri"
+                            <select v-model="form.dept_takmil_year_hijri"
                                 @change="handleHijriYearChange(form.dept_takmil_year_hijri, 'takmil')"
                                 :class="[getFieldErrorClass('dept_takmil_year_hijri'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                                 :disabled="loading">
                                 <option value="">হিজরি সন নির্বাচন করুন</option>
-                                <option
-                                    v-for="year in hijriYearOptions"
-                                    :key="year.value"
-                                    :value="year.value">
+                                <option v-for="year in hijriYearOptions" :key="year.value" :value="year.value">
                                     {{ year.label }}
                                 </option>
                             </select>
@@ -483,16 +487,12 @@ onMounted(async () => {
                 <div v-if="form.dept_ifta" class="grid grid-cols-2 gap-4 ml-6">
                     <div>
                         <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (ইংরেজি)" />
-                        <select
-                            v-model="form.dept_ifta_year_english"
+                        <select v-model="form.dept_ifta_year_english"
                             @change="handleEnglishYearChange(form.dept_ifta_year_english, 'ifta')"
                             :class="[getFieldErrorClass('dept_ifta_year_english'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                             :disabled="loading">
                             <option value="">সন নির্বাচন করুন</option>
-                            <option
-                                v-for="year in englishYearOptions"
-                                :key="year.value"
-                                :value="year.value">
+                            <option v-for="year in englishYearOptions" :key="year.value" :value="year.value">
                                 {{ year.label }}
                             </option>
                         </select>
@@ -500,16 +500,12 @@ onMounted(async () => {
                     </div>
                     <div>
                         <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (হিজরি)" />
-                        <select
-                            v-model="form.dept_ifta_year_hijri"
+                        <select v-model="form.dept_ifta_year_hijri"
                             @change="handleHijriYearChange(form.dept_ifta_year_hijri, 'ifta')"
                             :class="[getFieldErrorClass('dept_ifta_year_hijri'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                             :disabled="loading">
                             <option value="">হিজরি সন নির্বাচন করুন</option>
-                            <option
-                                v-for="year in hijriYearOptions"
-                                :key="year.value"
-                                :value="year.value">
+                            <option v-for="year in hijriYearOptions" :key="year.value" :value="year.value">
                                 {{ year.label }}
                             </option>
                         </select>
@@ -528,16 +524,12 @@ onMounted(async () => {
                 <div v-if="form.dept_hifz" class="grid grid-cols-2 gap-4 ml-6">
                     <div>
                         <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (ইংরেজি)" />
-                        <select
-                            v-model="form.dept_hifz_year_english"
+                        <select v-model="form.dept_hifz_year_english"
                             @change="handleEnglishYearChange(form.dept_hifz_year_english, 'hifz')"
                             :class="[getFieldErrorClass('dept_hifz_year_english'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                             :disabled="loading">
                             <option value="">সন নির্বাচন করুন</option>
-                            <option
-                                v-for="year in englishYearOptions"
-                                :key="year.value"
-                                :value="year.value">
+                            <option v-for="year in englishYearOptions" :key="year.value" :value="year.value">
                                 {{ year.label }}
                             </option>
                         </select>
@@ -545,16 +537,12 @@ onMounted(async () => {
                     </div>
                     <div>
                         <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (হিজরি)" />
-                        <select
-                            v-model="form.dept_hifz_year_hijri"
+                        <select v-model="form.dept_hifz_year_hijri"
                             @change="handleHijriYearChange(form.dept_hifz_year_hijri, 'hifz')"
                             :class="[getFieldErrorClass('dept_hifz_year_hijri'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                             :disabled="loading">
                             <option value="">হিজরি সন নির্বাচন করুন</option>
-                            <option
-                                v-for="year in hijriYearOptions"
-                                :key="year.value"
-                                :value="year.value">
+                            <option v-for="year in hijriYearOptions" :key="year.value" :value="year.value">
                                 {{ year.label }}
                             </option>
                         </select>
@@ -573,16 +561,12 @@ onMounted(async () => {
                 <div v-if="form.dept_qirat" class="grid grid-cols-2 gap-4 ml-6">
                     <div>
                         <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (ইংরেজি)" />
-                        <select
-                            v-model="form.dept_qirat_year_english"
+                        <select v-model="form.dept_qirat_year_english"
                             @change="handleEnglishYearChange(form.dept_qirat_year_english, 'qirat')"
                             :class="[getFieldErrorClass('dept_qirat_year_english'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                             :disabled="loading">
                             <option value="">সন নির্বাচন করুন</option>
-                            <option
-                                v-for="year in englishYearOptions"
-                                :key="year.value"
-                                :value="year.value">
+                            <option v-for="year in englishYearOptions" :key="year.value" :value="year.value">
                                 {{ year.label }}
                             </option>
                         </select>
@@ -590,16 +574,12 @@ onMounted(async () => {
                     </div>
                     <div>
                         <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (হিজরি)" />
-                        <select
-                            v-model="form.dept_qirat_year_hijri"
+                        <select v-model="form.dept_qirat_year_hijri"
                             @change="handleHijriYearChange(form.dept_qirat_year_hijri, 'qirat')"
                             :class="[getFieldErrorClass('dept_qirat_year_hijri'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                             :disabled="loading">
                             <option value="">হিজরি সন নির্বাচন করুন</option>
-                            <option
-                                v-for="year in hijriYearOptions"
-                                :key="year.value"
-                                :value="year.value">
+                            <option v-for="year in hijriYearOptions" :key="year.value" :value="year.value">
                                 {{ year.label }}
                             </option>
                         </select>
@@ -618,11 +598,9 @@ onMounted(async () => {
                 <!-- এই অংশটি আপডেট করা হয়েছে -->
                 <div v-if="form.dept_other" class="ml-6">
                     <InputLabel class="text-sm font-medium dark:text-gray-200" value="কোন সেকশনে পড়েন?" />
-                    <select
-                        v-model="form.dept_other_class"
+                    <select v-model="form.dept_other_class"
                         :class="[getFieldErrorClass('dept_other_class'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
-                        required
-                    >
+                        required>
                         <option value="">নির্বাচন করুন</option>
                         <option value="উলুমুল হাদিস">উলুমুল হাদিস</option>
                         <option value="ইফতা">ইফতা</option>
@@ -647,10 +625,13 @@ onMounted(async () => {
             </div>
 
             <!-- Department validation error -->
-            <div v-if="fieldValidation.departments" class="mt-4 p-3 bg-red-50 dark:bg-gray-800 border border-red-200 dark:border-red-700 rounded-md">
+            <div v-if="fieldValidation.departments"
+                class="mt-4 p-3 bg-red-50 dark:bg-gray-800 border border-red-200 dark:border-red-700 rounded-md">
                 <div class="flex items-center text-red-700 dark:text-red-300">
                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                            d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                            clip-rule="evenodd" />
                     </svg>
                     {{ fieldValidation.departments }}
                 </div>
@@ -677,9 +658,7 @@ onMounted(async () => {
             <InputLabel for="rollNumber" class="text-lg font-medium dark:text-white" value="রোল নাম্বার" />
             <input id="rollNumber" type="text"
                 :class="[getFieldErrorClass('rollNumber'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
-                v-model="form.rollNumber"
-                placeholder="রোল নাম্বার প্রবেশ করুন"
-                required />
+                v-model="form.rollNumber" placeholder="রোল নাম্বার প্রবেশ করুন" required />
             <InputError class="mt-2" :message="fieldValidation.rollNumber" />
         </div>
 
@@ -692,7 +671,9 @@ onMounted(async () => {
                 <option value="ইমাম">শাইখুল হাদিস</option>
                 <option value="প্রধান মুফতি">প্রধান মুফতি</option>
                 <option value="মুঈনে মুফতি">মুঈনে মুফতি</option>
-                <option value="মুফতি">মুফতি</option>
+                <option value="সাংবাদিক">সাংবাদিক</option>
+                <option value="লেখক">লেখক</option>
+
                 <option value="মুফতি">আদীব</option>
                 <option value="মুফতি">মাদরাসা শিক্ষক</option>
                 <option value="ইমাম">ইমাম</option>
@@ -724,10 +705,11 @@ onMounted(async () => {
         </div>
 
         <!-- "জানা নেই" সিলেক্ট করা হলে একটি বার্তা দেখানো -->
-         <div v-if="form.idType === 'birth'" class="mb-6">
+        <div v-if="form.idType === 'birth'" class="mb-6">
             <InputLabel for="birthCertificate" class="text-lg font-medium dark:text-white" value="জন্মনিবন্ধন নম্বর" />
-            <input id="birthCertificate" type="text" :class="[getFieldErrorClass('birthCertificate'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" v-model="form.birthCertificate"
-                placeholder="জন্মনিবন্ধন নম্বর লিখুন" />
+            <input id="birthCertificate" type="text"
+                :class="[getFieldErrorClass('birthCertificate'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
+                v-model="form.birthCertificate" placeholder="জন্মনিবন্ধন নম্বর লিখুন" />
             <InputError class="mt-2" :message="fieldValidation.birthCertificate" />
             <!-- ✅ জন্মনিবন্ধন ছবির আপলোড -->
             <div class="mt-3">
@@ -739,10 +721,13 @@ onMounted(async () => {
                 <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     সর্বাধিক ফাইল সাইজ: ২০০ কেবি। বড় ছবি অটো-কমপ্রেস হবে।
                 </div>
-                <div v-if="getUploadedFileName('birth_cert_photo')" class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
+                <div v-if="getUploadedFileName('birth_cert_photo')"
+                    class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
                     <div class="flex items-center text-sm text-green-700 dark:text-green-300">
                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
                         </svg>
                         পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('birth_cert_photo') }}
                     </div>
@@ -753,21 +738,26 @@ onMounted(async () => {
         <!-- ভোটার আইডি নম্বর ও ছবি -->
         <div v-if="form.idType === 'voter'" class="mb-6">
             <InputLabel for="voterId" class="text-lg font-medium dark:text-white" value="ভোটার আইডি নম্বর" />
-            <input id="voterId" type="text" :class="[getFieldErrorClass('voterId'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" v-model="form.voterId"
-                placeholder="ভোটার আইডি নম্বর লিখুন" />
+            <input id="voterId" type="text"
+                :class="[getFieldErrorClass('voterId'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
+                v-model="form.voterId" placeholder="ভোটার আইডি নম্বর লিখুন" />
             <InputError class="mt-2" :message="fieldValidation.voterId" />
             <div class="mt-3">
-                <InputLabel for="voterIdPhoto" class="text-lg font-medium dark:text-white" value="ভোটার আইডি কার্ডের ছবি (২০০ কেবি’র নিচে)" />
+                <InputLabel for="voterIdPhoto" class="text-lg font-medium dark:text-white"
+                    value="ভোটার আইডি কার্ডের ছবি (২০০ কেবি’র নিচে)" />
                 <input id="voterIdPhoto" type="file" accept="image/*" @change="handleIdPhotoUpload"
                     :class="[getFileErrorClass('voterIdPhoto'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
 
                 <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     সর্বাধিক ফাইল সাইজ: ২০০ কেবি। বড় ছবি অটো-কমপ্রেস হবে।
                 </div>
-                <div v-if="getUploadedFileName('voter_photo')" class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
+                <div v-if="getUploadedFileName('voter_photo')"
+                    class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
                     <div class="flex items-center text-sm text-green-700 dark:text-green-300">
                         <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
                         </svg>
                         পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('voter_photo') }}
                     </div>
@@ -779,17 +769,21 @@ onMounted(async () => {
         <!-- লাইভ ছবি আপলোড (শুধুমাত্র যখন idType 'জানা নেই' না হয়) -->
         <!-- লাইভ ক্যামেরা অপশন বাদ -->
         <div v-if="form.idType && form.idType !== 'জানা নেই'" class="mb-6">
-            <InputLabel for="photo" class="text-lg font-medium dark:text-white" value="ছবি আপলোড করুন (২০০ কেবি’র নিচে)" />
+            <InputLabel for="photo" class="text-lg font-medium dark:text-white"
+                value="ছবি আপলোড করুন (২০০ কেবি’র নিচে)" />
             <input id="photo" type="file" accept="image/*" @change="handlePhotoUpload"
                 :class="[getFileErrorClass('photo'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
 
             <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 সর্বাধিক ফাইল সাইজ: ২০০ কেবি। বড় ছবি অটো-কমপ্রেস হবে।
             </div>
-            <div v-if="getUploadedFileName('photo')" class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
+            <div v-if="getUploadedFileName('photo')"
+                class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
                 <div class="flex items-center text-sm text-green-700 dark:text-green-300">
                     <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                            clip-rule="evenodd" />
                     </svg>
                     পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('photo') }}
                 </div>
