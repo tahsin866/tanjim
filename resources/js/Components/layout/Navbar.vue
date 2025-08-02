@@ -27,7 +27,7 @@
         <a href="#" class="px-3 py-2 text-base font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">জামিয়ার ওয়েবসাইট</a>
       </div>
       <!-- Hamburger (Mobile) -->
-      <button class="block lg:hidden p-2 ml-2" @click="mobileMenu = true">
+      <button class="block lg:hidden p-2 ml-auto mr-4" @click="mobileMenu = true">
         <i class="pi pi-bars text-2xl text-emerald-900"></i>
       </button>
     </div>
@@ -39,10 +39,10 @@
         <a href="#" class="py-2 text- font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">হোম</a>
         <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">আমাদের সম্পর্কে</a>
         <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">কার্যক্রমসমূহ</a>
-        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">গ্যালারি</a>
-        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">আমাদের সাথে যুক্ত হন</a>
-        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">ব্লগ</a>
-        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">যোগাযোগ</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">ডিজিটাল লাইব্রেরী</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">বয়ান</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">মাসিক নেয়ামত</a>
+        <a href="#" class="py-2 text-lg font-semibold text-emerald-900 hover:text-emerald-600 transition font-bangla">জামিয়ার ওয়েবসাইট</a>
 
 
       </div>
