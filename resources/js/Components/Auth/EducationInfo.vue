@@ -27,10 +27,25 @@ const sessionYears = ref([]);
 const loading = ref(true);
 const error = ref(null);
 
-// Initialize workplace as array if it's not already
-if (!Array.isArray(props.form.workplace)) {
-    props.form.workplace = props.form.workplace ? [props.form.workplace] : [];
-}
+// Handle workplace conversion between string and array
+const workplaceArray = ref([]);
+
+// Convert string to array for the multiselect component
+const initializeWorkplace = () => {
+    if (typeof props.form.workplace === 'string' && props.form.workplace) {
+        // Split by comma and trim whitespace
+        workplaceArray.value = props.form.workplace.split(',').map(item => item.trim()).filter(item => item !== '');
+    } else if (Array.isArray(props.form.workplace)) {
+        workplaceArray.value = [...props.form.workplace];
+    } else {
+        workplaceArray.value = [];
+    }
+};
+
+// Convert array back to string for form submission
+const updateWorkplaceString = () => {
+    props.form.workplace = workplaceArray.value.join(', ');
+};
 
 // LocalStorage keys for education info
 const STORAGE_KEYS = {
@@ -101,6 +116,9 @@ const fieldValidation = computed(() => {
     if (props.form.idType === 'voter') {
         if (!props.form.voterId) errors.voterId = 'ভোটার আইডি নম্বর লিখুন';
         if (!props.form.voterIdPhoto) errors.voterIdPhoto = 'ভোটার আইডি ছবি আপলোড করুন';
+    }
+    if (!workplaceArray.value || workplaceArray.value.length === 0) {
+        errors.workplace = 'কর্মস্থল/পেশা নির্বাচন করুন';
     }
     return errors;
 });
@@ -214,7 +232,8 @@ const saveEducationFormData = () => {
         dept_other_class: props.form.dept_other_class,
         examType: props.form.examType,
         rollNumber: props.form.rollNumber,
-        workplace: props.form.workplace, // This will now be an array
+        workplace: props.form.workplace, // This will now be a string
+        workplaceArray: workplaceArray.value, // Save array separately for UI
         idType: props.form.idType,
         birthCertificate: props.form.birthCertificate,
         voterId: props.form.voterId,
@@ -235,11 +254,12 @@ const loadEducationFormData = () => {
             }
         });
 
-        // Ensure workplace is always an array
-        if (savedData.workplace && !Array.isArray(props.form.workplace)) {
-            props.form.workplace = Array.isArray(savedData.workplace)
-                ? savedData.workplace
-                : [savedData.workplace];
+        // Handle workplace array restoration
+        if (savedData.workplaceArray && Array.isArray(savedData.workplaceArray)) {
+            workplaceArray.value = savedData.workplaceArray;
+        } else if (savedData.workplace) {
+            // Fallback to parsing string workplace
+            initializeWorkplace();
         }
     }
 };
@@ -378,6 +398,24 @@ watch(() => props.form, () => {
     }
 }, { deep: true });
 
+// Watch workplace array changes and convert to string
+watch(workplaceArray, (newValue) => {
+    if (!isInitializing.value) {
+        updateWorkplaceString();
+        saveEducationFormData();
+    }
+}, { deep: true });
+
+// Watch form.workplace changes from outside and update local array
+watch(() => props.form.workplace, (newValue) => {
+    if (!isInitializing.value && typeof newValue === 'string') {
+        const newArray = newValue ? newValue.split(',').map(item => item.trim()).filter(item => item !== '') : [];
+        if (JSON.stringify(newArray) !== JSON.stringify(workplaceArray.value)) {
+            workplaceArray.value = newArray;
+        }
+    }
+});
+
 watch(() => props.form.examType, (newValue) => {
     if (newValue === 'জানা নেই') {
         props.form.rollNumber = '';
@@ -396,6 +434,7 @@ watch(() => props.form.idType, (newValue) => {
 // Initialize component
 onMounted(async () => {
     await fetchSessionYears();
+    initializeWorkplace();
     loadEducationFormData();
     await nextTick();
     isInitializing.value = false;
@@ -676,8 +715,8 @@ onMounted(async () => {
         <!-- কর্মস্থল/পেশা (মাল্টিপল সিলেকশন) -->
         <div class="mb-6">
             <InputLabel for="workplace" class="text-lg font-medium dark:text-white" value="কর্মস্থল/পেশা (একাধিক নির্বাচন করা যাবে)" />
-            <MultiSelectWorkplace v-model="form.workplace" />
-            <InputError class="mt-2" :message="form.errors.workplace" />
+            <MultiSelectWorkplace v-model="workplaceArray" />
+            <InputError class="mt-2" :message="fieldValidation.workplace" />
         </div>
 
         <!-- পরিচয়পত্র টাইপ নির্বাচন (জন্মসনদ/ভোটার আইডি) -->
