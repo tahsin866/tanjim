@@ -15,6 +15,7 @@ const showDropdown = ref(false);
 
 const options = [
   { value: "শাইখুল হাদিস", label: "শাইখুল হাদিস" },
+    { value: "মুহাদ্দিস", label: "মুহাদ্দিস" },
   { value: "প্রধান মুফতি", label: "প্রধান মুফতি" },
   { value: "মুঈনে মুফতি", label: "মুঈনে মুফতি" },
   { value: "সাংবাদিক", label: "সাংবাদিক" },

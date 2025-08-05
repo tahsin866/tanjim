@@ -15,7 +15,8 @@
         <h1 class="text-3xl md:text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-violet-500 to-cyan-400 dark:from-emerald-400 dark:via-indigo-400 dark:to-purple-400" style="font-family: 'SolaimanLipi', sans-serif;">
           নিবন্ধন ফর্ম
         </h1>
-        <p class="text-gray-600 dark:text-gray-300 text-base sm:text-lg">৭০ সালানা দরস্তবন্দির জন্য আপনার তথ্য হালনাগাদ করুন</p>
+        <p class="text-gray-600 dark:text-gray-300 text-base sm:text-lg">তানযীমে আবনায়ে জামিয়া ফরিদাবাদের সাথে যুক্ত থাকার জন্য আপনার তথ্য হালনাগাদ করুন।
+</p>
       </div>
 
       <div class="bg-white/90 dark:bg-gray-900/90 rounded-xl shadow-2xl backdrop-blur-sm border-0">

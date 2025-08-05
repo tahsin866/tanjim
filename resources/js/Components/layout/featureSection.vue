@@ -150,7 +150,7 @@ import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 
 const noticesAll = [
-  { id: 1, title: '৭০তম সালানা সম্মেলন সম্পর্কে জরুরি ঘোষণা', body: 'সকল গ্র্যাজুয়েটকে রেজিস্ট্রেশন সম্পন্ন করার অনুরোধ করা হচ্ছে। নির্ধারিত সময়ের মধ্যে সকল প্রয়োজনীয় তথ্য প্রদান করুন।', date: '2025-08-02T08:00:00Z', icon: 'pi pi-bullhorn', pinned: true, isNew: true, urgent: true, attachment: null },
+  { id: 1, title: '৭০তম সালানা সম্মেলন সম্পর্কে জরুরি ঘোষণা', body: 'সকল আবনায়ে ফরিদাবাদদার অনুরোধ করা যাচ্ছে যে নতুন সফটয়্যারের জন্য পরীক্ষামুল ভাবে নিবন্ধন কার্যক্রম শুরু করা হয়েছে । নির্ধারিত সময়ের মধ্যে সকল প্রয়োজনীয় তথ্য প্রদান করুন।', date: '2025-08-02T08:00:00Z', icon: 'pi pi-bullhorn', pinned: true, isNew: true, urgent: true, attachment: null },
   { id: 2, title: 'আবনা মোবাইল অ্যাপ আপডেট', body: 'আবনা অ্যাপের নতুন সংস্করণ উন্মুক্ত করা হয়েছে। নতুন ফিচার ও উন্নত পারফরমেন্সের জন্য Play Store থেকে আপডেট করুন।', date: '2025-08-01T15:30:00Z', icon: 'pi pi-mobile', pinned: false, isNew: true, urgent: false, attachment: 'https://abna.app/release-note.pdf' },
   { id: 3, title: 'সিস্টেম রক্ষণাবেক্ষণ নোটিস', body: 'আজ রাত ১১টা থেকে ১২টা পর্যন্ত ডাটাবেজ আপডেটের কারণে সাইটে সাময়িক সমস্যা হতে পারে। অসুবিধার জন্য দুঃখিত।', date: '2025-07-29T21:00:00Z', icon: 'pi pi-database', pinned: true, isNew: false, urgent: false, attachment: null },
   { id: 4, title: 'নতুন ফিচার: QR যাচাইকরণ সিস্টেম', body: 'প্রতিটি সদস্য এখন নিজের প্রোফাইল থেকে QR যাচাইকরণ করতে পারবেন। এটি নিরাপত্তা বৃদ্ধি করবে।', date: '2025-07-25T13:45:00Z', icon: 'pi pi-qrcode', pinned: false, isNew: false, urgent: false, attachment: null },
