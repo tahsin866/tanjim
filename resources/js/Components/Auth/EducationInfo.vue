@@ -2,6 +2,7 @@
 import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
+import MultiSelectWorkplace from '@/Components/Auth/MultiSelectWorkplace.vue';
 import { ref, watch, onMounted, nextTick, computed } from 'vue';
 import axios from 'axios';
 
@@ -25,6 +26,11 @@ const isInitializing = ref(true);
 const sessionYears = ref([]);
 const loading = ref(true);
 const error = ref(null);
+
+// Initialize workplace as array if it's not already
+if (!Array.isArray(props.form.workplace)) {
+    props.form.workplace = props.form.workplace ? [props.form.workplace] : [];
+}
 
 // LocalStorage keys for education info
 const STORAGE_KEYS = {
@@ -96,7 +102,6 @@ const fieldValidation = computed(() => {
         if (!props.form.voterId) errors.voterId = 'ভোটার আইডি নম্বর লিখুন';
         if (!props.form.voterIdPhoto) errors.voterIdPhoto = 'ভোটার আইডি ছবি আপলোড করুন';
     }
-    // লাইভ ছবির ফিল্ড নেই (আরো নিচে অপশনে মোবাইল ক্যামেরা বাদ)
     return errors;
 });
 
@@ -209,7 +214,7 @@ const saveEducationFormData = () => {
         dept_other_class: props.form.dept_other_class,
         examType: props.form.examType,
         rollNumber: props.form.rollNumber,
-        workplace: props.form.workplace,
+        workplace: props.form.workplace, // This will now be an array
         idType: props.form.idType,
         birthCertificate: props.form.birthCertificate,
         voterId: props.form.voterId,
@@ -229,6 +234,13 @@ const loadEducationFormData = () => {
                 }
             }
         });
+
+        // Ensure workplace is always an array
+        if (savedData.workplace && !Array.isArray(props.form.workplace)) {
+            props.form.workplace = Array.isArray(savedData.workplace)
+                ? savedData.workplace
+                : [savedData.workplace];
+        }
     }
 };
 
@@ -292,7 +304,7 @@ const handlePhotoUpload = async (event) => {
     if (file.size > 200 * 1024) {
         finalFile = await resizeImageToMax200KB(file);
         if (finalFile.size > 200 * 1024) {
-            alert('ছবিটি ২০০ কেবি’র নিচে রাখতে হবে।');
+            alert("ছবিটি ২০০ কেবি'র নিচে রাখতে হবে।");
             return;
         }
     }
@@ -322,7 +334,7 @@ const handleIdPhotoUpload = async (event) => {
     if (file.size > 200 * 1024) {
         finalFile = await resizeImageToMax200KB(file);
         if (finalFile.size > 200 * 1024) {
-            alert('ছবিটি ২০০ কেবি’র নিচে রাখতে হবে।');
+            alert("ছবিটি ২০০ কেবি'র নিচে রাখতে হবে।");
             return;
         }
     }
@@ -588,16 +600,15 @@ onMounted(async () => {
                 </div>
             </div>
 
-            <!-- ✅ নতুন: অন্যান্য বিভাগ (শুধু কোন ক্লাসে পড়েন) -->
+            <!-- অন্যান্য বিভাগ (শুধু কোন ক্লাসে পড়েন) -->
             <div class="border rounded-lg p-4 mb-4 dark:border-gray-700 dark:bg-gray-900">
                 <div class="flex items-center mb-3">
                     <input id="other" v-model="form.dept_other" type="checkbox"
                         class="mr-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800" />
                     <label for="other" class="text-sm font-medium text-gray-700 dark:text-gray-200">অন্যান্য</label>
                 </div>
-                <!-- এই অংশটি আপডেট করা হয়েছে -->
                 <div v-if="form.dept_other" class="ml-6">
-                    <InputLabel class="text-sm font-medium dark:text-gray-200" value="কোন সেকশনে পড়েন?" />
+                    <InputLabel class="text-sm font-medium dark:text-gray-200" value="কোন সেকশনে পড়েন?" />
                     <select v-model="form.dept_other_class"
                         :class="[getFieldErrorClass('dept_other_class'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                         required>
@@ -608,10 +619,10 @@ onMounted(async () => {
                         <option value="তাকমিল (দাওরা)">তাকমিল (দাওরা)</option>
                         <option value="ফযিলত (মেশাকাত)">ফযিলত (মেশাকাত)</option>
                         <option value="জালালাইন">জালালাইন</option>
-                        <option value="হেদায়া">হেদায়া</option>
-                        <option value="শরহে বেকায়া">শরহে বেকায়া</option>
-                        <option value="কাফিয়া">কাফিয়া</option>
-                        <option value="হেদায়াতুন্নাহু">হেদায়াতুন্নাহু</option>
+                        <option value="হেদায়া">হেদায়া</option>
+                        <option value="শরহে বেকায়া">শরহে বেকায়া</option>
+                        <option value="কাফিয়া">কাফিয়া</option>
+                        <option value="হেদায়াতুন্নাহু">হেদায়াতুন্নাহু</option>
                         <option value="নাহুমির">নাহুমির</option>
                         <option value="মিযান">মিযান</option>
                         <option value="খুসুসী">খুসুসী</option>
@@ -662,59 +673,37 @@ onMounted(async () => {
             <InputError class="mt-2" :message="fieldValidation.rollNumber" />
         </div>
 
-        <!-- কর্মস্থল/পেশা (ড্রপডাউন) -->
+        <!-- কর্মস্থল/পেশা (মাল্টিপল সিলেকশন) -->
         <div class="mb-6">
-            <InputLabel for="workplace" class="text-lg font-medium dark:text-white" value="কর্মস্থল/পেশা" />
-            <select id="workplace" v-model="form.workplace"
-                class="mt-1 block w-full rounded-md border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-700 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                <option value="">নির্বাচন করুন</option>
-                <option value="ইমাম">শাইখুল হাদিস</option>
-                <option value="প্রধান মুফতি">প্রধান মুফতি</option>
-                <option value="মুঈনে মুফতি">মুঈনে মুফতি</option>
-                <option value="সাংবাদিক">সাংবাদিক</option>
-                <option value="লেখক">লেখক</option>
-
-                <option value="মুফতি">আদীব</option>
-                <option value="মুফতি">মাদরাসা শিক্ষক</option>
-                <option value="ইমাম">ইমাম</option>
-                <option value="খতিব">খতিব</option>
-                <option value="মুয়াজ্জিন">মুয়াজ্জিন</option>
-                <option value="মসজিদের খাদেম">মসজিদের খাদেম</option>
-                <option value="মুহতামিম">মুহতামিম</option>
-                <option value="ব্যবসায়ী">ব্যবসায়ী</option>
-                <option value="প্রবাসি">প্রবাসি</option>
-                <option value="চাকুরিজীবি">চাকুরিজীবি</option>
-                <option value="চাকুরিজীবি">বক্তা</option>
-                <option value="অন্যান্য">অন্যান্য</option>
-            </select>
+            <InputLabel for="workplace" class="text-lg font-medium dark:text-white" value="কর্মস্থল/পেশা (একাধিক নির্বাচন করা যাবে)" />
+            <MultiSelectWorkplace v-model="form.workplace" />
             <InputError class="mt-2" :message="form.errors.workplace" />
         </div>
 
-        <!-- ✅ নতুন: পরিচয়পত্র টাইপ নির্বাচন (জন্মসনদ/ভোটার আইডি) -->
+        <!-- পরিচয়পত্র টাইপ নির্বাচন (জন্মসনদ/ভোটার আইডি) -->
         <div class="mb-6">
-            <InputLabel for="idType" class="text-lg font-medium dark:text-white" value="পরিচয়পত্র টাইপ" />
+            <InputLabel for="idType" class="text-lg font-medium dark:text-white" value="পরিচয়পত্র টাইপ" />
             <select id="idType" v-model="form.idType"
                 :class="[getFieldErrorClass('idType'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                 required>
                 <option value="">নির্বাচন করুন</option>
                 <option value="birth">জন্মসনদ</option>
                 <option value="voter">ভোটার আইডি</option>
-                <!-- <option value="জানা নেই">জানা নেই</option> -->
             </select>
             <InputError class="mt-2" :message="fieldValidation.idType" />
         </div>
 
-        <!-- "জানা নেই" সিলেক্ট করা হলে একটি বার্তা দেখানো -->
+        <!-- জন্মনিবন্ধন নম্বর ও ছবি -->
         <div v-if="form.idType === 'birth'" class="mb-6">
             <InputLabel for="birthCertificate" class="text-lg font-medium dark:text-white" value="জন্মনিবন্ধন নম্বর" />
             <input id="birthCertificate" type="text"
                 :class="[getFieldErrorClass('birthCertificate'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                 v-model="form.birthCertificate" placeholder="জন্মনিবন্ধন নম্বর লিখুন" />
             <InputError class="mt-2" :message="fieldValidation.birthCertificate" />
-            <!-- ✅ জন্মনিবন্ধন ছবির আপলোড -->
+            <!-- জন্মনিবন্ধন ছবির আপলোড -->
             <div class="mt-3">
                 <InputLabel for="birthCertificatePhoto" class="text-lg font-medium dark:text-white"
-                    value="জন্মনিবন্ধন কার্ড/সার্টিফিকেটের ছবি (২০০ কেবি’র নিচে)" />
+                    value="জন্মনিবন্ধন কার্ড/সার্টিফিকেটের ছবি (২০০ কেবি'র নিচে)" />
                 <input id="birthCertificatePhoto" type="file" accept="image/*" @change="handleIdPhotoUpload"
                     :class="[getFileErrorClass('birthCertificatePhoto'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
 
@@ -744,7 +733,7 @@ onMounted(async () => {
             <InputError class="mt-2" :message="fieldValidation.voterId" />
             <div class="mt-3">
                 <InputLabel for="voterIdPhoto" class="text-lg font-medium dark:text-white"
-                    value="ভোটার আইডি কার্ডের ছবি (২০০ কেবি’র নিচে)" />
+                    value="ভোটার আইডি কার্ডের ছবি (২০০ কেবি'র নিচে)" />
                 <input id="voterIdPhoto" type="file" accept="image/*" @change="handleIdPhotoUpload"
                     :class="[getFileErrorClass('voterIdPhoto'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
 
@@ -766,11 +755,10 @@ onMounted(async () => {
             </div>
         </div>
 
-        <!-- লাইভ ছবি আপলোড (শুধুমাত্র যখন idType 'জানা নেই' না হয়) -->
-        <!-- লাইভ ক্যামেরা অপশন বাদ -->
+        <!-- ছবি আপলোড -->
         <div v-if="form.idType && form.idType !== 'জানা নেই'" class="mb-6">
             <InputLabel for="photo" class="text-lg font-medium dark:text-white"
-                value="ছবি আপলোড করুন (২০০ কেবি’র নিচে)" />
+                value="ছবি আপলোড করুন (২০০ কেবি'র নিচে)" />
             <input id="photo" type="file" accept="image/*" @change="handlePhotoUpload"
                 :class="[getFileErrorClass('photo'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
 
@@ -791,5 +779,4 @@ onMounted(async () => {
             <InputError class="mt-2" :message="fieldValidation.photo" />
         </div>
     </div>
-
 </template>

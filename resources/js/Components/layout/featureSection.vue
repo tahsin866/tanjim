@@ -1,457 +1,218 @@
+
 <template>
   <section
-    style="font-family: 'Merriweather', 'SolaimanLipi', sans-serif;"
-    class="pt-16 pb-16  via-teal-50 to-cyan-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 transition-colors duration-300">
+  style=" font-family: 'SolaimanLipi', sans-serif;"
 
-    <div class="container mx-auto px-4">
-      <!-- Section Header -->
-      <div class="text-center mb-12">
-        <h2 class="text-4xl font-bold text-gray-800 dark:text-white mb-4 flex items-center justify-center">
-          <i class="pi pi-chart-bar text-emerald-600 dark:text-emerald-400 mr-3"></i>
-          আবনায়ে জামিয়া ফরিদাবাদ পরিসংখ্যান ও তথ্য
-        </h2>
-        <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-          ক্লাসভিত্তিক ছাত্র রেজিস্ট্রেশন, বছরের উপস্থিতি, এবং আবনা রেজিস্ট্রেশন ও অ্যাপ সংক্রান্ত সকল তথ্য
-        </p>
-      </div>
+  class="py-16 px-4 bg-white dark:bg-gray-950 transition-colors duration-300 ">
 
-      <!-- Statistics Cards + Notice Board Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Notice Board Grid -->
-        <div class="lg:col-span-2">
-          <Card class="shadow-lg hover:shadow-xl transition-all duration-300 border-0 dark:bg-gray-900/95">
-            <template #header>
-              <div class="bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-700 dark:to-teal-800 p-6 text-white">
-                <div class="flex items-center">
-                  <Avatar
-                    icon="pi pi-bell"
-                    class="bg-white/20 text-white mr-4"
-                    size="large" />
-                  <div>
-                    <h3 class="text-2xl font-bold">নোটিস বোর্ড</h3>
-                    <p class="text-emerald-100">সর্বশেষ তথ্য, ঘোষণা ও নোটিস</p>
-                  </div>
-                </div>
+    <div class="container mx-auto max-w-8xl">
+      <div class="relative rounded-2xl shadow-2xl overflow-hidden
+                  bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50
+                  dark:from-gray-900/90 dark:via-gray-900/95 dark:to-gray-900/90
+                  ring-1 ring-gray-200 dark:ring-gray-800">
+
+        <div class="px-8 py-6 md:px-12 md:py-8
+                    bg-gradient-to-r from-teal-600 to-cyan-700
+                    dark:from-teal-800 dark:to-cyan-900 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+          <div class="flex items-center gap-4 text-center md:text-left">
+            <span class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/10 shadow-lg shrink-0">
+              <i class="pi pi-bell text-3xl"></i>
+            </span>
+            <div>
+              <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight mb-1">
+                আবনায়ে জামিয়া ফরিদাবাদ
+              </h2>
+              <p class="text-sm sm:text-base text-teal-100">
+                ৭০ সালানা সম্মেলন • নোটিস ও ডিজিটাল সুবিধা
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap justify-center gap-3">
+            <a href="#" class="inline-flex items-center px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors shadow-lg">
+              <i class="pi pi-android text-xl mr-2"></i>
+              <span class="text-sm font-semibold">Google Play</span>
+            </a>
+            <a href="#" class="inline-flex items-center px-6 py-3 bg-black text-white rounded-full hover:bg-gray-800 transition-colors shadow-lg">
+              <i class="pi pi-apple text-xl mr-2"></i>
+              <span class="text-sm font-semibold">App Store</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-0">
+
+          <div class="p-8 md:p-10 border-b md:border-b-0 md:border-r border-gray-200 dark:border-gray-800">
+            <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center gap-2">
+              <i class="pi pi-list text-teal-600 dark:text-teal-400"></i> নোটিস বোর্ড
+            </h3>
+
+            <div class="flex flex-col sm:flex-row gap-4 mb-6">
+              <div class="relative flex-1">
+                <i class="pi pi-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500"></i>
+                <InputText
+                  v-model="noticeSearch"
+                  placeholder="নোটিস খুঁজুন..."
+                  class="w-full pl-12 pr-4 py-3 rounded-full border-2 border-gray-200 focus:border-teal-400 dark:bg-gray-800 dark:text-white dark:border-gray-700 dark:placeholder-gray-500 transition-colors"
+                />
               </div>
-            </template>
-            <template #content>
-              <div class="p-6">
-                <!-- Notice Board System -->
-                <div>
-                  <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-lg font-bold text-emerald-700 dark:text-emerald-300 flex items-center">
-                      <i class="pi pi-bullhorn mr-2 text-emerald-500 dark:text-emerald-300"></i> সর্বশেষ নোটিসসমূহ
-                    </h4>
-                    <Button
-                      label="সব নোটিস দেখুন"
-                      icon="pi pi-external-link"
-                      class="bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 border-0 px-4 py-2 text-sm font-semibold shadow-sm transition-all duration-200"
-                      @click="goToNoticePage"
-                    />
+              <Button
+                :label="showPinned ? 'সব নোটিস' : 'Pinned'"
+                :icon="showPinned ? 'pi pi-list' : 'pi pi-thumbtack'"
+                :class="[
+                  'rounded-full px-6 py-3 text-sm font-semibold transition-all duration-300 shadow',
+                  showPinned
+                    ? 'bg-gradient-to-r from-teal-500 to-cyan-500 text-white border-0'
+                    : 'bg-white dark:bg-gray-800 text-teal-600 dark:text-teal-400 border-2 border-teal-200 dark:border-teal-600'
+                ]"
+                @click="showPinned = !showPinned"
+              />
+            </div>
+
+            <div class="space-y-4">
+              <TransitionGroup name="fade">
+                <div
+                  v-for="notice in notices"
+                  :key="notice.id"
+                  class="flex items-start gap-4 p-4 rounded-xl shadow-md border border-gray-200 dark:border-gray-700
+                         bg-white dark:bg-gray-800 hover:shadow-lg hover:border-teal-400 dark:hover:border-teal-600 transition-all duration-300"
+                >
+                  <div class="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900 flex items-center justify-center shrink-0">
+                    <i :class="notice.icon + ' text-teal-600 dark:text-teal-300 text-lg'"></i>
                   </div>
-                  <div class="bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-xl border border-emerald-100 dark:border-emerald-800 p-4 max-h-72 overflow-y-auto shadow-inner relative">
-                    <TransitionGroup name="notice-fade" tag="ul">
-                      <li
-                        v-for="notice in notices"
-                        :key="notice.id"
-                        class="flex items-start gap-3 mb-4 bg-white/90 dark:bg-gray-900 rounded-lg px-4 py-3 shadow group hover:bg-emerald-50 dark:hover:bg-emerald-900 transition-colors duration-200 relative"
-                      >
-                        <div class="flex-shrink-0 pt-1">
-                          <i :class="notice.icon + ' text-emerald-500 dark:text-emerald-300 text-lg'"></i>
-                        </div>
-                        <div class="flex-1">
-                          <h5 class="font-bold text-emerald-700 dark:text-emerald-300 mb-1 group-hover:text-teal-700 dark:group-hover:text-teal-300 transition-colors duration-200">
-                            {{ notice.title }}
-                            <span v-if="notice.isNew" class="ml-2 px-2 py-0.5 bg-gradient-to-r from-emerald-500 to-cyan-400 dark:from-emerald-700 dark:to-cyan-800 text-white text-xs rounded-full font-bold animate-pulse">নতুন</span>
-                          </h5>
-                          <p class="text-gray-700 dark:text-gray-200 text-sm font-bangla">{{ notice.body }}</p>
-                          <div class="flex items-center gap-2 mt-1 text-xs text-gray-500 dark:text-gray-400">
-                            <i class="pi pi-clock"></i>
-                            <span>{{ formatDate(notice.date) }}</span>
-                            <span v-if="notice.pinned" class="ml-2 px-2 py-0.5 bg-emerald-200 dark:bg-emerald-700 text-emerald-900 dark:text-emerald-100 rounded-full font-semibold text-xs">Pinned</span>
-                          </div>
-                          <div v-if="notice.attachment" class="mt-2">
-                            <a
-                              :href="notice.attachment"
-                              target="_blank"
-                              class="inline-flex items-center px-2 py-1 text-xs bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200 rounded hover:bg-emerald-200 dark:hover:bg-emerald-800 transition-colors duration-200"
-                            >
-                              <i class="pi pi-paperclip mr-1"></i> সংযুক্তি দেখুন
-                            </a>
-                          </div>
-                        </div>
-                        <div v-if="notice.urgent" class="absolute top-2 right-2">
-                          <i class="pi pi-exclamation-triangle text-red-400 dark:text-red-300 text-xl animate-bounce"></i>
-                        </div>
-                      </li>
-                    </TransitionGroup>
-                    <div v-if="notices.length === 0" class="text-center text-gray-400 dark:text-gray-600 py-6">
-                      <i class="pi pi-info-circle text-2xl"></i> কোন নোটিস নেই
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center flex-wrap gap-2 mb-1">
+                      <h4 class="font-bold text-base text-gray-800 dark:text-gray-100">{{ notice.title }}</h4>
+                      <span v-if="notice.isNew" class="px-2 py-0.5 bg-green-500 text-white text-xs rounded-full font-bold animate-pulse">নতুন</span>
+                      <span v-if="notice.pinned" class="px-2 py-0.5 bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300 text-xs rounded-full font-semibold">
+                        <i class="pi pi-thumbtack"></i> পিনড
+                      </span>
+                      <span v-if="notice.urgent" class="px-2 py-0.5 bg-red-500 text-white text-xs rounded-full font-bold animate-pulse">জরুরি</span>
+                    </div>
+                    <p class="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{{ notice.body }}</p>
+                    <div class="flex justify-between items-center mt-2">
+                      <span class="text-xs text-gray-500 dark:text-gray-500">
+                        <i class="pi pi-clock mr-1"></i>
+                        {{ formatDate(notice.date) }}
+                      </span>
+                      <a v-if="notice.attachment" :href="notice.attachment" target="_blank" class="inline-flex items-center text-xs text-teal-600 dark:text-teal-300 hover:text-teal-800 dark:hover:text-teal-100 font-semibold transition-colors">
+                        <i class="pi pi-paperclip mr-1"></i> সংযুক্তি
+                      </a>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3 mt-4">
-                    <InputText v-model="noticeSearch" placeholder="নোটিস খুঁজুন..." class="w-full md:w-1/2 dark:bg-gray-900 dark:text-white dark:placeholder-gray-400"/>
-                    <Button
-                      label="Pinned"
-                      icon="pi pi-thumbtack"
-                      class="bg-gradient-to-r from-emerald-400 to-teal-400 border-0 px-4 py-2 text-xs font-semibold shadow-sm"
-                      @click="showPinned = !showPinned"
-                      :outlined="!showPinned"
-                    />
-                  </div>
                 </div>
-              </div>
-            </template>
-          </Card>
-        </div>
-
-        <!-- Madrasa Signup Card -->
-        <div class="lg:col-span-1">
-          <Card class="h-full shadow-lg hover:shadow-xl transition-all duration-300 border-0 bg-gradient-to-br from-white to-emerald-50 dark:from-gray-900 dark:to-gray-800">
-            <template #header>
-              <div class="bg-gradient-to-r from-emerald-600 to-emerald-700 dark:from-emerald-800 dark:to-emerald-900 p-6 text-white text-center">
-                <Avatar
-                  icon="pi pi-building"
-                  class="bg-white/20 text-white mb-4"
-                  size="xlarge" />
-                <h3 class="text-2xl font-bold mb-2">আবনা হওয়ার জন্য রেজিস্ট্রেশন</h3>
-                <p class="text-emerald-100">সহজ অনলাইন আবেদন</p>
-              </div>
-            </template>
-            <template #content>
-              <div class="p-6 text-center">
-                <Message
-                  severity="info"
-                  :closable="false"
-                  class="mb-6 dark:bg-gray-800 dark:text-white">
-                  <template #messageicon>
-                    <i class="pi pi-info-circle"></i>
-                  </template>
-                  সম্মানিত গ্র্যাজুয়েটগণ, ৭০ সালানা অনুষ্ঠানের সকল আপডেট পেতে এবং ড্যাশবোর্ড সুবিধা নিতে এখনই রেজিস্ট্রেশন করুন।
-                </Message>
-                <div class="mb-6 text-left">
-                  <div class="flex items-center mb-3">
-                    <i class="pi pi-check-circle text-emerald-600 dark:text-emerald-400 mr-3"></i>
-                    <span class="text-gray-700 dark:text-gray-200">অনলাইনে দ্রুত ফর্ম পূরণ</span>
-                  </div>
-                  <div class="flex items-center mb-3">
-                    <i class="pi pi-check-circle text-emerald-600 dark:text-emerald-400 mr-3"></i>
-                    <span class="text-gray-700 dark:text-gray-200">প্রোফাইল/তথ্য হালনাগাদ</span>
-                  </div>
-                  <div class="flex items-center mb-3">
-                    <i class="pi pi-check-circle text-emerald-600 dark:text-emerald-400 mr-3"></i>
-                    <span class="text-gray-700 dark:text-gray-200">QR কোডের মাধ্যমে ভেরিফিকেশন</span>
-                  </div>
-                  <div class="flex items-center">
-                    <i class="pi pi-check-circle text-emerald-600 dark:text-emerald-400 mr-3"></i>
-                    <span class="text-gray-700 dark:text-gray-200">স্মার্ট ড্যাশবোর্ড সুবিধা</span>
-                  </div>
-                </div>
-                <Button
-                  label="রেজিস্ট্রেশন করুন"
-                  icon="pi pi-user-plus"
-                  iconPos="right"
-                  class="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 dark:from-emerald-800 dark:to-emerald-900 dark:hover:from-emerald-700 dark:hover:to-emerald-800 border-0 p-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
-                  @click="goToRegister"
-                />
-              </div>
-            </template>
-          </Card>
-        </div>
-      </div>
-
-      <!-- Ulama Slider Title (outside card) + Mobile App Section + Ulama Slider -->
-      <div class="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-        <!-- Mobile App Section -->
-        <div>
-          <div class="mb-6">
-            <h3 class="text-2xl font-bold text-emerald-700 dark:text-emerald-300 mb-2 flex items-center">
-              <i class="pi pi-mobile text-emerald-600 dark:text-emerald-400 mr-2"></i>
-              আবনা মোবাইল অ্যাপ
-            </h3>
-            <p class="text-gray-700 dark:text-gray-300 text-lg mb-4">এখনই ডাউনলোড করুন — অনুষ্ঠান, ছবি, স্মৃতিচারণা, রেজিস্ট্রেশন ও সকল আপডেট পেতে!</p>
-            <Button
-              label="এপ ডাউনলোড করুন"
-              icon="pi pi-download"
-              class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-800 hover:to-teal-800 dark:from-emerald-800 dark:to-teal-900 dark:hover:from-emerald-700 dark:hover:to-teal-800 border-0 px-6 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300" />
-          </div>
-          <ul class="space-y-3 text-gray-700 dark:text-gray-200">
-            <li class="flex items-center">
-              <i class="pi pi-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
-              স্মার্ট রেজিস্ট্রেশন ও লগইন
-            </li>
-            <li class="flex items-center">
-              <i class="pi pi-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
-              ছবি, স্মৃতিচারণা, এবং আপডেট গ্যালারি
-            </li>
-            <li class="flex items-center">
-              <i class="pi pi-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
-              QR যাচাইকরণ ও নোটিফিকেশন
-            </li>
-            <li class="flex items-center">
-              <i class="pi pi-check-circle text-emerald-500 dark:text-emerald-400 mr-3"></i>
-              ৭০ সালানা অনুষ্ঠানের সব আপডেট পুশ
-            </li>
-          </ul>
-        </div>
-        <!-- Ulama Slider Section (Half Image Card Style) -->
-        <div>
-          <!-- Ulama Title outside card -->
-          <h3 class="text-2xl font-bold text-center text-emerald-800 dark:text-emerald-200 mb-3 flex items-center justify-center">
-            <i class="pi pi-users text-emerald-500 dark:text-emerald-300 mr-2"></i> আমন্ত্রিত ওলামায়ে কেরাম
-          </h3>
-          <div class="relative bg-white dark:bg-gray-900 rounded-md shadow-2xl border-4 border-emerald-100 dark:border-emerald-900 overflow-hidden flex flex-col justify-end min-h-[310px]">
-            <div class="relative flex flex-col min-h-[310px]">
-              <!-- Half Image (top) -->
-              <div class="relative flex justify-center items-center w-full h-[110px] md:h-[110px] bg-gradient-to-br from-emerald-100 via-white to-teal-50 dark:from-emerald-900 dark:via-gray-900 dark:to-teal-900">
-                <img
-                  :src="currentUlama.photo"
-                  :alt="currentUlama.name"
-                  class="w-[110px] h-[110px] md:w-[110px] md:h-[110px] object-cover rounded-full border-4 border-emerald-400 shadow-md bg-white relative top-2"
-                />
-                <!-- Slider Buttons -->
-                <button
-                  @click="prevUlama"
-                  class="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-emerald-100 dark:bg-emerald-800 hover:bg-emerald-200 dark:hover:bg-emerald-700 text-emerald-700 dark:text-emerald-200 rounded-full p-2 shadow"
-                  aria-label="Previous Ulama"
-                >
-                  <i class="pi pi-chevron-left text-2xl"></i>
-                </button>
-                <button
-                  @click="nextUlama"
-                  class="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-emerald-100 dark:bg-emerald-800 hover:bg-emerald-200 dark:hover:bg-emerald-700 text-emerald-700 dark:text-emerald-200 rounded-full p-2 shadow"
-                  aria-label="Next Ulama"
-                >
-                  <i class="pi pi-chevron-right text-2xl"></i>
-                </button>
-              </div>
-              <!-- Details (bottom) -->
-              <div class="flex flex-col items-center justify-center px-4 py-4 bg-gradient-to-b from-white/95 via-emerald-50/90 to-teal-50/80 dark:from-gray-900 dark:via-gray-800 dark:to-teal-950 min-h-[100px]">
-                <div class="text-lg font-bold text-emerald-800 dark:text-emerald-200 mb-0.5 font-bangla text-center">{{ currentUlama.name }}</div>
-                <div class="text-emerald-600 dark:text-emerald-400 font-semibold text-xs mb-1 text-center">{{ currentUlama.title }}</div>
-                <div class="text-gray-600 dark:text-gray-300 font-bangla text-center text-xs">{{ currentUlama.bio }}</div>
-                <!-- Slide indicators -->
-                <div class="flex justify-center gap-1 mt-4">
-                  <span
-                    v-for="(ulama, idx) in ulamaList"
-                    :key="ulama.name"
-                    :class="['inline-block h-2 w-6 rounded-full transition-all duration-300',
-                              idx === currentUlamaIndex ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-emerald-200 dark:bg-emerald-800']"
-                  ></span>
-                </div>
+              </TransitionGroup>
+              <div v-if="notices.length === 0" class="text-center text-gray-400 dark:text-gray-600 py-6">
+                <i class="pi pi-info-circle text-2xl mb-2"></i>
+                <p>কোন নোটিস পাওয়া যায়নি।</p>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Additional Info Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-14">
-        <Card
-          v-for="info in additionalInfo"
-          :key="info.title"
-          class="relative text-center shadow-md hover:shadow-2xl border-0 transition-all duration-300 rounded-2xl overflow-hidden bg-gradient-to-br from-emerald-50 via-white to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-teal-900 group"
-        >
-          <template #content>
-            <div class="p-8 relative">
-              <!-- Decorative Islamic Motif - Top Right -->
-              <svg class="absolute top-0 right-0 w-20 h-16 opacity-10 pointer-events-none" viewBox="0 0 80 40" fill="none">
-                <ellipse cx="40" cy="20" rx="38" ry="10" fill="#10b981" fill-opacity="0.14"/>
-                <ellipse cx="40" cy="20" rx="27" ry="5" fill="#14b8a6" fill-opacity="0.12"/>
-              </svg>
-              <!-- Decorative Islamic Motif - Bottom Left -->
-              <svg class="absolute bottom-0 left-0 w-20 h-16 opacity-10 pointer-events-none rotate-180" viewBox="0 0 80 40" fill="none">
-                <ellipse cx="40" cy="20" rx="38" ry="10" fill="#10b981" fill-opacity="0.14"/>
-                <ellipse cx="40" cy="20" rx="27" ry="5" fill="#14b8a6" fill-opacity="0.12"/>
-              </svg>
-              <div class="flex justify-center mb-4">
-                <div class="bg-gradient-to-br from-emerald-200 via-teal-200 to-cyan-100 dark:from-emerald-800 dark:via-teal-900 dark:to-cyan-900 rounded-full p-2 shadow-lg border-4 border-white dark:border-gray-900 group-hover:scale-110 transition-transform duration-300">
-                  <Avatar
-                    :icon="info.icon"
-                    :class="info.avatarClass + ' text-2xl'"
-                    size="large"
-                  />
-                </div>
-              </div>
-              <h4 class="text-xl font-bold text-emerald-900 dark:text-emerald-200 mb-2 font-bangla tracking-wide group-hover:text-emerald-700 dark:group-hover:text-emerald-300 transition-colors duration-300">
-                {{ info.title }}
-              </h4>
-              <p class="text-gray-600 dark:text-gray-300 font-bangla">{{ info.description }}</p>
-              <div class="mt-6 h-1 w-2/3 mx-auto rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 dark:from-emerald-700 dark:via-teal-700 dark:to-cyan-700 group-hover:from-emerald-500 group-hover:to-teal-500 transition-all duration-300"></div>
+            <div class="mt-8 text-center">
+              <Button label="সব নোটিস দেখুন" icon="pi pi-arrow-right" iconPos="right" class="px-8 py-3 bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white font-semibold rounded-full shadow-lg transition-all" @click="goToNoticePage" />
             </div>
-          </template>
-        </Card>
+          </div>
+
+          <div class="p-8 md:p-10 flex flex-col justify-center">
+            <div class="text-center mb-8">
+              <div class="inline-block p-3 rounded-full bg-teal-100 dark:bg-teal-900 shadow-md mb-3">
+                <i class="pi pi-mobile text-3xl text-teal-700 dark:text-teal-300"></i>
+              </div>
+              <h3 class="text-2xl font-bold text-gray-800 dark:text-white mb-2">আবনা মোবাইল অ্যাপ</h3>
+              <p class="text-gray-600 dark:text-gray-400 max-w-sm mx-auto">
+                ডিজিটাল স্মার্ট রেজিস্ট্রেশন, QR যাচাইকরণ, ছবি ও আপডেট - সব এক অ্যাপে!
+              </p>
+            </div>
+
+            <div class="space-y-4 max-w-sm mx-auto w-full">
+              <div v-for="(feature, index) in appFeatures" :key="index" class="flex items-center p-3 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700
+                  bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                <div class="w-8 h-8 rounded-full flex items-center justify-center mr-3" :class="feature.bgClass">
+                  <i :class="feature.iconClass + ' text-base'"></i>
+                </div>
+                <span class="font-semibold text-gray-800 dark:text-gray-100 text-sm">{{ feature.text }}</span>
+              </div>
+            </div>
+
+            <div class="mt-8 text-center">
+              <Button label="অ্যাপ ডাউনলোড করুন" icon="pi pi-download" iconPos="right" class="px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-semibold rounded-full shadow-lg transition-all" />
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
-import Card from 'primevue/card'
-import Avatar from 'primevue/avatar'
-import Button from 'primevue/button'
-import Message from 'primevue/message'
-import InputText from 'primevue/inputtext'
+import { ref, computed } from 'vue';
+import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
 
-// Notice System
 const noticesAll = [
-  {
-    id: 1,
-    title: '৭০তম সালানা সম্মেলন সম্পর্কে জরুরি ঘোষণা',
-    body: 'সকল গ্র্যাজুয়েটকে রেজিস্ট্রেশন সম্পন্ন করার অনুরোধ করা হচ্ছে।',
-    date: '2025-07-22T10:00:00Z',
-    icon: 'pi pi-bullhorn',
-    pinned: true,
-    isNew: true,
-    urgent: true,
-    attachment: null
-  },
-  {
-    id: 2,
-    title: 'অ্যাপ আপডেট',
-    body: 'আবনা অ্যাপের নতুন সংস্করণ উন্মুক্ত করা হয়েছে। Play Store থেকে আপডেট করুন।',
-    date: '2025-07-20T15:30:00Z',
-    icon: 'pi pi-mobile',
-    pinned: false,
-    isNew: true,
-    urgent: false,
-    attachment: 'https://abna.app/release-note.pdf'
-  },
-  {
-    id: 3,
-    title: 'ডাটাবেজ আপডেট চলবে',
-    body: 'আজ রাত ১১টা থেকে ১২টা পর্যন্ত সাইটে সাময়িক সমস্যা হতে পারে।',
-    date: '2025-07-19T21:00:00Z',
-    icon: 'pi pi-database',
-    pinned: true,
-    isNew: false,
-    urgent: false,
-    attachment: null
-  },
-  {
-    id: 4,
-    title: 'নতুন ফিচার: QR যাচাইকরণ',
-    body: 'প্রতিটি সদস্য নিজের প্রোফাইল থেকে QR যাচাইকরণ করতে পারবেন।',
-    date: '2025-07-15T13:45:00Z',
-    icon: 'pi pi-qrcode',
-    pinned: false,
-    isNew: false,
-    urgent: false,
-    attachment: null
-  },
-  {
-    id: 5,
-    title: 'ক্লাসভিত্তিক তথ্য হালনাগাদ',
-    body: 'নতুন শিক্ষাবর্ষের ছাত্রদের তথ্য যুক্ত করা হয়েছে।',
-    date: '2025-07-10T10:00:00Z',
-    icon: 'pi pi-users',
-    pinned: false,
-    isNew: false,
-    urgent: false,
-    attachment: null
-  }
-]
+  { id: 1, title: '৭০তম সালানা সম্মেলন সম্পর্কে জরুরি ঘোষণা', body: 'সকল গ্র্যাজুয়েটকে রেজিস্ট্রেশন সম্পন্ন করার অনুরোধ করা হচ্ছে। নির্ধারিত সময়ের মধ্যে সকল প্রয়োজনীয় তথ্য প্রদান করুন।', date: '2025-08-02T08:00:00Z', icon: 'pi pi-bullhorn', pinned: true, isNew: true, urgent: true, attachment: null },
+  { id: 2, title: 'আবনা মোবাইল অ্যাপ আপডেট', body: 'আবনা অ্যাপের নতুন সংস্করণ উন্মুক্ত করা হয়েছে। নতুন ফিচার ও উন্নত পারফরমেন্সের জন্য Play Store থেকে আপডেট করুন।', date: '2025-08-01T15:30:00Z', icon: 'pi pi-mobile', pinned: false, isNew: true, urgent: false, attachment: 'https://abna.app/release-note.pdf' },
+  { id: 3, title: 'সিস্টেম রক্ষণাবেক্ষণ নোটিস', body: 'আজ রাত ১১টা থেকে ১২টা পর্যন্ত ডাটাবেজ আপডেটের কারণে সাইটে সাময়িক সমস্যা হতে পারে। অসুবিধার জন্য দুঃখিত।', date: '2025-07-29T21:00:00Z', icon: 'pi pi-database', pinned: true, isNew: false, urgent: false, attachment: null },
+  { id: 4, title: 'নতুন ফিচার: QR যাচাইকরণ সিস্টেম', body: 'প্রতিটি সদস্য এখন নিজের প্রোফাইল থেকে QR যাচাইকরণ করতে পারবেন। এটি নিরাপত্তা বৃদ্ধি করবে।', date: '2025-07-25T13:45:00Z', icon: 'pi pi-qrcode', pinned: false, isNew: false, urgent: false, attachment: null },
+  { id: 5, title: 'অনুষ্ঠানের সময়সূচী প্রকাশ', body: '৭০ সালানা সম্মেলনের বিস্তারিত সময়সূচী এবং অনুষ্ঠানমালা প্রকাশ করা হয়েছে। সকলে দেখে নিন।', date: '2025-07-20T10:00:00Z', icon: 'pi pi-calendar', pinned: false, isNew: false, urgent: false, attachment: 'https://abna.app/schedule.pdf' }
+];
 
-const noticeSearch = ref('')
-const showPinned = ref(false)
+const appFeatures = ref([
+  { text: 'স্মার্ট রেজিস্ট্রেশন ও লগইন', iconClass: 'pi pi-user-plus', bgClass: 'bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300' },
+  { text: 'ছবি ও স্মৃতিচারণা', iconClass: 'pi pi-images', bgClass: 'bg-cyan-100 text-cyan-600 dark:bg-cyan-900 dark:text-cyan-300' },
+  { text: 'QR যাচাইকরণ ও নোটিফিকেশন', iconClass: 'pi pi-qrcode', bgClass: 'bg-purple-100 text-purple-600 dark:bg-purple-900 dark:text-purple-300' },
+  { text: 'অনুষ্ঠানের সব আপডেট', iconClass: 'pi pi-calendar', bgClass: 'bg-orange-100 text-orange-600 dark:bg-orange-900 dark:text-orange-300' }
+]);
+
+const noticeSearch = ref('');
+const showPinned = ref(true);
 
 const notices = computed(() => {
-  let filtered = noticesAll
+  let filtered = noticesAll;
   if (showPinned.value) {
-    filtered = filtered.filter(n => n.pinned)
+    filtered = filtered.filter(n => n.pinned);
   }
   if (noticeSearch.value) {
-    const s = noticeSearch.value.toLowerCase()
+    const s = noticeSearch.value.toLowerCase();
     filtered = filtered.filter(n =>
-      n.title.toLowerCase().includes(s) ||
-      n.body.toLowerCase().includes(s)
-    )
+      n.title.toLowerCase().includes(s) || n.body.toLowerCase().includes(s)
+    );
   }
-  filtered = filtered.slice().sort((a, b) => {
-    if (a.pinned && !b.pinned) return -1
-    if (!a.pinned && b.pinned) return 1
-    return new Date(b.date) - new Date(a.date)
-  })
-  return filtered
-})
+  return filtered.slice().sort((a, b) => {
+    if (a.pinned && !b.pinned) return -1;
+    if (!a.pinned && b.pinned) return 1;
+    return new Date(b.date) - new Date(a.date);
+  });
+});
 
 function formatDate(dateStr) {
-  const d = new Date(dateStr)
+  const d = new Date(dateStr);
   return d.toLocaleDateString('bn-BD', { year: 'numeric', month: 'long', day: 'numeric' }) +
-    ' ' + d.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' })
+    ' ' + d.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
 }
+
 function goToNoticePage() {
-  window.location.href = '/notices'
+  alert("সব নোটিস দেখতে নতুন একটি পাতায় নিয়ে যাওয়া হবে।");
 }
-function goToRegister() {
-  window.location.href = '/register'
-}
-
-// Ulama Slider Data
-const ulamaList = [
-  {
-    name: 'জাস্টিস তাকি উসমানি দা:বা:',
-    photo: '/images/Mufti-Muhammad-Taqi-Usmani-scaled.jpg',
-    title: 'প্রধান অতিথি, ইসলামি চিন্তাবিদ',
-    bio: 'মুফতি আজিজুল হক বাংলাদেশের অন্যতম শীর্ষস্থানীয় ইসলামি ব্যক্তিত্ব। তিনি ইসলামী গবেষণা ও সমাজকল্যাণমূলক কার্যক্রমে অগ্রণী ভূমিকা রেখেছেন।'
-  },
-  {
-    name: 'শায়েখ আওয়ামা',
-    photo: '/images/shayekh-awama.jpg',
-    title: 'বিশেষ বক্তা, কুরআন গবেষক',
-    bio: 'মাওলানা শফিকুর রহমান কুরআন শিক্ষায় বিশেষ অবদান রেখেছেন এবং তরুণদের মাঝে ইসলামী মূল্যবোধ ছড়িয়ে দিচ্ছেন।'
-  },
-  {
-    name: 'হাফেজ মাহমুদুল হাসান',
-    photo: '/images/shayekh-sudais.jpeg',
-    title: 'সভাপতি, আন্তর্জাতিক হিফজ প্রতিযোগিতা',
-    bio: 'হাফেজ সাহেব আন্তর্জাতিক পর্যায়ে কুরআন হিফজ প্রতিযোগিতায় বাংলাদেশের প্রতিনিধিত্ব করেছেন।'
-  },
-  {
-    name: 'মাওলানা মিজানুর রহমান',
-    photo: '/images/Mufti-Muhammad-Taqi-Usmani-scaled.jpg',
-    title: 'ইসলামি স্কলার ও লেখক',
-    bio: 'মাওলানা মিজানুর রহমান বিভিন্ন ইসলামি বইয়ের লেখক ও সমাজ সংস্কারক।'
-  }
-]
-const currentUlamaIndex = ref(0)
-const currentUlama = computed(() => ulamaList[currentUlamaIndex.value])
-
-function nextUlama() {
-  currentUlamaIndex.value = (currentUlamaIndex.value + 1) % ulamaList.length
-}
-function prevUlama() {
-  currentUlamaIndex.value = (currentUlamaIndex.value - 1 + ulamaList.length) % ulamaList.length
-}
-// Auto-slide
-let autoSlideInterval
-onMounted(() => {
-  autoSlideInterval = setInterval(() => {
-    nextUlama()
-  }, 5000)
-})
-onBeforeUnmount(() => clearInterval(autoSlideInterval))
-
-// Additional info cards data
-const additionalInfo = [
-  {
-    title: 'ড্যাশবোর্ড সুবিধা',
-    description: 'আপনার সকল তথ্য, রেজিস্ট্রেশন ও নোটিস এক জায়গায়। স্মার্ট ফিচার ও সহজ ব্যবহার।',
-    icon: 'pi pi-th-large',
-    avatarClass: 'bg-gradient-to-br from-emerald-500 to-teal-500'
-  },
-  {
-    title: 'ইভেন্ট ও ছবি গ্যালারি',
-    description: 'অনুষ্ঠান, আড্ডা, স্মৃতিচারণা ও ছবির ডেডিকেটেড গ্যালারি।',
-    icon: 'pi pi-image',
-    avatarClass: 'bg-gradient-to-br from-teal-500 to-cyan-500'
-  },
-  {
-    title: 'নিরাপদ তথ্য সংরক্ষণ',
-    description: 'আপনার সকল তথ্য নিরাপদভাবে সংরক্ষিত ও গোপনীয় থাকবে।',
-    icon: 'pi pi-lock',
-    avatarClass: 'bg-gradient-to-br from-cyan-500 to-emerald-500'
-  }
-]
 </script>
+
+<style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;700&display=swap');
+
+.font-bangla {
+  font-family: 'Noto Sans Bengali', sans-serif !important;
+}
+
+h2, h3, h4 {
+  font-family: 'Noto Sans Bengali', sans-serif;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+</style>
+```

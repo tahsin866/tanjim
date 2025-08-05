@@ -28,6 +28,21 @@ const thanas = ref([]);
 const loading = ref(false);
 const isInitializing = ref(true);
 
+// Date picker reactive data
+const selectedDay = ref('');
+const selectedMonth = ref('');
+const selectedYear = ref('');
+
+// Generate year range (from 1950 to current year)
+const yearRange = computed(() => {
+    const currentYear = new Date().getFullYear();
+    const years = [];
+    for (let year = currentYear; year >= 1950; year--) {
+        years.push(year);
+    }
+    return years;
+});
+
 // Computed properties for dependent dropdowns
 const availableDistricts = computed(() => {
     return districts.value;
@@ -143,6 +158,28 @@ const saveFormData = () => {
         classmate3: props.form.classmate3
     };
     saveToStorage(STORAGE_KEYS.formData, formData);
+};
+
+// Update date of birth from dropdowns
+const updateDateOfBirth = () => {
+    if (selectedDay.value && selectedMonth.value && selectedYear.value) {
+        const day = selectedDay.value.toString().padStart(2, '0');
+        const month = selectedMonth.value.toString().padStart(2, '0');
+        const year = selectedYear.value;
+        props.form.dateOfBirth = `${year}-${month}-${day}`;
+    } else {
+        props.form.dateOfBirth = '';
+    }
+};
+
+// Initialize date picker from existing dateOfBirth
+const initializeDatePicker = () => {
+    if (props.form.dateOfBirth) {
+        const dateObj = new Date(props.form.dateOfBirth);
+        selectedDay.value = dateObj.getDate();
+        selectedMonth.value = dateObj.getMonth() + 1; // getMonth() returns 0-11
+        selectedYear.value = dateObj.getFullYear();
+    }
 };
 
 // Load form data from localStorage
@@ -273,12 +310,29 @@ watch(() => props.form, () => {
     }
 }, { deep: true });
 
+// Watch for changes in dateOfBirth to update date picker
+watch(() => props.form.dateOfBirth, () => {
+    if (!isInitializing.value) {
+        initializeDatePicker();
+    }
+});
+
+// Watch date picker fields to update form
+watch([selectedDay, selectedMonth, selectedYear], () => {
+    if (!isInitializing.value) {
+        updateDateOfBirth();
+    }
+});
+
 // Load divisions and restore form data on component mount
 onMounted(async () => {
     await fetchDivisions();
 
     // Load saved form data
     loadFormData();
+
+    // Initialize date picker from existing dateOfBirth
+    initializeDatePicker();
 
     // If division is saved, load districts
     if (props.form.division) {
@@ -387,13 +441,54 @@ onMounted(async () => {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             <div>
                 <InputLabel for="dateOfBirth" class="text-lg font-medium dark:text-white" value="জন্মতারিখ" />
-                <input
-                    id="dateOfBirth"
-                    type="date"
-                    :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getFieldErrorClass('dateOfBirth'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
-                    v-model="form.dateOfBirth"
-                    required
-                />
+
+                <!-- Mobile-friendly date picker with dropdowns -->
+                <div class="grid grid-cols-3 gap-2 mt-1">
+                    <!-- Day -->
+                    <select
+                        v-model="selectedDay"
+                        @change="updateDateOfBirth"
+                        :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getSelectErrorClass('dateOfBirth'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
+                        required
+                    >
+                        <option value="">দিন</option>
+                        <option v-for="day in 31" :key="day" :value="day">{{ day }}</option>
+                    </select>
+
+                    <!-- Month -->
+                    <select
+                        v-model="selectedMonth"
+                        @change="updateDateOfBirth"
+                        :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getSelectErrorClass('dateOfBirth'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
+                        required
+                    >
+                        <option value="">মাস</option>
+                        <option value="1">জানুয়ারি</option>
+                        <option value="2">ফেব্রুয়ারি</option>
+                        <option value="3">মার্চ</option>
+                        <option value="4">এপ্রিল</option>
+                        <option value="5">মে</option>
+                        <option value="6">জুন</option>
+                        <option value="7">জুলাই</option>
+                        <option value="8">আগস্ট</option>
+                        <option value="9">সেপ্টেম্বর</option>
+                        <option value="10">অক্টোবর</option>
+                        <option value="11">নভেম্বর</option>
+                        <option value="12">ডিসেম্বর</option>
+                    </select>
+
+                    <!-- Year -->
+                    <select
+                        v-model="selectedYear"
+                        @change="updateDateOfBirth"
+                        :class="['block w-full rounded-md border-emerald-300 focus:border-emerald-500 focus:ring-emerald-500 shadow-sm font-bangla', getSelectErrorClass('dateOfBirth'), 'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:focus:border-emerald-400 dark:focus:ring-emerald-400']"
+                        required
+                    >
+                        <option value="">বছর</option>
+                        <option v-for="year in yearRange" :key="year" :value="year">{{ year }}</option>
+                    </select>
+                </div>
+
                 <InputError class="mt-2" :message="fieldValidation.dateOfBirth" />
             </div>
             <div>
