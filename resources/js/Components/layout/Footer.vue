@@ -66,7 +66,7 @@
 
       <div class="flex flex-col md:flex-row justify-between items-center text-sm">
         <div class="text-center md:text-left mb-4 md:mb-0">
-          &copy; {{ new Date().getFullYear() }} আবনায়ে জামিয়া ফরিদাবাদ। সর্বস্বত্ত্ব সংরক্ষিত।
+          &copy; {{ new Date().getFullYear() }} আবনায়ে জামিয়া ফরিদাবাদ। ২০১৯ সালের শিক্ষার্থীবৃন্দ।
         </div>
         <div class="flex flex-wrap justify-center items-center gap-4 text-center md:text-right">
           <p>

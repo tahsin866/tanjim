@@ -47,11 +47,26 @@ export default {
             animation: {
                 'spin-slower': 'spin 8s linear infinite',
                 'spin-reverse-slow': 'spin-reverse 10s linear infinite',
+                'fadeIn': 'fadeIn 0.3s ease-in-out',
+                'slideIn': 'slideIn 0.3s ease-out',
+                'bounce-gentle': 'bounce-gentle 2s infinite',
             },
             keyframes: {
                 'spin-reverse': {
                     from: { transform: 'rotate(360deg)' },
                     to: { transform: 'rotate(0deg)' },
+                },
+                'fadeIn': {
+                    '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                    '100%': { opacity: '1', transform: 'translateY(0)' },
+                },
+                'slideIn': {
+                    '0%': { transform: 'translateX(-100%)' },
+                    '100%': { transform: 'translateX(0)' },
+                },
+                'bounce-gentle': {
+                    '0%, 100%': { transform: 'translateY(0)' },
+                    '50%': { transform: 'translateY(-5px)' },
                 },
             },
         },
