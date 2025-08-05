@@ -146,7 +146,7 @@ const toggleUserMenu = (event) => {
     left: 0;
     right: 0;
     z-index: 50;
-    background-color: white;
+
     border-bottom: 1px solid #e5e7eb;
     height: 4rem;
     display: flex;

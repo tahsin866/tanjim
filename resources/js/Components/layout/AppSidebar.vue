@@ -11,7 +11,7 @@
         <div class="bg-gray-900 border-b border-gray-700 flex-shrink-0">
             <div class="flex items-center gap-2 px-4 py-3">
                 <i class="pi pi-home text-2xl text-white"></i>
-                <span class="text-lg font-bold text-white">তানজিমে আবনায়ে ফরিদাবাদ</span>
+                <span class="text-lg font-bold text-white">তানজিমে আবনায়ে ফরিদাবাদ</span>
             </div>
         </div>
 
@@ -27,23 +27,19 @@
             </div>
 
             <!-- Regular menu for active users -->
-            <PanelMenu
-                v-else
-                :model="filteredMenuItems"
-                class="bg-transparent border-0 custom-sidebar-menu"
-                @item-click="onMenuItemClick"
-            >
-                <template #item="{ item }">
+            <div v-else class="py-2">
+                <!-- Main menu items -->
+                <div v-for="(item, i) in filteredMenuItems" :key="i" class="mb-1">
+                    <!-- Regular menu item -->
                     <Link
-                        v-if="item.route"
+                        v-if="item.route && !item.items"
                         :href="item.route"
                         :class="[
-                            'flex items-center w-full text-left px-4 py-2 rounded-lg transition-colors',
+                            'flex items-center w-full text-left px-4 py-2 transition-colors mx-2 rounded-lg',
                             isActiveRoute(item.routeName)
                                 ? 'bg-gray-700 border-l-4 border-blue-500 font-semibold shadow-sm'
-                                : 'hover:bg-gray-700 '
+                                : 'hover:bg-gray-700'
                         ]"
-                        style="background: none;"
                     >
                         <span :class="item.icon + ' text-lg'" />
                         <span class="ml-3">{{ item.label }}</span>
@@ -54,29 +50,53 @@
                             class="ml-auto"
                         />
                     </Link>
-                    <button
-                        v-else
-                        @click="item.command"
-                        :class="[
-                            'flex items-center w-full text-left px-4 py-2 rounded-lg transition-colors',
-                            isActiveRoute(item.routeName)
-                                ? 'bg-gray-700 border-l-4 border-blue-500 font-semibold shadow-sm'
-                                : 'hover:bg-gray-700 h'
-                        ]"
-                        style="background: none;"
-                    >
-                        <span :class="item.icon + ' text-lg'" />
-                        <span class="ml-3">{{ item.label }}</span>
-                        <i v-if="item.items" class="pi pi-chevron-down ml-auto"></i>
-                    </button>
-                </template>
-    </PanelMenu>
-</div>
+
+                    <!-- Dropdown menu item -->
+                    <div v-else-if="item.items" class="mb-2">
+                        <button
+                            @click="toggleSubmenu(i)"
+                            class="flex items-center justify-between w-full text-left px-4 py-2 text-gray-300 hover:bg-gray-700 rounded-lg mx-2 transition-colors"
+                        >
+                            <div class="flex items-center">
+                                <span :class="item.icon + ' text-lg'" />
+                                <span class="ml-3">{{ item.label }}</span>
+                            </div>
+                            <i :class="['pi text-sm transition-transform', openSubmenus[i] ? 'pi-chevron-down transform rotate-180' : 'pi-chevron-down']"></i>
+                        </button>
+
+                        <!-- Submenu -->
+                        <div v-show="openSubmenus[i]" class="mt-1 pl-4">
+                            <Link
+                                v-for="(subItem, j) in item.items"
+                                :key="j"
+                                :href="subItem.route"
+                                :class="[
+                                    'flex items-center w-full text-left px-4 py-2 text-gray-300 transition-colors rounded-lg ml-2',
+                                    isActiveRoute(subItem.routeName)
+                                        ? 'bg-gray-700 text-white font-medium'
+                                        : 'hover:bg-gray-700 hover:text-white'
+                                ]"
+                                @click="isMobile ? $emit('hide') : null"
+                            >
+                                <span :class="subItem.icon + ' text-sm'" />
+                                <span class="ml-2 text-sm">{{ subItem.label }}</span>
+                                <Badge
+                                    v-if="subItem.badge"
+                                    :value="subItem.badge"
+                                    severity="danger"
+                                    class="ml-auto"
+                                />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Sidebar Footer -->
         <div class="flex-shrink-0 px-4 py-3 border-t border-gray-600">
             <div class="text-center text-gray-300 text-sm">
-                <p>© ২০২৫ আবনায়ে ফরিদাবাদ</p>
+                <p>© ২০২৫ আবনায়ে ফরিদাবাদ</p>
                 <p>সংস্করণ ২.০</p>
             </div>
         </div>
@@ -93,7 +113,6 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
-import PanelMenu from 'primevue/panelmenu'
 import Badge from 'primevue/badge'
 
 const props = defineProps({
@@ -104,6 +123,14 @@ const props = defineProps({
 const emit = defineEmits(['hide'])
 
 const page = usePage()
+
+// Track open submenu states
+const openSubmenus = ref({})
+
+// Function to toggle submenu state
+const toggleSubmenu = (index) => {
+    openSubmenus.value[index] = !openSubmenus.value[index]
+}
 
 // Check if user is suspended
 const isUserSuspended = computed(() => {
@@ -165,49 +192,4 @@ const filteredMenuItems = computed(() => {
         return true
     })
 })
-
-const onMenuItemClick = () => {
-    if (props.isMobile) {
-        emit('hide')
-    }
-}
 </script>
-
-
-<style>
-/* Custom sidebar menu for clean dark look */
-.custom-sidebar-menu .p-panelmenu .p-panelmenu-panel {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-.custom-sidebar-menu .p-panelmenu .p-panelmenu-header {
-    background: transparent !important;
-    border: none !important;
-    color: #d1d5db;
-    font-weight: 500;
-    padding: 0;
-}
-.custom-sidebar-menu .p-panelmenu .p-panelmenu-content {
-    background: transparent !important;
-    border: none !important;
-    padding: 0;
-}
-.custom-sidebar-menu .p-panelmenu .p-menuitem-link {
-    background: none !important;
-    color: #d1d5db;
-    border-radius: 0.5rem;
-    margin: 2px 0;
-    font-size: 1rem;
-    transition: background 0.2s, color 0.2s;
-}
-.custom-sidebar-menu .p-panelmenu .p-menuitem-link:hover {
-    background: #374151 !important;
-    color: #fff !important;
-}
-.custom-sidebar-menu .p-panelmenu .p-menuitem-link.p-highlight {
-    background: #374151 !important;
-    color: #fff !important;
-    font-weight: 600;
-}
-</style>

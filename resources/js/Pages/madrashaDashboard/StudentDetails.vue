@@ -148,7 +148,7 @@
             <div>{{ student.examType || 'নেই' }}</div>
             <div class="font-medium text-gray-600">রোল নম্বর:</div>
             <div>{{ student.rollNumber || 'নেই' }}</div>
-            <div class="font-medium text-gray-600">কর্মস্থল:</div>
+            <div class="font-medium text-gray-600">পেশা:</div>
             <div>{{ student.workplace || 'নেই' }}</div>
             <div class="font-medium text-gray-600">পরিচয়পত্র টাইপ:</div>
             <div>{{ getIdType(student.idType) }}</div>
