@@ -1,19 +1,17 @@
 <template>
-    <div class="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 dark:from-gray-900 dark:to-gray-800 flex flex-col font-['SolaimanLipi',sans-serif]">
+    <div class="min-h-screen bg-gray-50 flex flex-col font-['Merriweather','SolaimanLipi',sans-serif]">
 
         <!-- Suspended User Message -->
-        <div v-if="isUserSuspended" class="fixed inset-0 bg-gradient-to-br from-red-50 to-red-100 dark:from-red-900 dark:to-gray-900 flex items-center justify-center z-50">
-            <div class="bg-white dark:bg-gray-800 p-12 rounded-3xl shadow-2xl max-w-md m-8 border border-red-200 dark:border-red-700">
+        <div v-if="isUserSuspended" class="fixed inset-0 bg-gray-50 flex items-center justify-center z-50">
+            <div class=" p-12 rounded-2xl shadow-2xl max-w-md m-8">
                 <div class="text-center">
-                    <div class="w-20 h-20 bg-red-100 dark:bg-red-900 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <i class="pi pi-ban text-4xl text-red-500 dark:text-red-400"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold text-red-600 dark:text-red-400 mb-3">অ্যাকাউন্ট স্থগিত</h2>
-                    <p class="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">আপনার অ্যাকাউন্ট সাময়িকভাবে স্থগিত করা হয়েছে।</p>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">আরো তথ্যের জন্য প্রশাসনের সাথে যোগাযোগ করুন।</p>
+                    <i class="pi pi-ban text-6xl text-red-500 mb-4"></i>
+                    <h2 class="text-2xl font-bold text-red-600 mb-2">অ্যাকাউন্ট স্থগিত</h2>
+                    <p class="text-gray-600 mb-4">আপনার অ্যাকাউন্ট সাময়িকভাবে স্থগিত করা হয়েছে।</p>
+                    <p class="text-sm text-gray-500">আরো তথ্যের জন্য প্রশাসনের সাথে যোগাযোগ করুন।</p>
                     <div class="mt-6">
                         <Link :href="route('logout')" method="post" as="button"
-                              class="bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white px-8 py-3 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl">
+                              class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-md transition-colors">
                             লগ আউট
                         </Link>
                     </div>
@@ -31,7 +29,7 @@
             />
 
             <!-- Main Layout Container -->
-            <div class="flex-1 flex flex-col lg:ml-72">
+            <div class="flex-1 flex flex-col lg:ml-64">
                 <!-- Header Component -->
                 <AppHeader
                     :is-mobile="isMobile"
@@ -40,32 +38,30 @@
                 />
 
                 <!-- Content Area -->
-                <div class="flex-1 flex flex-col pt-16 md:pt-20 lg:pt-24">
-                    <main class="flex-1 p-4 md:p-6 lg:p-8 max-w-full">
+                <div class="flex-1 flex flex-col pt-16 md:pt-20">
+                    <main class="flex-1 p-2 md:p-6 max-w-full">
                         <!-- Breadcrumb -->
-                        <div v-if="showBreadcrumb" class="mb-6">
-                            <div class="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-sm border border-gray-200/50 dark:border-gray-700/50 p-4">
-                                <Breadcrumb :model="breadcrumbItems" class="text-sm">
-                                    <template #item="{ item }">
-                                        <Link
-                                            v-if="item.route"
-                                            :href="item.route"
-                                            class="text-blue-600 dark:text-blue-400 flex items-center gap-2 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200 font-medium"
-                                        >
-                                            <i v-if="item.icon" :class="item.icon" class="text-sm"></i>
-                                            <span>{{ item.label }}</span>
-                                        </Link>
-                                        <span v-else class="flex items-center gap-2 text-gray-700 dark:text-gray-300 font-medium">
-                                            <i v-if="item.icon" :class="item.icon" class="text-sm"></i>
-                                            <span>{{ item.label }}</span>
-                                        </span>
-                                    </template>
-                                </Breadcrumb>
-                            </div>
+                        <div v-if="showBreadcrumb" class="mb-4">
+                            <Breadcrumb :model="breadcrumbItems">
+                                <template #item="{ item }">
+                                    <Link
+                                        v-if="item.route"
+                                        :href="item.route"
+                                        class="text-blue-600 flex items-center gap-2 hover:underline"
+                                    >
+                                        <i v-if="item.icon" :class="item.icon"></i>
+                                        <span>{{ item.label }}</span>
+                                    </Link>
+                                    <span v-else class="flex items-center gap-2">
+                                        <i v-if="item.icon" :class="item.icon"></i>
+                                        <span>{{ item.label }}</span>
+                                    </span>
+                                </template>
+                            </Breadcrumb>
                         </div>
 
                         <!-- Page Content -->
-                        <div class="bg-white/90 dark:bg-gray-800/90 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 dark:border-gray-700/50 p-6 md:p-8 min-h-[calc(100vh-200px)]">
+                        <div class="bg-white rounded-lg shadow p-3 md:p-6">
                             <slot />
                         </div>
                     </main>
@@ -74,11 +70,9 @@
         </template>
 
         <!-- Loading Overlay -->
-        <div v-if="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm z-50">
-            <div class="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-200 dark:border-gray-700">
-                <ProgressSpinner class="w-12 h-12 text-blue-500" />
-                <p class="mt-4 text-gray-600 dark:text-gray-300 font-medium">লোড হচ্ছে...</p>
-            </div>
+        <div v-if="loading" class="fixed inset-0 flex flex-col items-center justify-center bg-white/80 z-50">
+            <ProgressSpinner />
+            <p class="mt-4 text-gray-600">লোড হচ্ছে...</p>
         </div>
 
         <!-- Global Toast -->
@@ -173,13 +167,17 @@ const fetchCenters = async () => {
 
 // Responsive sidebar behavior
 const handleResize = () => {
-    if (!isMobile.value) {
+    if (isMobile.value) {
+        sidebarVisible.value = true
+    } else {
         sidebarVisible.value = false
     }
 }
 
 watch(isMobile, (newValue) => {
-    if (!newValue) {
+    if (newValue) {
+        sidebarVisible.value = true
+    } else {
         sidebarVisible.value = false
     }
 })
@@ -187,8 +185,11 @@ watch(isMobile, (newValue) => {
 onMounted(() => {
     fetchCenters()
     window.addEventListener('resize', handleResize)
-    // Desktop এ সাইডবার বন্ধ রাখো
-    sidebarVisible.value = false
+    if (isMobile.value) {
+        sidebarVisible.value = true
+    } else {
+        sidebarVisible.value = false
+    }
 })
 
 onUnmounted(() => {
