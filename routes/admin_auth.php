@@ -49,6 +49,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // Document Applications routes - All admins can view, specific permissions for actions
         Route::middleware(['auth:admin'])->prefix('documents')->name('documents.')->group(function () {
             Route::get('/applications', [DocumentApplicationController::class, 'index'])->name('applications.index');
+            Route::get('/applications/approved', [DocumentApplicationController::class, 'getApproveList'])->name('applications.approved');
             Route::get('/applications/{user}', [DocumentApplicationController::class, 'show'])->name('applications.show');
             Route::patch('/applications/{user}/approve', [DocumentApplicationController::class, 'approve'])->name('applications.approve');
             Route::patch('/applications/{user}/reject', [DocumentApplicationController::class, 'reject'])->name('applications.reject');

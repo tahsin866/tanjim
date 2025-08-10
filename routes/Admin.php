@@ -3,17 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Models\admin\marhala_for_admin\Marhala;
-use App\Http\Controllers\ScheduleSetupController;
-use App\Http\Controllers\MarhalaListController;
-use App\Http\Controllers\MadrashaController;
-use App\Http\Controllers\MarhalaController;
-use App\Http\Controllers\StudentRegistrationController;
+
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\DivishionController;
-use App\Http\Controllers\ExamSetupController;
-use App\Http\Controllers\MarkazAgreementController;
-use App\Http\Controllers\BoardApplicationController;
-use App\Http\Controllers\Admin\DocumentApplicationController;
+
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\AdminForgotPasswordController;
 

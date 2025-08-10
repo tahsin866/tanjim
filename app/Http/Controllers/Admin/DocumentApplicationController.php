@@ -51,6 +51,7 @@ class DocumentApplicationController extends Controller
                 'users.id',
                 'users.fullNameBangla as full_name_bangla',
                 'users.fatherName as father_name',
+                'user_informations.photo', // Add photo column from user_informations table
                 'user_informations.dateOfBirth as date_of_birth',
                 'user_informations.rollNumber as roll_number',
                 'user_informations.workplace',
@@ -206,6 +207,205 @@ class DocumentApplicationController extends Controller
             'filters' => $request->only(['search', 'graduation_year', 'division_filter', 'district_filter', 'thana_filter', 'status_filter', 'blood_group_filter', 'workplace_filter', 'department_filter'])
         ]);
     }
+
+
+
+
+
+
+ public function getApproveList(Request $request): Response|RedirectResponse
+    {
+        $currentAdmin = Auth::guard('admin')->user();
+
+        // Debug logging
+        Log::info('DocumentApplicationController accessed', [
+            'admin_id' => $currentAdmin->id,
+            'admin_role' => $currentAdmin->role,
+            'permissions' => $currentAdmin->permissions,
+            'permissions_type' => gettype($currentAdmin->permissions)
+        ]);
+
+        // Check if moderator has document management access
+        if ($currentAdmin->role === 'moderator') {
+            $hasAccess = $this->checkPermission($currentAdmin, 'document_management_access');
+            
+            Log::info('Moderator permission check', [
+                'admin_id' => $currentAdmin->id,
+                'has_access' => $hasAccess,
+                'raw_permissions' => $currentAdmin->permissions
+            ]);
+            
+            if (!$hasAccess) {
+                Log::warning('DocumentApplicationController: Moderator ' . $currentAdmin->id . ' lacks document_management_access. Redirecting to dashboard.');
+                return redirect()->route('admin.admin_Dashboard')->withErrors(['error' => 'আপনার দস্তরবন্দি ব্যবস্থাপনার অনুমতি নেই।']);
+            }
+        }
+
+        $query = User::query()
+            ->select([
+                'users.id',
+                'users.fullNameBangla as full_name_bangla',
+                'users.fatherName as father_name',
+                'user_informations.photo', // Add photo column from user_informations table
+                'user_informations.dateOfBirth as date_of_birth',
+                'user_informations.rollNumber as roll_number',
+                'user_informations.workplace',
+                'user_informations.bloodGroup',
+                'user_informations.division_id',
+                'user_informations.district_id',
+                'user_informations.thana_id',
+                'user_informations.dept_takmil',
+                'user_informations.dept_ifta',
+                'user_informations.dept_hifz',
+                'user_informations.dept_qirat',
+                'user_informations.dept_takmil_year_english',
+                'user_informations.dept_takmil_year_hijri',
+                'user_informations.dept_ifta_year_english',
+                'user_informations.dept_ifta_year_hijri',
+                'user_informations.dept_hifz_year_english',
+                'user_informations.dept_hifz_year_hijri',
+                'user_informations.dept_qirat_year_english',
+                'user_informations.dept_qirat_year_hijri',
+                'users.status',
+                'users.created_at',
+                'users.approved_at',
+                'div.Division as division_name',
+                'dist.District as district_name',
+                'th.Thana as thana_name'
+            ])
+            ->leftJoin('user_informations', 'users.id', '=', 'user_informations.user_id')
+            ->leftJoin('division as div', 'user_informations.division_id', '=', 'div.ID')
+            ->leftJoin('district as dist', 'user_informations.district_id', '=', 'dist.DesID')
+            ->leftJoin('thana as th', 'user_informations.thana_id', '=', 'th.Thana_ID')
+            ->where('users.status', User::STATUS_APPROVED); // Only show approved users
+
+        // Search functionality
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('users.fullNameBangla', 'like', "%{$search}%")
+                  ->orWhere('users.id', 'like', "%{$search}%")
+                  ->orWhere('users.fatherName', 'like', "%{$search}%")
+                  ->orWhere('user_informations.workplace', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by division
+        if ($request->filled('division_filter')) {
+            $query->where('user_informations.division_id', $request->division_filter);
+        }
+
+        // Filter by district
+        if ($request->filled('district_filter')) {
+            $query->where('user_informations.district_id', $request->district_filter);
+        }
+
+        // Filter by thana
+        if ($request->filled('thana_filter')) {
+            $query->where('user_informations.thana_id', $request->thana_filter);
+        }
+
+        // Filter by blood group
+        if ($request->filled('blood_group_filter')) {
+            $query->where('user_informations.bloodGroup', $request->blood_group_filter);
+        }
+
+        // Filter by workplace
+        if ($request->filled('workplace_filter')) {
+            $query->where('user_informations.workplace', 'like', "%{$request->workplace_filter}%");
+        }
+
+        // Filter by department
+        if ($request->filled('department_filter')) {
+            $department = $request->department_filter;
+            $query->where("user_informations.dept_{$department}", true);
+        }
+
+        // Filter by graduation year
+        if ($request->filled('graduation_year')) {
+            $graduationYear = $request->graduation_year;
+            $query->where(function($q) use ($graduationYear) {
+                $q->where('user_informations.dept_takmil_year_english', $graduationYear)
+                  ->orWhere('user_informations.dept_ifta_year_english', $graduationYear)
+                  ->orWhere('user_informations.dept_hifz_year_english', $graduationYear)
+                  ->orWhere('user_informations.dept_qirat_year_english', $graduationYear);
+            });
+        }
+
+        // Filter by graduation year for moderators (additional restriction for moderators)
+        if ($currentAdmin && $currentAdmin->role === 'moderator' && $currentAdmin->graduation_year) {
+            $graduationYear = $currentAdmin->graduation_year;
+            $query->where(function($q) use ($graduationYear) {
+                $q->where('user_informations.dept_takmil_year_english', $graduationYear)
+                  ->orWhere('user_informations.dept_ifta_year_english', $graduationYear)
+                  ->orWhere('user_informations.dept_hifz_year_english', $graduationYear)
+                  ->orWhere('user_informations.dept_qirat_year_english', $graduationYear);
+            });
+        }
+
+        $perPage = $request->input('per_page', 10);
+        $users = $query->orderBy('users.created_at', 'desc')->paginate($perPage);
+
+        // Get filter options
+        $divisions = DB::table('division')->select('ID as id', 'Division as division_name_bangla')->get();
+        $districts = DB::table('district')->select('DesID as id', 'District as district_name_bangla', 'DID as division_id')->get();
+        $thanas = DB::table('thana')->select('Thana_ID as id', 'Thana as thana_name_bangla', 'Des_ID as district_id')->get();
+
+        // Graduation years from user_informations table
+        $takmilyears = UserInformation::whereNotNull('dept_takmil_year_english')->distinct()->pluck('dept_takmil_year_english');
+        $iftayears = UserInformation::whereNotNull('dept_ifta_year_english')->distinct()->pluck('dept_ifta_year_english');
+        $hifzyears = UserInformation::whereNotNull('dept_hifz_year_english')->distinct()->pluck('dept_hifz_year_english');
+        $qiratyears = UserInformation::whereNotNull('dept_qirat_year_english')->distinct()->pluck('dept_qirat_year_english');
+
+        $graduationYears = $takmilyears->merge($iftayears)->merge($hifzyears)->merge($qiratyears)->unique()->sort()->values();
+
+        // Get additional filter options from database
+        $bloodGroups = UserInformation::whereNotNull('bloodGroup')->distinct()->pluck('bloodGroup')->filter()->values();
+        $workplaces = UserInformation::whereNotNull('workplace')->distinct()->pluck('workplace')->filter()->values();
+
+        // Get department filter options (existing departments)
+        $departments = [];
+        if (UserInformation::whereNotNull('dept_takmil')->where('dept_takmil', true)->exists()) {
+            $departments[] = ['value' => 'takmil', 'label' => 'তাকমিল'];
+        }
+        if (UserInformation::whereNotNull('dept_ifta')->where('dept_ifta', true)->exists()) {
+            $departments[] = ['value' => 'ifta', 'label' => 'ইফতা'];
+        }
+        if (UserInformation::whereNotNull('dept_hifz')->where('dept_hifz', true)->exists()) {
+            $departments[] = ['value' => 'hifz', 'label' => 'হিফজ'];
+        }
+        if (UserInformation::whereNotNull('dept_qirat')->where('dept_qirat', true)->exists()) {
+            $departments[] = ['value' => 'qirat', 'label' => 'কিরাত'];
+        }
+
+        // Status options - only approved since this is getApproveList  
+        $statusOptions = [
+            ['value' => User::STATUS_APPROVED, 'label' => 'অনুমোদিত'],
+        ];
+
+        return Inertia::render('admin/DocumentApplications/aprovedList', [
+            'users' => $users,
+            'divisions' => $divisions,
+            'districts' => $districts,
+            'thanas' => $thanas,
+            'graduationYears' => $graduationYears,
+            'bloodGroups' => $bloodGroups,
+            'workplaces' => $workplaces,
+            'departments' => $departments,
+            'statusOptions' => $statusOptions,
+            'filters' => $request->only(['search', 'graduation_year', 'division_filter', 'district_filter', 'thana_filter', 'blood_group_filter', 'workplace_filter', 'department_filter'])
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
 
     /**
      * Show user details

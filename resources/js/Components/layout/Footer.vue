@@ -8,7 +8,7 @@
             <span class="text-2xl font-extrabold text-teal-400">আবনায়ে জামিয়া আরাবিয়া ইমদাদুল উলুম ফরিদাবাদ</span>
           </a>
           <p class="text-sm leading-relaxed max-w-xs">
-            আবনায়ে জামিয়া আরাবিয়া এমদাদুল উলুম ফরিদাবাদ-এর প্রাক্তন ছাত্রদের জন্য একটি প্ল্যাটফর্ম।
+            আবনায়ে জামিয়া আরাবিয়া ইমদাদুল উলুম ফরিদাবাদ-এর প্রাক্তন ছাত্রদের জন্য একটি প্ল্যাটফর্ম।
           </p>
           <div class="mt-6 flex gap-4">
             <a href="#" aria-label="Facebook" class="text-gray-400 hover:text-teal-400 transition-colors duration-300">
@@ -41,7 +41,7 @@
           <div class="space-y-3 text-sm">
             <p class="flex items-center justify-center md:justify-start gap-2">
               <i class="pi pi-phone text-teal-400"></i>
-              <a href="tel:01533386866" class="hover:text-teal-400 transition-colors">01533386866</a>
+              <a href="tel:01533386866" class="hover:text-teal-400 transition-colors">#</a>
             </p>
             <p class="flex items-center justify-center md:justify-start gap-2">
               <i class="pi pi-envelope text-teal-400"></i>
@@ -49,7 +49,7 @@
             </p>
             <p class="flex items-center justify-center md:justify-start gap-2">
               <i class="pi pi-map-marker text-teal-400"></i>
-              কাজলা, ঢাকা, বাংলাদেশ
+         গেন্ডারিয়া ঢাকা
             </p>
           </div>
         </div>

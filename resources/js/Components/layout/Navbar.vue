@@ -144,6 +144,14 @@
                     </div>
 
                     <!-- Status Message -->
+                    <div v-if="status" class="p-4 bg-green-900/40 rounded-xl border-l-4 border-green-500 text-green-200 mb-4">
+                      <div class="flex items-center">
+                        <i class="pi pi-check-circle mr-2"></i>
+                        <span class="font-bangla">{{ status }}</span>
+                      </div>
+                    </div>
+
+                    <!-- Status Message -->
                     <div v-if="form.errors.suspended" class="p-4 bg-red-900/40 rounded-xl border-l-4 border-red-500 text-red-200">
                       <div class="flex items-center mb-2">
                         <i class="pi pi-exclamation-circle mr-2"></i>
@@ -218,7 +226,13 @@
                           >
                           <span class="ml-2 text-sm text-gray-300 font-bangla">মনে রাখুন</span>
                         </label>
-                        <a href="/password/reset" class="text-sm text-indigo-300 hover:text-indigo-200 font-bangla">পাসওয়ার্ড ভুলে গেছেন?</a>
+                        <a 
+                          v-if="!isSuspendedAccount" 
+                          :href="route('password.request')" 
+                          class="text-sm text-indigo-300 hover:text-indigo-200 font-bangla"
+                        >
+                          পাসওয়ার্ড ভুলে গেছেন?
+                        </a>
                       </div>
 
                       <button
@@ -332,13 +346,22 @@ import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useForm } from '@inertiajs/vue3'
 import Sidebar from 'primevue/sidebar'
 
+// Define props for status messages (like in auth/Login.vue)
+const props = defineProps({
+    canResetPassword: {
+        type: Boolean,
+        default: true
+    },
+    status: String,
+});
+
 const mobileMenu = ref(false)
 const scrolled = ref(false)
 const activeTab = ref('login')
 const agreedToTerms = ref(false)
 const showPassword = ref(false)
 
-// Login form using Inertia
+// Login form using Inertia (same as auth/Login.vue)
 const form = useForm({
     phoneNumber: '',
     password: '',
@@ -352,8 +375,46 @@ const togglePassword = () => {
 };
 
 const submitLogin = () => {
+    // Clear any previous errors
+    form.clearErrors();
+    
+    // Validate phone number format (basic validation)
+    if (!form.phoneNumber) {
+        form.setError('phoneNumber', 'মোবাইল নম্বর প্রয়োজন');
+        return;
+    }
+    
+    // Basic phone number validation for Bangladesh
+    const phoneRegex = /^(01[3-9]\d{8})$/;
+    if (!phoneRegex.test(form.phoneNumber.replace(/\s+/g, ''))) {
+        form.setError('phoneNumber', 'সঠিক মোবাইল নম্বর লিখুন (যেমন: 01712345678)');
+        return;
+    }
+    
+    if (!form.password) {
+        form.setError('password', 'পাসওয়ার্ড প্রয়োজন');
+        return;
+    }
+    
+    // Submit the form
     form.post(route('login'), {
-        onFinish: () => form.reset('password'),
+        onFinish: () => {
+            form.reset('password');
+        },
+        onError: (errors) => {
+            // Handle specific error cases
+            if (errors.suspended) {
+                // Account is suspended - form will show the error automatically
+                console.log('Account suspended:', errors.suspended);
+            } else if (errors.phoneNumber || errors.email) {
+                // Login failed - credentials don't match
+                console.log('Login failed');
+            }
+        },
+        onSuccess: () => {
+            // Redirect will be handled by Laravel automatically
+            console.log('Login successful');
+        }
     });
 };
 
@@ -363,7 +424,7 @@ const handleScroll = () => {
 
 const goToRegistration = () => {
   if (agreedToTerms.value) {
-    window.location.href = '/register'
+    window.location.href = route('register')
   }
 }
 

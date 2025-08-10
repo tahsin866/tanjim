@@ -242,7 +242,7 @@ const hasModuleAccess = (module) => {
                 </Link>
                 <Link
                     v-if="hasPermission('document_approve') || hasModuleAccess('document_management')"
-                    href="#"
+                    :href="route('admin.documents.applications.approved')"
                     @click="setSelected('approval_list')"
                     class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2"
                     :class="{'bg-gray-700 text-white': selectedItem == 'approval_list'}">
@@ -258,6 +258,15 @@ const hasModuleAccess = (module) => {
                     <i class="h-4 w-4 fa-times fas"></i>
                     বাতিল তালিকা
                 </Link>
+                   <Link
+                    v-if="hasPermission('document_reject') || hasModuleAccess('document_management')"
+                    href="#"
+                    @click="setSelected('cancel_list')"
+                    class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2"
+                    :class="{'bg-gray-700 text-white': selectedItem == 'cancel_list'}">
+                    <i class="h-4 w-4 fa-times fas"></i>
+                   খাবার ব্যবস্থাপনা
+                </Link>
             </div>
         </div>
 
@@ -267,7 +276,7 @@ const hasModuleAccess = (module) => {
                 class="flex justify-between text-lg w-full hover:bg-gray-700 items-center px-4 py-2">
                 <div class="flex gap-2 items-center">
                     <i class="h-6 text-sm w-6 fa-clipboard-list fas"></i>
-                    আবেদন ব্যবস্থাপনা
+             মাসিক নেয়ামত
                 </div>
                 <i :class="{'rotate-180': dropdownOpen.application_management}" class="fa-chevron-down fa-xs fas tex-sm transition-transform"></i>
             </button>

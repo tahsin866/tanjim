@@ -25,6 +25,22 @@ const availableYears = computed(() => {
     return [...new Set(yearlyStats.value.map(stat => stat.year))].sort((a, b) => b - a);
 });
 
+// Filter recent activities to show only unique registration entries
+const uniqueRecentActivities = computed(() => {
+    const seen = new Set();
+    return recentActivities.value.filter(activity => {
+        // Create a unique key based on user ID and activity type
+        const key = `${activity.id}_${activity.activity_type}`;
+        
+        // Only include registration activities and avoid duplicates
+        if (activity.activity_type === 'registration' && !seen.has(activity.id)) {
+            seen.add(activity.id);
+            return true;
+        }
+        return false;
+    });
+});
+
 onMounted(async () => {
     await fetchDashboardData();
     await fetchNotices();
@@ -33,7 +49,10 @@ onMounted(async () => {
 const fetchDashboardData = async () => {
     try {
         const res = await axios.get('/api/admin/dashboard-stats', {
-            params: { year: selectedYear.value }
+            params: { 
+                year: selectedYear.value,
+                activity_filter: 'registration_only' // Only show registration activities
+            }
         });
         const data = res.data;
         stats.value = data.stats;
@@ -277,7 +296,7 @@ const getNoticeTypeClass = (type) => {
                 <div class="lg:col-span-2 bg-white rounded-lg shadow-sm border border-gray-100 p-6">
                     <h3 class="text-lg font-semibold text-gray-800 mb-6 flex items-center gap-2">
                         <i class="pi pi-clock text-blue-500"></i>
-                        সাম্প্রতিক কার্যক্রম ও দ্রুত অনুমোদন
+                        সাম্প্রতিক নিবন্ধন ও দ্রুত অনুমোদন
                     </h3>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-gray-200 text-sm">
@@ -286,14 +305,14 @@ const getNoticeTypeClass = (type) => {
                                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">নাম</th>
                                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">রোল</th>
                                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">পেশা</th>
-                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">কার্যক্রম</th>
+                                    <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">নিবন্ধন</th>
                                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">স্ট্যাটাস</th>
                                     <th class="px-3 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">সময়</th>
                                     <th class="px-3 py-2 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">অ্যাকশন</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <tr v-for="activity in recentActivities.slice(0, 10)" :key="activity.id"
+                                <tr v-for="activity in uniqueRecentActivities.slice(0, 10)" :key="activity.id"
                                     class="hover:bg-gray-50 transition-colors">
                                     <td class="px-3 py-2 whitespace-nowrap">
                                         <div class="text-sm font-medium text-gray-900">{{ activity.name }}</div>
@@ -306,9 +325,8 @@ const getNoticeTypeClass = (type) => {
                                         {{ activity.workplace }}
                                     </td>
                                     <td class="px-3 py-2 whitespace-nowrap">
-                                        <span :class="activity.activity_type === 'registration' ? 'bg-blue-100 text-blue-800' : 'bg-green-100 text-green-800'"
-                                              class="inline-flex px-2 py-1 text-xs font-semibold rounded-full">
-                                            {{ activity.activity_text }}
+                                        <span class="bg-blue-100 text-blue-800 inline-flex px-2 py-1 text-xs font-semibold rounded-full">
+                                            নতুন নিবন্ধন
                                         </span>
                                     </td>
                                     <td class="px-3 py-2 whitespace-nowrap">
@@ -335,10 +353,10 @@ const getNoticeTypeClass = (type) => {
                                         </div>
                                     </td>
                                 </tr>
-                                <tr v-if="!recentActivities.length">
+                                <tr v-if="!uniqueRecentActivities.length">
                                     <td colspan="7" class="text-center py-4 text-gray-500">
                                         <i class="pi pi-info-circle mr-2"></i>
-                                        কোনো সাম্প্রতিক কার্যক্রম নেই
+                                        কোনো সাম্প্রতিক নিবন্ধন নেই
                                     </td>
                                 </tr>
                             </tbody>
