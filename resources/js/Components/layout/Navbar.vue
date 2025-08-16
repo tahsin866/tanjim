@@ -72,7 +72,7 @@
           </div>
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-bangla leading-tight mb-6">
             আবনায়ে জামিয়া<br/>
-            <span class="bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">আরাবিয়া ফরিদাবাদ</span>
+            <span class="bg-gradient-to-r from-indigo-400 mr-2 to-purple-400 bg-clip-text text-transparent">আরাবিয়া ফরিদাবাদ</span>
           </h1>
           <p class="text-lg text-gray-300 font-bangla mb-8 max-w-lg">
             জামিয়া আরাবিয়া ইমদাদুল উলূম ফরিদাবাদ এর প্রাক্তন ছাত্রদের জন্য একটি প্ল্যাটফর্ম।
