@@ -6,7 +6,7 @@ use App\Models\admin\marhala_for_admin\ExamSetup;
 use App\Models\admin\marhala_for_admin\Marhala;
 use App\Models\admin\marhala_for_admin\ExamFee;
 use App\Models\reg_stu_information;
-use App\Models\student;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;

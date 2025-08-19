@@ -334,6 +334,7 @@ onMounted(async () => {
                 <option value="">নির্বাচন করুন</option>
                 <option value="birth">জন্মসনদ</option>
                 <option value="voter">ভোটার আইডি</option>
+                <option value="passport">পাসপোর্ট</option>
             </select>
             <InputError class="mt-2" :message="fieldValidation.idType" />
         </div>
@@ -400,6 +401,38 @@ onMounted(async () => {
             </div>
         </div>
 
+        <!-- পাসপোর্ট নম্বর ও ছবি -->
+        <div v-if="form.idType === 'passport'" class="mb-6">
+            <InputLabel for="passport_id" class="text-lg font-medium dark:text-white" value="পাসপোর্ট নম্বর" />
+            <input id="passport_id" type="text"
+                :class="[getFieldErrorClass('passport_id'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
+                v-model="form.passport_id" placeholder="পাসপোর্ট নম্বর লিখুন" />
+            <InputError class="mt-2" :message="fieldValidation.passport_id" />
+            <div class="mt-3">
+                <InputLabel for="passport_photo" class="text-lg font-medium dark:text-white"
+                    value="পাসপোর্টের ছবি (২০০ কেবি'র নিচে)" />
+                <input id="passport_photo" type="file" accept="image/*" @change="handleIdPhotoUpload"
+                    :class="[getFileErrorClass('passport_photo'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
+
+                <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    সর্বাধিক ফাইল সাইজ: ২০০ কেবি। বড় ছবি অটো-কমপ্রেস হবে।
+                </div>
+                <div v-if="getUploadedFileName('passport_photo')"
+                    class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
+                    <div class="flex items-center text-sm text-green-700 dark:text-green-300">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('passport_photo') }}
+                        <img v-if="getUploadedFileName('passport_photo') && passportPhotoUrl" :src="passportPhotoUrl" alt="Passport Photo" class="ml-2 h-10 rounded" @error="passportPhotoUrl = null" />
+                    </div>
+                </div>
+                <InputError class="mt-2" :message="fieldValidation.passport_photo" />
+            </div>
+        </div>
+
         <!-- ছবি আপলোড -->
         <div v-if="form.idType && form.idType !== 'জানা নেই'" class="mb-6">
             <InputLabel for="photo" class="text-lg font-medium dark:text-white"
@@ -419,8 +452,29 @@ onMounted(async () => {
                             clip-rule="evenodd" />
                     </svg>
                     পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('photo') }}
+                    <img v-if="getUploadedFileName('photo') && photoUrl" :src="photoUrl" alt="User Photo" class="ml-2 h-10 rounded" @error="photoUrl = null" />
                 </div>
             </div>
+import { ref, watch } from 'vue';
+
+const passportPhotoUrl = ref(null);
+const photoUrl = ref(null);
+
+watch(() => props.form.passport_photo, (newVal) => {
+    if (newVal && typeof newVal === 'string') {
+        passportPhotoUrl.value = newVal;
+    } else {
+        passportPhotoUrl.value = null;
+    }
+});
+
+watch(() => props.form.photo, (newVal) => {
+    if (newVal && typeof newVal === 'string') {
+        photoUrl.value = newVal;
+    } else {
+        photoUrl.value = null;
+    }
+});
             <InputError class="mt-2" :message="fieldValidation.photo" />
         </div>
     </div>

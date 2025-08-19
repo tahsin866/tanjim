@@ -362,6 +362,17 @@ export function useEducationInfo(props) {
                 };
                 saveToStorage('education_voter_photo_info', fileInfo);
             }
+        } else if (props.form.idType === 'passport') {
+            props.form.passport_photo = finalFile;
+            if (finalFile) {
+                const fileInfo = {
+                    name: finalFile.name,
+                    size: finalFile.size,
+                    type: finalFile.type,
+                    lastModified: finalFile.lastModified
+                };
+                saveToStorage('education_passport_photo_info', fileInfo);
+            }
         }
         if (!isInitializing.value) {
             saveEducationFormData();

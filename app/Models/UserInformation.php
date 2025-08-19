@@ -47,6 +47,9 @@ class UserInformation extends Model
         'birthCertificatePhoto',
         'voterIdPhoto',
         'photo',
+        'passport_id',
+        'passport_photo'
+
     ];
 
     public function user()

@@ -21,10 +21,10 @@
               </p>
             </div>
           </div>
-          <div class="flex flex-col gap-2">
+          <!-- <div class="flex flex-col gap-2">
             <Button label="এডিট" class="p-button-sm bg-indigo-600 text-white" icon="pi pi-pencil" @click="goToEditPage" />
             <Button label="প্রিন্ট" class="p-button-sm bg-gray-200 text-gray-700" icon="pi pi-print" @click="printDetails" />
-          </div>
+          </div> -->
         </div>
 
         <!-- Quick Summary -->

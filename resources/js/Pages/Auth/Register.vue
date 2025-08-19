@@ -318,6 +318,8 @@ const form = useForm({
   voterId: '',
   birthCertificatePhoto: null,
   voterIdPhoto: null,
+  passport_id: '',
+  passport_photo: null,
   photo: null,
   password: '',
   password_confirmation: '',
@@ -369,8 +371,14 @@ const validateStep = () => {
       if (!form.voterId) validationErrors.value.voterId = 'ভোটার আইডি নম্বর লিখুন';
       if (!form.voterIdPhoto) validationErrors.value.voterIdPhoto = 'ভোটার আইডি ছবি আপলোড করুন';
     }
-    if (form.idType !== 'জানা নেই' && !form.photo) {
-      validationErrors.value.photo = 'লাইভ ছবি আপলোড করুন';
+    if (form.idType === 'passport') {
+      if (!form.passport_id) validationErrors.value.passport_id = 'পাসপোর্ট নম্বর লিখুন';
+      // Accept file object or valid string, error only if missing or empty
+      if (!form.passport_photo || 
+          (typeof form.passport_photo === 'string' && form.passport_photo.trim() === '') ||
+          (typeof form.passport_photo === 'object' && form.passport_photo.size === 0)) {
+        validationErrors.value.passport_photo = 'পাসপোর্টের ছবি আপলোড করুন';
+      }
     }
     return Object.keys(validationErrors.value).length === 0;
   }
