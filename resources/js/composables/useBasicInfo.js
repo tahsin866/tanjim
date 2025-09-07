@@ -46,11 +46,16 @@ export function useBasicInfo(props) {
         if (!props.form.email) errors.email = 'ইমেইল ঠিকানা প্রয়োজন';
         else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(props.form.email)) errors.email = 'সঠিক ইমেইল ঠিকানা লিখুন';
         if (!props.form.phoneNumber) errors.phoneNumber = 'ফোন নম্বর প্রয়োজন';
+        else if (props.form.phoneNumber.length !== 11) errors.phoneNumber = 'ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে';
+        else if (!/^[0-9]+$/.test(props.form.phoneNumber)) errors.phoneNumber = 'ফোন নম্বরে শুধুমাত্র সংখ্যা থাকবে';
         if (!props.form.dateOfBirth) errors.dateOfBirth = 'জন্মতারিখ প্রয়োজন';
         if (!props.form.address) errors.address = 'ঠিকানা প্রয়োজন';
         if (!props.form.division) errors.division = 'বিভাগ নির্বাচন করুন';
         if (!props.form.district) errors.district = 'জেলা নির্বাচন করুন';
         if (!props.form.thana) errors.thana = 'থানা নির্বাচন করুন';
+        if (!props.form.classmate1) errors.classmate1 = 'সহপাঠী ১ এর নাম প্রয়োজন';
+        if (!props.form.classmate2) errors.classmate2 = 'সহপাঠী ২ এর নাম প্রয়োজন';
+        if (!props.form.classmate3) errors.classmate3 = 'সহপাঠী ৩ এর নাম প্রয়োজন';
 
         return errors;
     });

@@ -160,6 +160,10 @@
               <div class="font-medium text-gray-600">ভোটার আইডি নম্বর:</div>
               <div>{{ student.voterId || 'নেই' }}</div>
             </template>
+            <template v-else-if="student.idType === 'passport'">
+              <div class="font-medium text-gray-600">পাসপোর্ট নম্বর:</div>
+              <div>{{ student.passport_id || 'নেই' }}</div>
+            </template>
             <div class="font-medium text-gray-600">সহপাঠী ১:</div>
             <div>{{ student.classmate1 || 'নেই' }}</div>
             <div class="font-medium text-gray-600">সহপাঠী ২:</div>
@@ -247,6 +251,32 @@
                          class="w-32 h-32 object-cover rounded-lg border-2 border-gray-200 mx-auto cursor-pointer hover:border-purple-400 transition-colors">
                   </div>
                   <div class="text-xs text-gray-500 text-center">{{ student.voterIdPhoto }}</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Passport Photo -->
+            <div v-if="student.idType === 'passport'" class="border rounded-lg p-4 bg-gray-50">
+              <div class="text-lg font-medium text-gray-700 mb-2 flex items-center">
+                <svg class="w-5 h-5 mr-2 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2H4zm0 2h12v8H4V6z" clip-rule="evenodd" />
+                </svg>
+                পাসপোর্ট ছবি
+              </div>
+              <div class="text-sm">
+                <div class="flex justify-between mb-1">
+                  <span class="text-gray-600">স্ট্যাটাস:</span>
+                  <span :class="student.passport_photo ? 'text-green-600' : 'text-red-600'">
+                    {{ student.passport_photo ? '✓ আপলোড করা হয়েছে' : '✗ আপলোড করা হয়নি' }}
+                  </span>
+                </div>
+                <div v-if="student.passport_photo" class="mt-3">
+                  <div class="mb-2">
+                    <img :src="getPhotoUrl(student.passport_photo)" alt="পাসপোর্ট ছবি"
+                         @click="showImageModal(getPhotoUrl(student.passport_photo), 'পাসপোর্ট ছবি')"
+                         class="w-32 h-32 object-cover rounded-lg border-2 border-gray-200 mx-auto cursor-pointer hover:border-indigo-400 transition-colors">
+                  </div>
+                  <div class="text-xs text-gray-500 text-center">{{ student.passport_photo }}</div>
                 </div>
               </div>
             </div>
@@ -343,7 +373,8 @@ const departments = [
   { key: 'takmil', flag: 'dept_takmil', title: 'তাকমিল', english: 'dept_takmil_year_english', hijri: 'dept_takmil_year_hijri' },
   { key: 'ifta', flag: 'dept_ifta', title: 'ইফতা', english: 'dept_ifta_year_english', hijri: 'dept_ifta_year_hijri' },
   { key: 'hifz', flag: 'dept_hifz', title: 'হিফজ', english: 'dept_hifz_year_english', hijri: 'dept_hifz_year_hijri' },
-  { key: 'qirat', flag: 'dept_qirat', title: 'কিরাআত', english: 'dept_qirat_year_english', hijri: 'dept_qirat_year_hijri' }
+  { key: 'qirat', flag: 'dept_qirat', title: 'কিরাআত', english: 'dept_qirat_year_english', hijri: 'dept_qirat_year_hijri' },
+  { key: 'adab', flag: 'dept_adab', title: 'আদব', english: 'dept_adab_year_english', hijri: 'dept_adab_year_hijri' }
 ];
 
 function getDivisionName(id) {
@@ -366,6 +397,7 @@ function getThanaName(id) {
 function getIdType(val) {
   if (val === 'birth') return 'জন্মসনদ';
   if (val === 'voter') return 'ভোটার আইডি';
+  if (val === 'passport') return 'পাসপোর্ট';
   return 'নির্বাচিত হয়নি';
 }
 
@@ -414,6 +446,7 @@ function getUploadedFilesCount() {
   if (student.value.photo) count++;
   if (student.value.birthCertificatePhoto) count++;
   if (student.value.voterIdPhoto) count++;
+  if (student.value.passport_photo) count++;
   return count;
 }
 
@@ -454,6 +487,10 @@ function getCompletionPercentage() {
     totalFields += 2;
     if (student.value.voterId) filledFields++;
     if (student.value.voterIdPhoto) filledFields++;
+  } else if (student.value.idType === 'passport') {
+    totalFields += 2;
+    if (student.value.passport_id) filledFields++;
+    if (student.value.passport_photo) filledFields++;
   }
 
   return Math.round((filledFields / totalFields) * 100);

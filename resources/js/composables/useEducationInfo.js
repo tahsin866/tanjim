@@ -212,6 +212,9 @@ export function useEducationInfo(props) {
             dept_qirat: props.form.dept_qirat,
             dept_qirat_year_english: props.form.dept_qirat_year_english,
             dept_qirat_year_hijri: props.form.dept_qirat_year_hijri,
+            dept_adab: props.form.dept_adab,
+            dept_adab_year_english: props.form.dept_adab_year_english,
+            dept_adab_year_hijri: props.form.dept_adab_year_hijri,
             dept_other: props.form.dept_other,
             dept_other_class: props.form.dept_other_class,
             examType: props.form.examType,
@@ -223,7 +226,8 @@ export function useEducationInfo(props) {
             voterId: props.form.voterId,
             photoFileName: props.form.photo?.name || null,
             birthCertificatePhotoFileName: props.form.birthCertificatePhoto?.name || null,
-            voterIdPhotoFileName: props.form.voterIdPhoto?.name || null
+            voterIdPhotoFileName: props.form.voterIdPhoto?.name || null,
+            passportPhotoFileName: props.form.passport_photo?.name || null
         };
         saveToStorage(STORAGE_KEYS.educationFormData, formData);
     };

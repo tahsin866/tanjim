@@ -6,7 +6,11 @@
   class="py-16 px-4 bg-white dark:bg-gray-950 transition-colors duration-300 ">
 
     <div class="container mx-auto max-w-8xl">
-      <div class="relative rounded-2xl shadow-2xl overflow-hidden
+      <div 
+      
+      
+      
+      class="relative rounded-md  overflow-hidden
                   bg-gradient-to-br from-gray-50 via-gray-100 to-gray-50
                   dark:from-gray-900/90 dark:via-gray-900/95 dark:to-gray-900/90
                   ring-1 ring-gray-200 dark:ring-gray-800">

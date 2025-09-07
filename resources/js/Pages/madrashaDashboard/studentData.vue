@@ -40,6 +40,10 @@
                                     class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
                                     কিরাআত ({{ slotProps.data.dept_qirat_year_english }})
                                 </span>
+                                <span v-if="slotProps.data.dept_adab"
+                                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                                    আদব ({{ slotProps.data.dept_adab_year_english }})
+                                </span>
                                 <span v-if="slotProps.data.dept_other"
                                     class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
                                     অন্যান্য ({{ slotProps.data.dept_other_class }})
@@ -184,11 +188,11 @@ function getMenuItems(student) {
                 icon: 'pi pi-eye',
                 command: () => router.visit(route('student.details', student.id)),
             },
-            {
-                label: 'সম্পাদনা করুন',
-                icon: 'pi pi-pencil',
-                command: () => router.visit(route('student.edit', student.id)),
-            }
+            // {
+            //     label: 'সম্পাদনা করুন',
+            //     icon: 'pi pi-pencil',
+            //     command: () => router.visit(route('student.edit', student.id)),
+            // }
         );
     } else {
         // pending বা অন্য যেকোন status এর জন্য: সব options
@@ -198,11 +202,11 @@ function getMenuItems(student) {
                 icon: 'pi pi-eye',
                 command: () => router.visit(route('student.details', student.id)),
             },
-            {
-                label: 'সম্পাদনা করুন',
-                icon: 'pi pi-pencil',
-                command: () => router.visit(route('student.edit', student.id)),
-            }
+            // {
+            //     label: 'সম্পাদনা করুন',
+            //     icon: 'pi pi-pencil',
+            //     command: () => router.visit(route('student.edit', student.id)),
+            // }
         );
     }
 

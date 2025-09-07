@@ -259,13 +259,22 @@ const hasModuleAccess = (module) => {
                     বাতিল তালিকা
                 </Link>
                    <Link
+                    v-if="hasPermission('Food_mangement') || hasModuleAccess('document_management')"
+                  :href="route('food.FoodManagement')"
+                    @click="setSelected('Food_lis')"
+                    class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2"
+                    :class="{'bg-gray-700 text-white': selectedItem == 'Food_lis'}">
+                    <i class="h-4 w-4 fa-times fas"></i>
+                   খাবার ব্যবস্থাপনা
+                </Link>
+                     <Link
                     v-if="hasPermission('document_reject') || hasModuleAccess('document_management')"
                     href="#"
                     @click="setSelected('cancel_list')"
                     class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2"
                     :class="{'bg-gray-700 text-white': selectedItem == 'cancel_list'}">
                     <i class="h-4 w-4 fa-times fas"></i>
-                   খাবার ব্যবস্থাপনা
+                   ফি ব্যবস্থাপনা
                 </Link>
             </div>
         </div>

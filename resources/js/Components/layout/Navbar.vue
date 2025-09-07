@@ -68,11 +68,11 @@
         <!-- Left Side: Hero Content -->
         <div class="flex flex-col justify-center lg:pr-8 py-8 order-2 lg:order-1">
           <div class="inline-block mb-4 bg-indigo-900/30 px-4 py-2 rounded-full">
-            <p class="text-indigo-400 font-bangla font-medium">তানজিমে আবনায়ে ফরিদাবাদ</p>
+            <p class="text-indigo-400 font-bangla font-medium">তানযীমে আবনায়ে জামিয়া ফরিদাবাদ</p>
           </div>
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white font-bangla leading-tight mb-6">
-            আবনায়ে জামিয়া<br/>
-            <span class="bg-gradient-to-r from-indigo-400 mr-2 to-purple-400 bg-clip-text text-transparent">আরাবিয়া ফরিদাবাদ</span>
+            তানযীমে আবনায়ে<br/>
+            <span class="bg-gradient-to-r from-indigo-400 mr-2 to-purple-400 bg-clip-text text-transparent">জামিয়া ফরিদাবাদ</span>
           </h1>
           <p class="text-lg text-gray-300 font-bangla mb-8 max-w-lg">
             জামিয়া আরাবিয়া ইমদাদুল উলূম ফরিদাবাদ এর প্রাক্তন ছাত্রদের জন্য একটি প্ল্যাটফর্ম।
@@ -81,7 +81,7 @@
           <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
             <button class="w-full sm:w-auto bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bangla font-bold px-8 py-4 rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/30 flex items-center justify-center">
               <i class="pi pi-info-circle mr-2"></i>
-              তানজিম পরিচিতি
+              তানযীম পরিচিতি
             </button>
             <button class="w-full sm:w-auto bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bangla font-bold px-8 py-4 rounded-xl transition-all duration-300 flex items-center justify-center">
               <i class="pi pi-list mr-2"></i>
@@ -108,14 +108,14 @@
 
         <!-- Right Side: Authentication Card -->
         <div class="order-1 lg:order-2 flex items-center">
-          <div class="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl shadow-2xl overflow-hidden">
+          <div class="w-full bg-white/10 backdrop-blur-md border border-white/20 rounded-md shadow-2xl overflow-hidden">
             <!-- Authentication Buttons -->
             <div class="p-6 flex flex-col items-center justify-center space-y-6">
               <!-- Beautiful buttons instead of tabs -->
               <div class="flex flex-col sm:flex-row w-full gap-4">
                 <button 
                   @click="switchTab('login')" 
-                  class="flex-1 py-4 px-6 rounded-xl font-bold font-bangla transition-all duration-300 flex items-center justify-center shadow-lg"
+                  class="flex-1 py-4 px-6 rounded-md font-bold font-bangla transition-all duration-300 flex items-center justify-center shadow-lg"
                   :class="activeTab === 'login' 
                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-indigo-600/30' 
                     : 'bg-white/20 text-white hover:bg-white/30 border border-white/30'"
@@ -124,7 +124,7 @@
                 </button>
                 <button 
                   @click="switchTab('register')" 
-                  class="flex-1 py-4 px-6 rounded-xl font-bold font-bangla transition-all duration-300 flex items-center justify-center shadow-lg"
+                  class="flex-1 py-4 px-6 rounded-md font-bold font-bangla transition-all duration-300 flex items-center justify-center shadow-lg"
                   :class="activeTab === 'register' 
                     ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-indigo-600/30' 
                     : 'bg-white/20 text-white hover:bg-white/30 border border-white/30'"
@@ -179,7 +179,7 @@
                           <input
                             type="text"
                             v-model="form.phoneNumber"
-                            class="pl-11 w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-bangla text-white placeholder-gray-400"
+                            class="pl-11 w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-bangla text-white placeholder-gray-400"
                             :class="{ 'opacity-50 cursor-not-allowed': isSuspendedAccount }"
                             placeholder="০১XXXXXXXXX"
                             required
@@ -199,7 +199,7 @@
                           <input
                             :type="showPassword ? 'text' : 'password'"
                             v-model="form.password"
-                            class="pl-11 pr-11 w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-bangla text-white placeholder-gray-400"
+                            class="pl-11 pr-11 w-full px-4 py-3.5 bg-white/10 border border-white/20 rounded-md focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 font-bangla text-white placeholder-gray-400"
                             :class="{ 'opacity-50 cursor-not-allowed': isSuspendedAccount }"
                             placeholder="আপনার পাসওয়ার্ড লিখুন"
                             required
@@ -237,7 +237,7 @@
 
                       <button
                         type="submit"
-                        class="w-full flex justify-center items-center py-3.5 px-6 rounded-xl shadow text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 font-bangla font-bold"
+                        class="w-full flex justify-center items-center py-3.5 px-6 rounded-md shadow text-white bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 transition-all duration-300 font-bangla font-bold"
                         :class="{
                           'opacity-75 cursor-not-allowed': form.processing || isSuspendedAccount,
                           'from-red-500 to-red-600 hover:from-red-600 hover:to-red-700': isSuspendedAccount
@@ -312,7 +312,7 @@
                       <button
                         :disabled="!agreedToTerms"
                         :class="[
-                          'px-8 py-4 rounded-xl font-bold font-bangla text-lg transition-all duration-300 shadow w-full',
+                          'px-8 py-4 rounded-md font-bold font-bangla text-lg transition-all duration-300 shadow w-full',
                           agreedToTerms
                             ? 'bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white shadow-lg shadow-indigo-600/30'
                             : 'bg-white/10 text-gray-400 cursor-not-allowed border border-white/10'

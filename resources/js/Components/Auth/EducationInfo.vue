@@ -84,6 +84,44 @@ onMounted(async () => {
                 </div>
             </div>
 
+
+     <!-- হিফজ -->
+            <div class="border rounded-lg p-4 mb-4 dark:border-gray-700 dark:bg-gray-900">
+                <div class="flex items-center mb-3">
+                    <input id="hifz" v-model="form.dept_hifz" type="checkbox"
+                        class="mr-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800" />
+                    <label for="hifz" class="text-sm font-medium text-gray-700 dark:text-gray-200">হিফজ</label>
+                </div>
+                <div v-if="form.dept_hifz" class="grid grid-cols-2 gap-4 ml-6">
+                    <div>
+                        <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (ইংরেজি)" />
+                        <select v-model="form.dept_hifz_year_english"
+                            @change="handleEnglishYearChange(form.dept_hifz_year_english, 'hifz')"
+                            :class="[getFieldErrorClass('dept_hifz_year_english'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
+                            :disabled="loading">
+                            <option value="">সন নির্বাচন করুন</option>
+                            <option v-for="year in englishYearOptions" :key="year.value" :value="year.value">
+                                {{ year.label }}
+                            </option>
+                        </select>
+                        <InputError class="mt-2" :message="fieldValidation.dept_hifz_year_english" />
+                    </div>
+                    <div>
+                        <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (হিজরি)" />
+                        <select v-model="form.dept_hifz_year_hijri"
+                            @change="handleHijriYearChange(form.dept_hifz_year_hijri, 'hifz')"
+                            :class="[getFieldErrorClass('dept_hifz_year_hijri'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
+                            :disabled="loading">
+                            <option value="">হিজরি সন নির্বাচন করুন</option>
+                            <option v-for="year in hijriYearOptions" :key="year.value" :value="year.value">
+                                {{ year.label }}
+                            </option>
+                        </select>
+                        <InputError class="mt-2" :message="fieldValidation.dept_hifz_year_hijri" />
+                    </div>
+                </div>
+            </div>
+
             <!-- তাকমিল -->
             <div class="border rounded-lg p-4 mb-4 dark:border-gray-700 dark:bg-gray-900">
                 <div class="flex items-center mb-3">
@@ -171,42 +209,7 @@ onMounted(async () => {
                 </div>
             </div>
 
-            <!-- হিফজ -->
-            <div class="border rounded-lg p-4 mb-4 dark:border-gray-700 dark:bg-gray-900">
-                <div class="flex items-center mb-3">
-                    <input id="hifz" v-model="form.dept_hifz" type="checkbox"
-                        class="mr-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800" />
-                    <label for="hifz" class="text-sm font-medium text-gray-700 dark:text-gray-200">হিফজ</label>
-                </div>
-                <div v-if="form.dept_hifz" class="grid grid-cols-2 gap-4 ml-6">
-                    <div>
-                        <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (ইংরেজি)" />
-                        <select v-model="form.dept_hifz_year_english"
-                            @change="handleEnglishYearChange(form.dept_hifz_year_english, 'hifz')"
-                            :class="[getFieldErrorClass('dept_hifz_year_english'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
-                            :disabled="loading">
-                            <option value="">সন নির্বাচন করুন</option>
-                            <option v-for="year in englishYearOptions" :key="year.value" :value="year.value">
-                                {{ year.label }}
-                            </option>
-                        </select>
-                        <InputError class="mt-2" :message="fieldValidation.dept_hifz_year_english" />
-                    </div>
-                    <div>
-                        <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (হিজরি)" />
-                        <select v-model="form.dept_hifz_year_hijri"
-                            @change="handleHijriYearChange(form.dept_hifz_year_hijri, 'hifz')"
-                            :class="[getFieldErrorClass('dept_hifz_year_hijri'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
-                            :disabled="loading">
-                            <option value="">হিজরি সন নির্বাচন করুন</option>
-                            <option v-for="year in hijriYearOptions" :key="year.value" :value="year.value">
-                                {{ year.label }}
-                            </option>
-                        </select>
-                        <InputError class="mt-2" :message="fieldValidation.dept_hifz_year_hijri" />
-                    </div>
-                </div>
-            </div>
+       
 
             <!-- কিরাআত -->
             <div class="border rounded-lg p-4 mb-4 dark:border-gray-700 dark:bg-gray-900">
@@ -245,6 +248,43 @@ onMounted(async () => {
                 </div>
             </div>
 
+            <!-- আদব -->
+            <div class="border rounded-lg p-4 mb-4 dark:border-gray-700 dark:bg-gray-900">
+                <div class="flex items-center mb-3">
+                    <input id="adab" v-model="form.dept_adab" type="checkbox"
+                        class="mr-3 h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800" />
+                    <label for="adab" class="text-sm font-medium text-gray-700 dark:text-gray-200">আদব</label>
+                </div>
+                <div v-if="form.dept_adab" class="grid grid-cols-2 gap-4 ml-6">
+                    <div>
+                        <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (ইংরেজি)" />
+                        <select v-model="form.dept_adab_year_english"
+                            @change="handleEnglishYearChange(form.dept_adab_year_english, 'adab')"
+                            :class="[getFieldErrorClass('dept_adab_year_english'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
+                            :disabled="loading">
+                            <option value="">সন নির্বাচন করুন</option>
+                            <option v-for="year in englishYearOptions" :key="year.value" :value="year.value">
+                                {{ year.label }}
+                            </option>
+                        </select>
+                        <InputError class="mt-2" :message="fieldValidation.dept_adab_year_english" />
+                    </div>
+                    <div>
+                        <InputLabel class="text-sm font-medium dark:text-gray-200" value="ফারাগাতের সন (হিজরি)" />
+                        <select v-model="form.dept_adab_year_hijri"
+                            @change="handleHijriYearChange(form.dept_adab_year_hijri, 'adab')"
+                            :class="[getFieldErrorClass('dept_adab_year_hijri'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
+                            :disabled="loading">
+                            <option value="">হিজরি সন নির্বাচন করুন</option>
+                            <option v-for="year in hijriYearOptions" :key="year.value" :value="year.value">
+                                {{ year.label }}
+                            </option>
+                        </select>
+                        <InputError class="mt-2" :message="fieldValidation.dept_adab_year_hijri" />
+                    </div>
+                </div>
+            </div>
+
             <!-- অন্যান্য বিভাগ (শুধু কোন ক্লাসে পড়েন) -->
             <div class="border rounded-lg p-4 mb-4 dark:border-gray-700 dark:bg-gray-900">
                 <div class="flex items-center mb-3">
@@ -258,23 +298,11 @@ onMounted(async () => {
                         :class="[getFieldErrorClass('dept_other_class'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                         required>
                         <option value="">নির্বাচন করুন</option>
-                        <option value="উলুমুল হাদিস">উলুমুল হাদিস</option>
-                        <option value="ইফতা">ইফতা</option>
-                        <option value="আদব">আদব</option>
-                        <option value="তাকমিল (দাওরা)">তাকমিল (দাওরা)</option>
-                        <option value="ফযিলত (মেশাকাত)">ফযিলত (মেশাকাত)</option>
-                        <option value="জালালাইন">জালালাইন</option>
-                        <option value="হেদায়া">হেদায়া</option>
-                        <option value="শরহে বেকায়া">শরহে বেকায়া</option>
-                        <option value="কাফিয়া">কাফিয়া</option>
-                        <option value="হেদায়াতুন্নাহু">হেদায়াতুন্নাহু</option>
-                        <option value="নাহুমির">নাহুমির</option>
-                        <option value="মিযান">মিযান</option>
-                        <option value="খুসুসী">খুসুসী</option>
-                        <option value="তাইসীর">তাইসীর</option>
-                        <option value="হিফজ">হিফজ</option>
-                        <option value="কিরআত">কিরআত</option>
-                        <option value="অন্যান্য">অন্যান্য</option>
+                        <option value="জামিয়ার উস্তাদ">জামিয়ার উস্তাদ</option>
+                        <option value="জামিয়ার কৃতসন্তান">জামিয়ার কৃতসন্তান</option>
+                        <option value="বিদেশী মেহমান">বিদেশী মেহমান</option>
+                        <option value="এজাযী হিতাকঙ্খী">এজাযী হিতাকঙ্খী</option>
+                        <option value="মরণোত্তর">মরণোত্তর</option>
                     </select>
                     <InputError class="mt-2" :message="form.errors.dept_other_class" />
                 </div>
@@ -344,27 +372,54 @@ onMounted(async () => {
             <InputLabel for="birthCertificate" class="text-lg font-medium dark:text-white" value="জন্মনিবন্ধন নম্বর" />
             <input id="birthCertificate" type="text"
                 :class="[getFieldErrorClass('birthCertificate'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
-                v-model="form.birthCertificate" placeholder="জন্মনিবন্ধন নম্বর লিখুন" />
+                v-model="form.birthCertificate" placeholder="জন্মনিবন্ধন নম্বর লিখুন (১৭ সংখ্যা)" 
+                pattern="[0-9]{17}" minlength="17" maxlength="17" />
             <InputError class="mt-2" :message="fieldValidation.birthCertificate" />
             <!-- জন্মনিবন্ধন ছবির আপলোড -->
             <div class="mt-3">
                 <InputLabel for="birthCertificatePhoto" class="text-lg font-medium dark:text-white"
                     value="জন্মনিবন্ধন কার্ড/সার্টিফিকেটের ছবি (২০০ কেবি'র নিচে)" />
-                <input id="birthCertificatePhoto" type="file" accept="image/*" @change="handleIdPhotoUpload"
-                    :class="[getFileErrorClass('birthCertificatePhoto'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
+                
+                <!-- Styled Upload Button -->
+                <div class="relative">
+                    <input id="birthCertificatePhoto" type="file" accept="image/*" @change="handleIdPhotoUpload"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                    <div :class="[
+                        'flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300',
+                        getFileErrorClass('birthCertificatePhoto') ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30' :
+                        'border-indigo-300 dark:border-indigo-700 bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 hover:border-indigo-400 dark:hover:border-indigo-600'
+                    ]">
+                        <div class="flex flex-col items-center">
+                            <!-- Upload Icon -->
+                            <svg class="w-8 h-8 text-indigo-500 dark:text-indigo-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <span class="text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                                জন্মনিবন্ধন ছবি আপলোড করুন
+                            </span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                ক্লিক করুন অথবা ফাইল টেনে আনুন
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     সর্বাধিক ফাইল সাইজ: ২০০ কেবি। বড় ছবি অটো-কমপ্রেস হবে।
                 </div>
+                
+                <!-- Success Message -->
                 <div v-if="getUploadedFileName('birth_cert_photo')"
-                    class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
+                    class="mt-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
                     <div class="flex items-center text-sm text-green-700 dark:text-green-300">
-                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('birth_cert_photo') }}
+                        <span class="font-medium">সফলভাবে আপলোড হয়েছে:</span>
+                        <span class="ml-1">{{ getUploadedFileName('birth_cert_photo') }}</span>
                     </div>
                 </div>
                 <InputError class="mt-2" :message="fieldValidation.birthCertificatePhoto" />
@@ -375,26 +430,52 @@ onMounted(async () => {
             <InputLabel for="voterId" class="text-lg font-medium dark:text-white" value="ভোটার আইডি নম্বর" />
             <input id="voterId" type="text"
                 :class="[getFieldErrorClass('voterId'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
-                v-model="form.voterId" placeholder="ভোটার আইডি নম্বর লিখুন" />
+                v-model="form.voterId" placeholder="ভোটার আইডি নম্বর লিখুন (১০ বা ১৭ সংখ্যা)" />
             <InputError class="mt-2" :message="fieldValidation.voterId" />
             <div class="mt-3">
                 <InputLabel for="voterIdPhoto" class="text-lg font-medium dark:text-white"
                     value="ভোটার আইডি কার্ডের ছবি (২০০ কেবি'র নিচে)" />
-                <input id="voterIdPhoto" type="file" accept="image/*" @change="handleIdPhotoUpload"
-                    :class="[getFileErrorClass('voterIdPhoto'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
+                
+                <!-- Styled Upload Button -->
+                <div class="relative">
+                    <input id="voterIdPhoto" type="file" accept="image/*" @change="handleIdPhotoUpload"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                    <div :class="[
+                        'flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300',
+                        getFileErrorClass('voterIdPhoto') ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30' :
+                        'border-purple-300 dark:border-purple-700 bg-purple-50 dark:bg-purple-900/20 hover:bg-purple-100 dark:hover:bg-purple-900/30 hover:border-purple-400 dark:hover:border-purple-600'
+                    ]">
+                        <div class="flex flex-col items-center">
+                            <!-- Vote Card Icon -->
+                            <svg class="w-8 h-8 text-purple-500 dark:text-purple-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+                            </svg>
+                            <span class="text-sm font-medium text-purple-600 dark:text-purple-400">
+                                ভোটার আইডি ছবি আপলোড করুন
+                            </span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                ক্লিক করুন অথবা ফাইল টেনে আনুন
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     সর্বাধিক ফাইল সাইজ: ২০০ কেবি। বড় ছবি অটো-কমপ্রেস হবে।
                 </div>
+                
+                <!-- Success Message -->
                 <div v-if="getUploadedFileName('voter_photo')"
-                    class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
+                    class="mt-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
                     <div class="flex items-center text-sm text-green-700 dark:text-green-300">
-                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('voter_photo') }}
+                        <span class="font-medium">সফলভাবে আপলোড হয়েছে:</span>
+                        <span class="ml-1">{{ getUploadedFileName('voter_photo') }}</span>
                     </div>
                 </div>
                 <InputError class="mt-2" :message="fieldValidation.voterIdPhoto" />
@@ -411,22 +492,47 @@ onMounted(async () => {
             <div class="mt-3">
                 <InputLabel for="passport_photo" class="text-lg font-medium dark:text-white"
                     value="পাসপোর্টের ছবি (২০০ কেবি'র নিচে)" />
-                <input id="passport_photo" type="file" accept="image/*" @change="handleIdPhotoUpload"
-                    :class="[getFileErrorClass('passport_photo'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
+                
+                <!-- Styled Upload Button -->
+                <div class="relative">
+                    <input id="passport_photo" type="file" accept="image/*" @change="handleIdPhotoUpload"
+                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                    <div :class="[
+                        'flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300',
+                        getFileErrorClass('passport_photo') ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30' :
+                        'border-blue-300 dark:border-blue-700 bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 dark:hover:bg-blue-900/30 hover:border-blue-400 dark:hover:border-blue-600'
+                    ]">
+                        <div class="flex flex-col items-center">
+                            <!-- Passport Icon -->
+                            <svg class="w-8 h-8 text-blue-500 dark:text-blue-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                            </svg>
+                            <span class="text-sm font-medium text-blue-600 dark:text-blue-400">
+                                পাসপোর্ট ছবি আপলোড করুন
+                            </span>
+                            <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                ক্লিক করুন অথবা ফাইল টেনে আনুন
+                            </span>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     সর্বাধিক ফাইল সাইজ: ২০০ কেবি। বড় ছবি অটো-কমপ্রেস হবে।
                 </div>
+                
+                <!-- Success Message -->
                 <div v-if="getUploadedFileName('passport_photo')"
-                    class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
+                    class="mt-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
                     <div class="flex items-center text-sm text-green-700 dark:text-green-300">
-                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('passport_photo') }}
-                        <img v-if="getUploadedFileName('passport_photo') && passportPhotoUrl" :src="passportPhotoUrl" alt="Passport Photo" class="ml-2 h-10 rounded" @error="passportPhotoUrl = null" />
+                        <span class="font-medium">সফলভাবে আপলোড হয়েছে:</span>
+                        <span class="ml-1">{{ getUploadedFileName('passport_photo') }}</span>
                     </div>
                 </div>
                 <InputError class="mt-2" :message="fieldValidation.passport_photo" />
@@ -437,44 +543,50 @@ onMounted(async () => {
         <div v-if="form.idType && form.idType !== 'জানা নেই'" class="mb-6">
             <InputLabel for="photo" class="text-lg font-medium dark:text-white"
                 value="ছবি আপলোড করুন (২০০ কেবি'র নিচে)" />
-            <input id="photo" type="file" accept="image/*" @change="handlePhotoUpload"
-                :class="[getFileErrorClass('photo'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']" />
+            
+            <!-- Styled Upload Button -->
+            <div class="relative">
+                <input id="photo" type="file" accept="image/*" @change="handlePhotoUpload"
+                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                <div :class="[
+                    'flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300',
+                    getFileErrorClass('photo') ? 'border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 hover:bg-red-100 dark:hover:bg-red-900/30' :
+                    'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 hover:border-green-400 dark:hover:border-green-600'
+                ]">
+                    <div class="flex flex-col items-center">
+                        <!-- User Photo Icon -->
+                        <svg class="w-8 h-8 text-green-500 dark:text-green-400 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                        <span class="text-sm font-medium text-green-600 dark:text-green-400">
+                            আপনার ছবি আপলোড করুন
+                        </span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            ক্লিক করুন অথবা ফাইল টেনে আনুন
+                        </span>
+                    </div>
+                </div>
+            </div>
 
             <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">
                 সর্বাধিক ফাইল সাইজ: ২০০ কেবি। বড় ছবি অটো-কমপ্রেস হবে।
             </div>
+            
+            <!-- Success Message -->
             <div v-if="getUploadedFileName('photo')"
-                class="mt-2 p-2 bg-green-50 dark:bg-gray-800 border border-green-200 dark:border-green-700 rounded-md">
+                class="mt-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700 rounded-lg">
                 <div class="flex items-center text-sm text-green-700 dark:text-green-300">
-                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd"
                             d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                             clip-rule="evenodd" />
                     </svg>
-                    পূর্বে আপলোড করা ফাইল: {{ getUploadedFileName('photo') }}
-                    <img v-if="getUploadedFileName('photo') && photoUrl" :src="photoUrl" alt="User Photo" class="ml-2 h-10 rounded" @error="photoUrl = null" />
+                    <span class="font-medium">সফলভাবে আপলোড হয়েছে:</span>
+                    <span class="ml-1">{{ getUploadedFileName('photo') }}</span>
                 </div>
             </div>
-import { ref, watch } from 'vue';
 
-const passportPhotoUrl = ref(null);
-const photoUrl = ref(null);
-
-watch(() => props.form.passport_photo, (newVal) => {
-    if (newVal && typeof newVal === 'string') {
-        passportPhotoUrl.value = newVal;
-    } else {
-        passportPhotoUrl.value = null;
-    }
-});
-
-watch(() => props.form.photo, (newVal) => {
-    if (newVal && typeof newVal === 'string') {
-        photoUrl.value = newVal;
-    } else {
-        photoUrl.value = null;
-    }
-});
             <InputError class="mt-2" :message="fieldValidation.photo" />
         </div>
     </div>

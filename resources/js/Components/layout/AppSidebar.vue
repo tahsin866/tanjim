@@ -202,6 +202,12 @@ const menuItems = [
         get route() { return route('madrashaDashboard.studentData') },
         routeName: 'madrashaDashboard.studentData'
       },
+      // {
+      //   label: 'খাবার ব্যবস্থাপনা',
+      //   icon: 'pi pi-send',
+      //   get route() { return route('madrashaDashboard.food') },
+      //   routeName: 'madrashaDashboard.food'
+      // },
     ]
   },
 ]

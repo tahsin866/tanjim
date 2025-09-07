@@ -46,12 +46,6 @@ const search = () => {
 
 
 
-
-
-
-
-
-
                 <!-- Statistics Cards -->
                 <dashboard_card />
 

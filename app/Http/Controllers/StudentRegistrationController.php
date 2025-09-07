@@ -44,6 +44,7 @@ class StudentRegistrationController extends Controller
             'dept_ifta' => is_null(optional($info)->dept_ifta) ? false : (bool)optional($info)->dept_ifta,
             'dept_hifz' => is_null(optional($info)->dept_hifz) ? false : (bool)optional($info)->dept_hifz,
             'dept_qirat' => is_null(optional($info)->dept_qirat) ? false : (bool)optional($info)->dept_qirat,
+            'dept_adab' => is_null(optional($info)->dept_adab) ? false : (bool)optional($info)->dept_adab,
             'dept_other' => is_null(optional($info)->dept_other) ? false : (bool)optional($info)->dept_other,
             'dept_takmil_year_english' => optional($info)->dept_takmil_year_english,
             'dept_takmil_year_hijri' => optional($info)->dept_takmil_year_hijri,
@@ -53,6 +54,8 @@ class StudentRegistrationController extends Controller
             'dept_hifz_year_hijri' => optional($info)->dept_hifz_year_hijri,
             'dept_qirat_year_english' => optional($info)->dept_qirat_year_english,
             'dept_qirat_year_hijri' => optional($info)->dept_qirat_year_hijri,
+            'dept_adab_year_english' => optional($info)->dept_adab_year_english,
+            'dept_adab_year_hijri' => optional($info)->dept_adab_year_hijri,
 
             'dept_other_class' => optional($info)->dept_other_class,
             'examType' => optional($info)->examType,
@@ -61,8 +64,10 @@ class StudentRegistrationController extends Controller
             'idType' => optional($info)->idType,
             'birthCertificate' => optional($info)->birthCertificate,
             'voterId' => optional($info)->voterId,
+            'passport_id' => optional($info)->passport_id,
             'birthCertificatePhoto' => optional($info)->birthCertificatePhoto,
             'voterIdPhoto' => optional($info)->voterIdPhoto,
+            'passport_photo' => optional($info)->passport_photo,
             'photo' => optional($info)->photo,
             'status' => $user->status ?? 'pending',
             'created_at' => $user->created_at,
@@ -107,6 +112,7 @@ public function updateStudent(Request $request, $id)
         'dept_ifta' => filter_var($request->input('dept_ifta', false), FILTER_VALIDATE_BOOLEAN),
         'dept_hifz' => filter_var($request->input('dept_hifz', false), FILTER_VALIDATE_BOOLEAN),
         'dept_qirat' => filter_var($request->input('dept_qirat', false), FILTER_VALIDATE_BOOLEAN),
+        'dept_adab' => filter_var($request->input('dept_adab', false), FILTER_VALIDATE_BOOLEAN),
         'dept_other' => filter_var($request->input('dept_other', false), FILTER_VALIDATE_BOOLEAN),
     ]);
 
@@ -134,6 +140,7 @@ public function updateStudent(Request $request, $id)
         'dept_ifta'               => $request->input('dept_ifta', $userInfo ? $userInfo->dept_ifta : false),
         'dept_hifz'               => $request->input('dept_hifz', $userInfo ? $userInfo->dept_hifz : false),
         'dept_qirat'              => $request->input('dept_qirat', $userInfo ? $userInfo->dept_qirat : false),
+        'dept_adab'               => $request->input('dept_adab', $userInfo ? $userInfo->dept_adab : false),
         'dept_other'              => $request->input('dept_other', $userInfo ? $userInfo->dept_other : false),
         'dept_takmil_year_english'=> $request->input('dept_takmil_year_english', $userInfo ? $userInfo->dept_takmil_year_english : null),
         'dept_takmil_year_hijri'  => $request->input('dept_takmil_year_hijri', $userInfo ? $userInfo->dept_takmil_year_hijri : null),
@@ -143,6 +150,8 @@ public function updateStudent(Request $request, $id)
         'dept_hifz_year_hijri'    => $request->input('dept_hifz_year_hijri', $userInfo ? $userInfo->dept_hifz_year_hijri : null),
         'dept_qirat_year_english' => $request->input('dept_qirat_year_english', $userInfo ? $userInfo->dept_qirat_year_english : null),
         'dept_qirat_year_hijri'   => $request->input('dept_qirat_year_hijri', $userInfo ? $userInfo->dept_qirat_year_hijri : null),
+        'dept_adab_year_english'  => $request->input('dept_adab_year_english', $userInfo ? $userInfo->dept_adab_year_english : null),
+        'dept_adab_year_hijri'    => $request->input('dept_adab_year_hijri', $userInfo ? $userInfo->dept_adab_year_hijri : null),
 
         'dept_other_class'        => $request->input('dept_other_class', $userInfo ? $userInfo->dept_other_class : null),
         'examType'                => $request->input('examType', $userInfo ? $userInfo->examType : null),
@@ -151,6 +160,7 @@ public function updateStudent(Request $request, $id)
         'idType'                  => $request->input('idType', $userInfo ? $userInfo->idType : null),
         'birthCertificate'        => $request->input('birthCertificate', $userInfo ? $userInfo->birthCertificate : null),
         'voterId'                 => $request->input('voterId', $userInfo ? $userInfo->voterId : null),
+        'passport_id'             => $request->input('passport_id', $userInfo ? $userInfo->passport_id : null),
     ];
 
     // File upload same as before
@@ -165,6 +175,12 @@ public function updateStudent(Request $request, $id)
             Storage::disk('public')->delete($userInfo->voterIdPhoto);
         }
         $informationData['voterIdPhoto'] = $request->file('voterIdPhoto')->store('user-documents', 'public');
+    }
+    if ($request->hasFile('passport_photo')) {
+        if ($userInfo && $userInfo->passport_photo && Storage::disk('public')->exists($userInfo->passport_photo)) {
+            Storage::disk('public')->delete($userInfo->passport_photo);
+        }
+        $informationData['passport_photo'] = $request->file('passport_photo')->store('user-documents', 'public');
     }
     if ($request->hasFile('photo')) {
         if ($userInfo && $userInfo->photo && Storage::disk('public')->exists($userInfo->photo)) {

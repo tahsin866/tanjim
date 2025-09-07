@@ -3,7 +3,9 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import Dialog from 'primevue/dialog';
 import { Link } from '@inertiajs/vue3';
+import { ref } from 'vue';
 
 // Props
 const props = defineProps({
@@ -16,8 +18,20 @@ const props = defineProps({
 // Emits
 const emit = defineEmits(['submit']);
 
+// Modal state
+const showConfirmModal = ref(false);
+
 const handleSubmit = () => {
+    showConfirmModal.value = true;
+};
+
+const confirmRegistration = () => {
+    showConfirmModal.value = false;
     emit('submit');
+};
+
+const cancelRegistration = () => {
+    showConfirmModal.value = false;
 };
 </script>
 
@@ -79,5 +93,54 @@ const handleSubmit = () => {
                 {{ form.processing ? 'রেজিস্ট্রেশন হচ্ছে...' : 'রেজিস্ট্রেশন করুন' }}
             </PrimaryButton>
         </div>
+
+        <!-- Confirmation Modal -->
+        <Dialog 
+            v-model:visible="showConfirmModal" 
+            :style="{ width: '90vw', maxWidth: '500px' }" 
+            modal 
+            header="নিশ্চিতকরণ" 
+            class="confirmation-modal dark:bg-gray-900"
+        >
+            <div class="py-4">
+                <p class="text-gray-700 dark:text-gray-200 leading-relaxed text-base mb-6">
+                    আপনার সকল তথ্য ভালোমত যাচাই করে তারপর রেজিশ্ট্রেশন করুন। একবার রেজিষ্ট্রেশন হলে পরবর্তিতে আর সংশোধন করা যাবেনা।
+                </p>
+                <div class="flex flex-col sm:flex-row gap-3 justify-end">
+                    <button
+                        @click="cancelRegistration"
+                        class="px-6 py-2 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-800 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors font-medium"
+                    >
+                        বাতিল
+                    </button>
+                    <button
+                        @click="confirmRegistration"
+                        class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors font-medium"
+                        :class="{ 'opacity-75 cursor-not-allowed': form.processing }"
+                        :disabled="form.processing"
+                    >
+                        নিশ্চিত করুন
+                    </button>
+                </div>
+            </div>
+        </Dialog>
     </div>
 </template>
+
+<style scoped>
+.confirmation-modal :deep(.p-dialog-header) {
+    @apply bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700;
+}
+
+.confirmation-modal :deep(.p-dialog-title) {
+    @apply text-gray-900 dark:text-gray-100 font-semibold;
+}
+
+.confirmation-modal :deep(.p-dialog-content) {
+    @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100;
+}
+
+.confirmation-modal :deep(.p-dialog-header-close) {
+    @apply text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200;
+}
+</style>

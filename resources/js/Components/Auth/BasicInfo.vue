@@ -183,7 +183,11 @@ onMounted(async () => {
                                     class="pl-10 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 transition-shadow font-bangla dark:bg-gray-700 dark:border-gray-600 dark:text-white"
                                     :class="[fieldValidation.phoneNumber ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500' : '']"
                                     v-model="form.phoneNumber"
-                                    placeholder="মোবাইল নাম্বার লিখুন"
+                                    @input="form.phoneNumber = form.phoneNumber.replace(/\D/g, '').slice(0, 11)"
+                                    placeholder="১৭XXXXXXXXX (১১ সংখ্যা)"
+                                    pattern="[0-9]{11}"
+                                    minlength="11"
+                                    maxlength="11"
                                     required
                                 />
                             </div>
@@ -466,10 +470,13 @@ onMounted(async () => {
                                     id="classmate1"
                                     type="text"
                                     class="pl-10 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 transition-shadow font-bangla dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    :class="[fieldValidation.classmate1 ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500' : '']"
                                     v-model="form.classmate1"
                                     placeholder="প্রথম সাথী ভাইয়ের নাম লিখুন"
+                                    required
                                 />
                             </div>
+                            <InputError class="mt-2" :message="fieldValidation.classmate1" />
                         </div>
 
                         <div class="relative group">
@@ -484,10 +491,13 @@ onMounted(async () => {
                                     id="classmate2"
                                     type="text"
                                     class="pl-10 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 transition-shadow font-bangla dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    :class="[fieldValidation.classmate2 ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500' : '']"
                                     v-model="form.classmate2"
                                     placeholder="দ্বিতীয় সাথী ভাইয়ের নাম লিখুন"
+                                    required
                                 />
                             </div>
+                            <InputError class="mt-2" :message="fieldValidation.classmate2" />
                         </div>
                     </div>
 
@@ -504,10 +514,13 @@ onMounted(async () => {
                                     id="classmate3"
                                     type="text"
                                     class="pl-10 w-full rounded-lg border-gray-300 focus:border-blue-500 focus:ring focus:ring-blue-500 focus:ring-opacity-50 transition-shadow font-bangla dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                                    :class="[fieldValidation.classmate3 ? 'border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500' : '']"
                                     v-model="form.classmate3"
                                     placeholder="তৃতীয় সাথী ভাইয়ের নাম লিখুন"
+                                    required
                                 />
                             </div>
+                            <InputError class="mt-2" :message="fieldValidation.classmate3" />
                         </div>
                     </div>
                 </div>

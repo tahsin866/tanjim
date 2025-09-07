@@ -9,7 +9,7 @@
 
       <!-- Header -->
       <div class="text-center mb-8">
-        <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-emerald-700 dark:to-purple-900 rounded-full mb-4 shadow-lg">
+        <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-emerald-700 dark:to-purple-900 rounded-full mb-4 ">
           <i class="pi pi-file-edit text-white text-2xl"></i>
         </div>
         <h1 class="text-3xl md:text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-violet-500 to-cyan-400 dark:from-emerald-400 dark:via-indigo-400 dark:to-purple-400" style="font-family: 'SolaimanLipi', sans-serif;">
@@ -19,7 +19,7 @@
 </p>
       </div>
 
-      <div class="bg-white/90 dark:bg-gray-900/90 rounded-xl shadow-2xl backdrop-blur-sm border-0">
+      <div class="bg-white/90 dark:bg-gray-900/90 rounded-xl  backdrop-blur-sm border-0">
         <div class="p-4 sm:p-8">
           <!-- Success Message -->
           <div v-if="props.success" class="mb-6">
@@ -248,9 +248,9 @@ const progressPercentage = computed(() => {
 });
 
 const stepCompletionStatus = computed(() => {
-  const step1Complete = form.fullNameBangla && form.fullNameEnglish && form.fatherName && form.email && form.phoneNumber && form.dateOfBirth;
+  const step1Complete = form.fullNameBangla && form.fullNameEnglish && form.fatherName && form.email && form.phoneNumber && form.dateOfBirth && form.classmate1 && form.classmate2 && form.classmate3;
   const isRollNumberValid = !form.examType || form.examType === 'জানা নেই' || form.rollNumber;
-  const step2Complete = (form.dept_takmil || form.dept_ifta || form.dept_hifz || form.dept_qirat || form.dept_other) &&
+  const step2Complete = (form.dept_takmil || form.dept_ifta || form.dept_hifz || form.dept_qirat || form.dept_adab || form.dept_other) &&
                         form.examType && isRollNumberValid && form.idType;
   const step3Complete = form.password && form.password_confirmation;
 
@@ -262,7 +262,7 @@ const stepCompletionStatus = computed(() => {
 });
 
 const stepCompletionPercentage = computed(() => {
-  const step1Fields = ['fullNameBangla', 'fullNameEnglish', 'fatherName', 'email', 'phoneNumber', 'dateOfBirth', 'address', 'division', 'district', 'thana'];
+  const step1Fields = ['fullNameBangla', 'fullNameEnglish', 'fatherName', 'email', 'phoneNumber', 'dateOfBirth', 'address', 'division', 'district', 'thana', 'classmate1', 'classmate2', 'classmate3'];
   let step2Fields = ['examType', 'idType'];
   if (form.examType && form.examType !== 'জানা নেই') {
     step2Fields.push('rollNumber');
@@ -272,7 +272,7 @@ const stepCompletionPercentage = computed(() => {
     const completed = fields.filter(field => form[field] && form[field] !== '').length;
     return Math.round((completed / fields.length) * 100);
   };
-  const deptCompletion = (form.dept_takmil || form.dept_ifta || form.dept_hifz || form.dept_qirat || form.dept_other) ? 100 : 0;
+  const deptCompletion = (form.dept_takmil || form.dept_ifta || form.dept_hifz || form.dept_qirat || form.dept_adab || form.dept_other) ? 100 : 0;
   return {
     1: getFieldsCompletion(step1Fields),
     2: Math.round((getFieldsCompletion(step2Fields) + deptCompletion) / 2),
@@ -300,6 +300,7 @@ const form = useForm({
   dept_ifta: false,
   dept_hifz: false,
   dept_qirat: false,
+  dept_adab: false,
   dept_other: false,
   dept_takmil_year_english: '',
   dept_takmil_year_hijri: '',
@@ -309,6 +310,8 @@ const form = useForm({
   dept_hifz_year_hijri: '',
   dept_qirat_year_english: '',
   dept_qirat_year_hijri: '',
+  dept_adab_year_english: '',
+  dept_adab_year_hijri: '',
   dept_other_class: '',
   examType: '',
   rollNumber: '',
@@ -344,11 +347,16 @@ const validateStep = () => {
     if (!form.email) validationErrors.value.email = 'ইমেইল ঠিকানা প্রয়োজন';
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) validationErrors.value.email = 'সঠিক ইমেইল ঠিকানা লিখুন';
     if (!form.phoneNumber) validationErrors.value.phoneNumber = 'ফোন নম্বর প্রয়োজন';
+    else if (form.phoneNumber.trim().length !== 11) validationErrors.value.phoneNumber = 'ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে';
+    else if (!/^[0-9]+$/.test(form.phoneNumber.trim())) validationErrors.value.phoneNumber = 'ফোন নম্বরে শুধুমাত্র সংখ্যা থাকবে';
     if (!form.dateOfBirth) validationErrors.value.dateOfBirth = 'জন্মতারিখ প্রয়োজন';
     if (!form.address) validationErrors.value.address = 'ঠিকানা প্রয়োজন';
     if (!form.division) validationErrors.value.division = 'বিভাগ নির্বাচন করুন';
     if (!form.district) validationErrors.value.district = 'জেলা নির্বাচন করুন';
     if (!form.thana) validationErrors.value.thana = 'থানা নির্বাচন করুন';
+    if (!form.classmate1) validationErrors.value.classmate1 = 'সহপাঠী ১ এর নাম প্রয়োজন';
+    if (!form.classmate2) validationErrors.value.classmate2 = 'সহপাঠী ২ এর নাম প্রয়োজন';
+    if (!form.classmate3) validationErrors.value.classmate3 = 'সহপাঠী ৩ এর নাম প্রয়োজন';
     return Object.keys(validationErrors.value).length === 0;
   }
   if (currentStep.value === 2) {
@@ -357,6 +365,7 @@ const validateStep = () => {
       form.dept_ifta ||
       form.dept_hifz ||
       form.dept_qirat ||
+      form.dept_adab ||
       form.dept_other;
     const isRollNumberValid = !form.examType || form.examType === 'জানা নেই' || form.rollNumber;
     if (!form.examType) validationErrors.value.examType = 'পরীক্ষার ধরন নির্বাচন করুন';
@@ -365,10 +374,14 @@ const validateStep = () => {
     if (!hasAnyDepartment) validationErrors.value.departments = 'অন্তত একটি বিভাগ নির্বাচন করুন';
     if (form.idType === 'birth') {
       if (!form.birthCertificate) validationErrors.value.birthCertificate = 'জন্মনিবন্ধন নম্বর লিখুন';
+      else if (form.birthCertificate.length !== 17) validationErrors.value.birthCertificate = 'জন্মনিবন্ধন নম্বর অবশ্যই ১৭ সংখ্যার হতে হবে';
+      else if (!/^[0-9]+$/.test(form.birthCertificate)) validationErrors.value.birthCertificate = 'জন্মনিবন্ধন নম্বরে শুধুমাত্র সংখ্যা থাকবে';
       if (!form.birthCertificatePhoto) validationErrors.value.birthCertificatePhoto = 'জন্মনিবন্ধন ছবি আপলোড করুন';
     }
     if (form.idType === 'voter') {
       if (!form.voterId) validationErrors.value.voterId = 'ভোটার আইডি নম্বর লিখুন';
+      else if (form.voterId.length !== 10 && form.voterId.length !== 17) validationErrors.value.voterId = 'ভোটার আইডি নম্বর অবশ্যই ১০ বা ১৭ সংখ্যার হতে হবে';
+      else if (!/^[0-9]+$/.test(form.voterId)) validationErrors.value.voterId = 'ভোটার আইডি নম্বরে শুধুমাত্র সংখ্যা থাকবে';
       if (!form.voterIdPhoto) validationErrors.value.voterIdPhoto = 'ভোটার আইডি ছবি আপলোড করুন';
     }
     if (form.idType === 'passport') {

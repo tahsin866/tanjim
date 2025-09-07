@@ -48,7 +48,10 @@ class UserInformation extends Model
         'voterIdPhoto',
         'photo',
         'passport_id',
-        'passport_photo'
+        'passport_photo',
+        'dept_adab',
+        'dept_adab_year_english',
+        'dept_adab_year_hijri'
 
     ];
 

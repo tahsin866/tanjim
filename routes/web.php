@@ -60,6 +60,9 @@ Route::middleware('auth')->get('/api/user-centers', function() {
     return response()->json([]);
 });
 
+ Route::get('/FoodManagement', function () {
+        return Inertia::render('food/FoodManagement');
+    })->name('food.FoodManagement');
 
 
 

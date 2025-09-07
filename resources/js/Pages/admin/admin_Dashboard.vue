@@ -132,13 +132,7 @@ const getNoticeTypeClass = (type) => {
    <AuthenticatedLayout>
      <div class="py-6  mx-auto px-4 sm:px-6 lg:px-8">
         <!-- Header -->
-        <div class="mb-8">
-            <h2 class="text-3xl font-bold leading-tight text-gray-800 flex items-center gap-3">
-                <i class="pi pi-chart-bar text-blue-500 text-2xl"></i>
-                প্রশাসনিক ড্যাশবোর্ড
-            </h2>
-            <p class="text-gray-600 mt-2">সামগ্রিক পরিসংখ্যান এবং কার্যক্রম পর্যবেক্ষণ</p>
-        </div>
+       
 
         <div v-if="loading" class="text-center py-10 text-gray-400">
             <i class="pi pi-spin pi-spinner text-3xl mb-4"></i>
