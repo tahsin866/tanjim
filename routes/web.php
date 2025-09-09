@@ -14,6 +14,8 @@ use AppHttp\Controllers\ExamSetupController;
 use App\Http\Controllers\Auth\madrasha_check_for_userController;
 use App\Http\Controllers\Auth\userRegisteredUserController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\SslCommerzPaymentController;
+
 Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -65,6 +67,11 @@ Route::middleware('auth')->get('/api/user-centers', function() {
     })->name('food.FoodManagement');
 
 
+ Route::get('/FeeManagement', function () {
+        return Inertia::render('admin/fees/FeeManagement');
+    })->name('fees.FeeManagement');
+
+
 
 // Test routes for SessionYear functionality
 Route::prefix('test-years')->group(function () {
@@ -72,6 +79,26 @@ Route::prefix('test-years')->group(function () {
     Route::get('/all', [TestYearController::class, 'getAllYears'])->name('test.years.all');
     Route::post('/convert', [TestYearController::class, 'convertYear'])->name('test.years.convert');
 });
+
+
+Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);
+Route::get('/example2', [SslCommerzPaymentController::class, 'exampleHostedCheckout']);
+
+Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
+Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax']);
+
+Route::post('/success', [SslCommerzPaymentController::class, 'success']);
+Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
+Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
+
+Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
+
+
+
+
+
+
+
 
 // Include other route files
 require __DIR__ . '/auth.php';

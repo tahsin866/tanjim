@@ -98,12 +98,32 @@ function getIdType(val) {
 }
 
 function getPhotoUrl(photo) {
-    if (!photo)
+    if (!photo) {
         return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzciIHI9IjE4IiBmaWxsPSIjOUI5QjlCIi8+CjxwYXRoIGQ9Ik0yMCA4MEM2IDgwIDM4IDY4IDUwIDY4QzYyIDY4IDk0IDgwIDgwIDgwSDE4WiIgZmlsbD0iIzlCOUI5QiIvPgo8L3N2Zz4=';
-    if (typeof photo === 'string' && (photo.startsWith('http://') || photo.startsWith('https://'))) return photo;
-    if (typeof photo === 'string' && photo.startsWith('/')) return photo;
-    if (typeof photo === 'string') return `/storage/${photo}`;
-    return '';
+    }
+    
+    // If it's already a full URL, return as is
+    if (typeof photo === 'string' && (photo.startsWith('http://') || photo.startsWith('https://'))) {
+        return photo;
+    }
+    
+    // If it starts with /, return as is 
+    if (typeof photo === 'string' && photo.startsWith('/')) {
+        return photo;
+    }
+    
+    // For local storage files, add /storage/ prefix
+    if (typeof photo === 'string' && photo.length > 0) {
+        // Handle both cases: with or without storage/ prefix
+        if (photo.startsWith('storage/')) {
+            return `/${photo}`;
+        } else {
+            return `/storage/${photo}`;
+        }
+    }
+    
+    // Fallback to placeholder
+    return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzciIHI9IjE4IiBmaWxsPSIjOUI5QjlCIi8+CjxwYXRoIGQ9Ik0yMCA4MEM2IDgwIDM4IDY4IDUwIDY4QzYyIDY4IDk0IDgwIDgwIDgwSDE4WiIgZmlsbD0iIzlCOUI5QiIvPgo8L3N2Zz4=';
 }
 
 // Modal functions for image viewing
@@ -166,6 +186,7 @@ const closeModal = () => {
                     <div class="flex-shrink-0">
                         <img :src="getPhotoUrl(user.photo)"
                              :alt="user.fullNameBangla"
+                             @error="$event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzciIHI9IjE4IiBmaWxsPSIjOUI5QjlCIi8+CjxwYXRoIGQ9Ik0yMCA4MEM2IDgwIDM4IDY4IDUwIDY4QzYyIDY4IDk0IDgwIDgwIDgwSDE4WiIgZmlsbD0iIzlCOUI5QiIvPgo8L3N2Zz4='"
                              class="w-32 h-32 rounded-full object-cover border-4 border-indigo-200 dark:border-indigo-700 shadow-lg">
                     </div>
                     <div class="flex-1 flex flex-col gap-2 text-center sm:text-left">
@@ -368,6 +389,7 @@ const closeModal = () => {
                                 <div v-if="user.photo">
                                     <img :src="getPhotoUrl(user.photo)" alt="প্রোফাইল ছবি"
                                          @click="viewImage(getPhotoUrl(user.photo), 'প্রোফাইল ছবি')"
+                                         @error="$event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzciIHI9IjE4IiBmaWxsPSIjOUI5QjlCIi8+CjxwYXRoIGQ9Ik0yMCA4MEM2IDgwIDM4IDY4IDUwIDY4QzYyIDY4IDk0IDgwIDgwIDgwSDE4WiIgZmlsbD0iIzlCOUI5QiIvPgo8L3N2Zz4='"
                                          class="w-32 h-32 object-cover rounded-lg border-2 border-gray-200 dark:border-gray-600 mx-auto cursor-pointer hover:border-blue-400 transition-colors">
                                     <div class="text-xs text-gray-500 break-all mt-2">{{ user.photo }}</div>
                                 </div>
@@ -564,7 +586,9 @@ const closeModal = () => {
                     </svg>
                 </button>
                 <div class="text-center">
-                    <img :src="modalImage" :alt="modalTitle" class="max-w-full max-h-screen object-contain rounded-lg" @click.stop>
+                    <img :src="modalImage" :alt="modalTitle" 
+                         @error="$event.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjUwIiBjeT0iMzciIHI9IjE4IiBmaWxsPSIjOUI5QjlCIi8+CjxwYXRoIGQ9Ik0yMCA4MEM2IDgwIDM4IDY4IDUwIDY4QzYyIDY4IDk0IDgwIDgwIDgwSDE4WiIgZmlsbD0iIzlCOUI5QiIvPgo8L3N2Zz4='"
+                         class="max-w-full max-h-screen object-contain rounded-lg" @click.stop>
                     <p class="text-white mt-4 text-lg">{{ modalTitle }}</p>
                 </div>
             </div>
