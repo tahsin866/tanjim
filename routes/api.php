@@ -9,14 +9,6 @@ use App\Http\Controllers\BoardApplicationController;
 use App\Http\Controllers\Admin\DashboardController;
 // Marhala Controller Routes
 
-Route::prefix('api')->group(function () {
 
-Route::post('/submit-all-applications', [App\Http\Controllers\StudentRegistrationController::class, 'submitAllApplications'])->name('submit.all.applications');
-
-// Admin Dashboard Stats Route
-Route::middleware(['auth:admin'])->group(function () {
-    Route::get('/admin/dashboard-stats', [DashboardController::class, 'studentStats']);
-    Route::get('/admin/notices', [DashboardController::class, 'getNotices']);
-});
-
-});
+// Stats API for live user info
+Route::get('api/stats', [App\Http\Controllers\StatsController::class, 'getStats']);

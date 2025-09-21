@@ -27,7 +27,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/login', [AdminLoginController::class, 'login']);
 
         // Registration Routes
-        Route::get('/register', [AdminRegisterController::class, 'showRegistrationForm'])->name('register');
+        Route::get('/register', [AdminRegisterController::class, 'showRegistrationForm'])->name('admin.register');
         Route::post('/register', [AdminRegisterController::class, 'register']);
     });
 

@@ -329,9 +329,9 @@ onMounted(async () => {
                 :class="[getFieldErrorClass('examType'), 'dark:bg-gray-800 dark:text-white dark:border-gray-700']"
                 required>
               
-                <option value="দাখিলা">ফরিদাবাদের দাখিলা (জামাতের জিম্মাদার/নোটিশ বোর্ড থেকে আপনার বর্ষের PDF ফাইল দেখে নিন)</option>
+                <option value="দাখিলা">ফরিদাবাদের দাখেলা (জামাতের জিম্মাদার/নোটিশ বোর্ড থেকে আপনার বর্ষের PDF ফাইল দেখে নিন)</option>
                 <option value="হাইয়ার">হাইয়ার (রোল নম্বর)</option>
-                <option value="বেফাক">বেফাক (রোল নম্বর)</option>
+                <option value="বেফাক">বেফাকের (রোল নম্বর)</option>
                 <option value="জানা নেই">জানা নেই (এক্ষেত্রে আপনার নিবন্ধন প্রক্রিয়া বিলম্বিত/স্থগিত হবে।)</option>
             </select>
             <InputError class="mt-2" :message="fieldValidation.examType" />
@@ -542,11 +542,11 @@ onMounted(async () => {
         <!-- ছবি আপলোড -->
         <div v-if="form.idType && form.idType !== 'জানা নেই'" class="mb-6">
             <InputLabel for="photo" class="text-lg font-medium dark:text-white"
-                value="ছবি আপলোড করুন (২০০ কেবি'র নিচে)" />
+                value="ছবি আপলোড করুন (২০০ কেবি'র নিচে) *" />
             
             <!-- Styled Upload Button -->
             <div class="relative">
-                <input id="photo" type="file" accept="image/*" @change="handlePhotoUpload"
+                <input id="photo" type="file" accept="image/*" @change="handlePhotoUpload" required
                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
                 <div :class="[
                     'flex items-center justify-center w-full h-20 border-2 border-dashed rounded-lg cursor-pointer transition-all duration-300',

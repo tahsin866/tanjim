@@ -1,108 +1,84 @@
 <?php
-use App\Http\Controllers\MarhalaController;
-use App\Http\Controllers\Admin\Auth\RegisteredUserController;
-use App\Http\Controllers\markazChangeController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\StudentRegistrationController;
-use App\Http\Controllers\SubjectSettingsController;
-use App\Http\Controllers\TestYearController;
+
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use App\Models\admin\marhala_for_admin\Marhala;
-use AppHttp\Controllers\ExamSetupController;
-use App\Http\Controllers\Auth\madrasha_check_for_userController;
-use App\Http\Controllers\Auth\userRegisteredUserController;
-use App\Http\Controllers\Admin\DashboardController;
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StudentRegistrationController;
+use App\Http\Controllers\TestYearController;
 use App\Http\Controllers\SslCommerzPaymentController;
 
+// Root Welcome Page
 Route::get('/', function () {
     return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        'canLogin'      => Route::has('login'),
+        'canRegister'   => Route::has('register'),
+        'laravelVersion'=> Application::VERSION,
+        'phpVersion'    => PHP_VERSION,
     ]);
 });
 
+// Registration Page
+Route::get('register', fn() => Inertia::render('Auth/Register'));
 
-// Registration page (GET)
-Route::get('register', function () {
-    return Inertia::render('Auth/Register');
-})->name('register');
+// Static Policy Pages
+Route::get('/terms',           fn() => Inertia::render('terms_and_condition'))->name('terms');
+Route::get('/return-policy',   fn() => Inertia::render('return_policy'))->name('return_policy');
+Route::get('/privacy',         fn() => Inertia::render('privacy'))->name('privacy');
 
-// API routes
+// API Routes
 Route::get('/api/admins', [ProfileController::class, 'getAdmins'])->name('api.admins');
 
-// Authenticated user routes
+// Authenticated User Routes
 Route::middleware('auth')->group(function () {
+
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    // Student Edit Routes
+    // Student
     Route::get('/student/{student}/edit', [StudentRegistrationController::class, 'editStudentPage'])->name('student.edit');
     Route::put('/student/{student}', [StudentRegistrationController::class, 'updateStudent'])->name('student.update');
     Route::get('/student/{student}', [StudentRegistrationController::class, 'studentDetails'])->name('student.details');
 
-    // User dashboard route
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    // Dashboard
+    Route::get('/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
-    // Student Data route for dashboard
+    // Student Data for Dashboard
     Route::get('/Studen/list', [StudentRegistrationController::class, 'studentData'])->name('madrashaDashboard.studentData');
-
-    // API route for student stats (for dashboard)
     Route::get('/api/dashboard/student-stats', [StudentRegistrationController::class, 'studentStats'])->name('api.dashboard.student-stats');
+
+    // User Centers API (dummy)
+    Route::get('/api/user-centers', fn() => response()->json([]));
 });
 
-// API route for user centers (dummy, returns empty for now)
-Route::middleware('auth')->get('/api/user-centers', function() {
-    return response()->json([]);
-});
+// Food & Fee Management Pages
+Route::get('/FoodManagement', fn() => Inertia::render('food/FoodManagement'))->name('food.FoodManagement');
+Route::get('/FeeManagement',  fn() => Inertia::render('admin/fees/FeeManagement'))->name('fees.FeeManagement');
 
- Route::get('/FoodManagement', function () {
-        return Inertia::render('food/FoodManagement');
-    })->name('food.FoodManagement');
-
-
- Route::get('/FeeManagement', function () {
-        return Inertia::render('admin/fees/FeeManagement');
-    })->name('fees.FeeManagement');
-
-
-
-// Test routes for SessionYear functionality
+// TestYear Functionality
 Route::prefix('test-years')->group(function () {
-    Route::get('/', [TestYearController::class, 'index'])->name('test.years.index');
-    Route::get('/all', [TestYearController::class, 'getAllYears'])->name('test.years.all');
-    Route::post('/convert', [TestYearController::class, 'convertYear'])->name('test.years.convert');
+    Route::get('/',        [TestYearController::class, 'index'])->name('test.years.index');
+    Route::get('/all',     [TestYearController::class, 'getAllYears'])->name('test.years.all');
+    Route::post('/convert',[TestYearController::class, 'convertYear'])->name('test.years.convert');
 });
 
-
+// SSLCommerz Payment Example Pages
 Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);
 Route::get('/example2', [SslCommerzPaymentController::class, 'exampleHostedCheckout']);
 
+// SSLCommerz Payment Routes
+Route::match(['GET', 'POST'], '/success', [SslCommerzPaymentController::class, 'success'])->name('payment.success');
+Route::match(['GET', 'POST'], '/fail',    [SslCommerzPaymentController::class, 'fail'])->name('payment.fail');
+Route::match(['GET', 'POST'], '/cancel',  [SslCommerzPaymentController::class, 'cancel'])->name('payment.cancel');
+Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn'])->name('payment.ipn');
 Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
-Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax']);
+Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax'])->name('pay-via-ajax');
 
-Route::post('/success', [SslCommerzPaymentController::class, 'success']);
-Route::post('/fail', [SslCommerzPaymentController::class, 'fail']);
-Route::post('/cancel', [SslCommerzPaymentController::class, 'cancel']);
-
-Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn']);
-
-
-
-
-
-
-
-
-// Include other route files
+// Include Other Route Files
 require __DIR__ . '/auth.php';
 require __DIR__ . '/admin_auth.php';
-
 require __DIR__ . '/Admin.php';
 require __DIR__ . '/api.php';

@@ -184,8 +184,8 @@ const quickActions = ref([
     action: 'ask'
   },
   {
-    title: 'ছবি আপলোড',
-    description: 'আপনার স্মৃতিময় ছবি শেয়ার করুন',
+    title: 'পরামর্শ',
+    description: 'আপনার শুচিন্তিত পরামর্শ দিয়ে আমাদের পাশে থাকুন',
     icon: 'pi pi-upload',
     avatarClass: 'bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-300',
     action: 'upload'

@@ -125,12 +125,12 @@ const submit = () => {
 
                             <div class="text-sm text-center text-gray-600 dark:text-gray-300 mt-6 font-bangla">
                                 অ্যাকাউন্ট নেই?
-                                <Link
+                                <!-- <Link
                                     :href="route('admin.register')"
                                     class="font-medium text-emerald-600 hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300 transition duration-200 ml-1 font-bangla"
                                 >
                                     নিবন্ধন করুন
-                                </Link>
+                                </Link> -->
                             </div>
                         </div>
                     </form>

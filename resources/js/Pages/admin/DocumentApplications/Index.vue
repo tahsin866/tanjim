@@ -474,19 +474,19 @@ const highlightMatch = (text, query) => {
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                                <tr v-for="user in users.data" :key="user.id" class="hover:bg-gray-50 dark:hover:bg-gray-750 transition">
-                            <td class="px-4 py-3">
-    <div class="flex items-center justify-center">
-        <img v-if="user.photo" 
-            :src="`/storage/${user.photo}`" 
-            :alt="user.full_name_bangla"
-            class="h-16 w-20 rounded-md object-cover border border-gray-200 dark:border-gray-600"
-            @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex';">
-        <div v-else class="h-16 w-20 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
-            <i class="pi pi-user text-gray-400 dark:text-gray-500 text-xl"></i>
-        </div>
-    </div>
-</td>
+                                <tr v-for="user in users.data.filter(u => u.status !== 'approved')" :key="user.id" class="hover:bg-gray-50 dark:hover:bg-gray-750 transition">
+                                    <td class="px-4 py-3">
+                                        <div class="flex items-center justify-center">
+                                            <img v-if="user.photo" 
+                                                :src="`/storage/${user.photo}`" 
+                                                :alt="user.full_name_bangla"
+                                                class="h-16 w-20 rounded-md object-cover border border-gray-200 dark:border-gray-600"
+                                                @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex';">
+                                            <div v-else class="h-16 w-20 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
+                                                <i class="pi pi-user text-gray-400 dark:text-gray-500 text-xl"></i>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
                                         <span v-html="highlightMatch(user.full_name_bangla, searchForm.search)"/>
                                     </td>
@@ -531,7 +531,7 @@ const highlightMatch = (text, query) => {
                                         <SplitButton :model="items(user)" label="" icon="pi pi-ellipsis-v" class="p-button-sm p-button-text" />
                                     </td>
                                 </tr>
-                                <tr v-if="!users.data.length">
+                                <tr v-if="!users.data.filter(u => u.status !== 'approved').length">
                                     <td colspan="13" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400"><i class="pi pi-info-circle mr-1"></i> কোনো আবেদন পাওয়া যায়নি</td>
                                 </tr>
                             </tbody>

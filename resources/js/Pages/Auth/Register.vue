@@ -6,7 +6,6 @@
     class="bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-950 dark:to-gray-900 relative overflow-hidden min-h-screen flex items-center justify-center py-8 px-2 sm:px-4"
   >
     <div class="w-full max-w-5xl">
-
       <!-- Header -->
       <div class="text-center mb-8">
         <div class="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-blue-500 to-indigo-600 dark:from-emerald-700 dark:to-purple-900 rounded-full mb-4 ">
@@ -15,11 +14,11 @@
         <h1 class="text-3xl md:text-4xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-violet-500 to-cyan-400 dark:from-emerald-400 dark:via-indigo-400 dark:to-purple-400" style="font-family: 'SolaimanLipi', sans-serif;">
           নিবন্ধন ফর্ম
         </h1>
-        <p class="text-gray-600 dark:text-gray-300 text-base sm:text-lg">তানযীমে আবনায়ে জামিয়া ফরিদাবাদের সাথে যুক্ত থাকার জন্য আপনার তথ্য হালনাগাদ করুন।
-</p>
+        <p class="text-gray-600 dark:text-gray-300 text-base sm:text-lg">
+          তানযীমে আবনায়ে জামিয়া ফরিদাবাদের সাথে যুক্ত থাকার জন্য আপনার তথ্য হালনাগাদ করুন।
+        </p>
       </div>
-
-      <div class="bg-white/90 dark:bg-gray-900/90 rounded-xl  backdrop-blur-sm border-0">
+      <div class="bg-white/90 dark:bg-gray-900/90 rounded-xl backdrop-blur-sm border-0">
         <div class="p-4 sm:p-8">
           <!-- Success Message -->
           <div v-if="props.success" class="mb-6">
@@ -28,7 +27,6 @@
               <span class="text-green-800 dark:text-green-300 font-medium">{{ props.success }}</span>
             </div>
           </div>
-
           <!-- Progress Section -->
           <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
@@ -53,7 +51,6 @@
               <span class="text-sm font-medium text-gray-800 dark:text-white">{{ stepItems[currentStep - 1].label }}</span>
             </div>
           </div>
-
           <!-- Step Indicator (Responsive) -->
           <div class="mb-8">
             <div class="flex justify-center overflow-x-auto space-x-2 no-scrollbar px-1">
@@ -113,9 +110,7 @@
               </template>
             </div>
           </div>
-
           <div class="border-t border-gray-200 dark:border-gray-700 my-6"></div>
-
           <!-- Step Content -->
           <div class="mt-8">
             <div class="flex justify-between items-center mb-4 text-sm flex-wrap gap-y-2">
@@ -149,7 +144,6 @@
                         @click="nextStep" />
               </div>
             </div>
-
             <!-- Step 2: Education Info -->
             <div v-if="currentStep === 2" class="space-y-6">
               <div class="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 sm:p-6 border border-green-100 dark:border-gray-700">
@@ -176,7 +170,6 @@
                         @click="nextStep" />
               </div>
             </div>
-
             <!-- Step 3: Final Info -->
             <div v-if="currentStep === 3" class="space-y-6">
               <div class="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-gray-800 dark:to-gray-900 rounded-xl p-4 sm:p-6 border border-purple-100 dark:border-gray-700">
@@ -196,17 +189,50 @@
                         icon="pi pi-arrow-left"
                         class="px-8 py-3 bg-gray-500 dark:bg-gray-800 border-0 shadow-lg hover:shadow-xl transition-all duration-300"
                         @click="prevStep" />
-                <Button label="নিবন্ধন সম্পন্ন করুন"
-                        icon="pi pi-check"
-                        iconPos="right"
-                        class="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-700 dark:from-emerald-800 dark:to-green-900 border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-bold"
-                        :loading="form.processing"
-                        @click.prevent="submit" />
+                <Button label="পেমেন্ট করুন"
+                  icon="pi pi-credit-card"
+                  iconPos="right"
+                  class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-bold ml-2"
+                  :loading="form.processing"
+                  @click.prevent="showPaymentModal = true" />
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Payment Confirmation Modal -->
+  <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
+    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full p-6 mx-2 relative">
+      <button @click="showPaymentModal = false"
+              class="absolute top-3 right-3 text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-xl font-bold">
+        &times;
+      </button>
+      <div class="mb-4 flex items-center">
+        <i class="pi pi-exclamation-triangle text-yellow-500 text-2xl mr-2"></i>
+        <h2 class="text-lg font-bold text-gray-900 dark:text-white">পেমেন্ট সতর্কবার্তা</h2>
+      </div>
+      <p class="text-gray-700 dark:text-gray-200 mb-4 whitespace-pre-line">
+        আপনার পেমেন্ট অফেরতযোগ্য। পেমেন্ট করার পূর্বে সকল তথ্য ভালো করে চেক করুন।
+        পেমেন্ট হলে আর কোন তথ্য সংশোধন করা যাবেনা।
+
+        আপনি কি নিশ্চিতভাবে পেমেন্ট করতে চান?
+      </p>
+  <div class="flex items-center mb-4">
+  <input id="confirmCheckbox" type="checkbox" v-model="isPaymentConfirmed"
+         class="mr-2 accent-blue-500 w-4 h-4" />
+  <label for="confirmCheckbox" class="text-gray-800 dark:text-gray-100 text-sm">
+    I have reviewed my information and agree to the <a href="/terms" class="text-blue-600 hover:underline">Terms & Conditions</a> for payment.
+  </label>
+</div>
+      <Button label="পেমেন্ট করুন"
+              icon="pi pi-credit-card"
+              iconPos="right"
+              class="w-full px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-bold"
+              :disabled="!isPaymentConfirmed"
+              @click.prevent="handlePaymentSubmitModal" />
     </div>
   </div>
 </template>
@@ -220,6 +246,14 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useToast } from "vue-toastification";
 import { FormPersistence } from '@/Helpers/FormPersistence.js';
 import Button from 'primevue/button';
+
+onMounted(() => {
+  // SSLCommerz Sandbox script inject (for payment gateway)
+  const script = document.createElement('script');
+  script.src = 'https://sandbox.sslcommerz.com/embed.min.js?' + Math.random().toString(36).substring(7);
+  script.async = true;
+  document.body.appendChild(script);
+});
 
 const toast = useToast();
 const currentStep = ref(1);
@@ -386,7 +420,6 @@ const validateStep = () => {
     }
     if (form.idType === 'passport') {
       if (!form.passport_id) validationErrors.value.passport_id = 'পাসপোর্ট নম্বর লিখুন';
-      // Accept file object or valid string, error only if missing or empty
       if (!form.passport_photo || 
           (typeof form.passport_photo === 'string' && form.passport_photo.trim() === '') ||
           (typeof form.passport_photo === 'object' && form.passport_photo.size === 0)) {
@@ -440,6 +473,54 @@ const submit = () => {
   }
 };
 
+// Payment Modal State and handler
+const showPaymentModal = ref(false);
+const isPaymentConfirmed = ref(false);
+
+const handlePaymentSubmitModal = async () => {
+  showPaymentModal.value = false;
+  isPaymentConfirmed.value = false;
+  await handlePaymentSubmit();
+};
+
+const handlePaymentSubmit = async () => {
+  // ফর্ম ডাটা তৈরি করুন
+  const formData = new FormData();
+  const booleanFields = [
+    'dept_takmil', 'dept_ifta', 'dept_hifz', 'dept_qirat', 'dept_adab', 'dept_other'
+  ];
+  Object.keys(form).forEach(key => {
+    if (form[key] instanceof File && form[key] !== null) {
+      formData.append(key, form[key]);
+    } else if (booleanFields.includes(key)) {
+      formData.append(key, form[key] ? 1 : 0);
+    } else {
+      formData.append(key, form[key] ?? '');
+    }
+  });
+
+  try {
+    const response = await axios.post('/pay-via-ajax', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    if (response.data.success && response.data.redirect_url) {
+      window.location.href = response.data.redirect_url;
+    } else {
+      alert(response.data.message || 'Payment initiation failed');
+    }
+  } catch (error) {
+    console.error('Payment error:', error);
+    if (error.response && error.response.data && error.response.data.message) {
+      alert(error.response.data.message);
+    } else {
+      alert('An error occurred during payment processing');
+    }
+  }
+};
+
 const handleKeyboard = (event) => {
   if (event.altKey && event.key === 'ArrowRight' && currentStep.value < totalSteps) {
     event.preventDefault();
@@ -462,5 +543,3 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeyboard);
 });
 </script>
-
-<!-- No additional style block - only Tailwind utility classes used -->

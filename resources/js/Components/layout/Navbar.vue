@@ -3,22 +3,23 @@
     <!-- Background Image with Overlay -->
     <div class="absolute inset-0 z-0">
       <img 
-        src="https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?auto=format&fit=crop&w=1920&q=80" 
-        alt="Madinah Background" 
-        class="h-full w-full object-cover"
+        :src="currentImage"
+        alt="Foridabad Slide"
+        class="h-full w-full object-cover transition-all duration-700"
       />
       <div class="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-slate-800/85 to-indigo-900/90"></div>
     </div>
 
     <!-- Navbar - redesigned with glass effect -->
     <nav class="fixed top-0 left-0 right-0 z-50 px-4 py-3 relative">
-      <div class="max-w-7xl mx-auto">
-        <div class="bg-white/10 backdrop-blur-lg rounded-2xl px-4 py-3 flex items-center justify-between shadow-lg border border-white/10">
+      <div class="max-w-8xl mx-auto">
+        <div class="bg-white/10 backdrop-blur-lg rounded-md px-4 py-3 flex items-center justify-between shadow-lg border border-white/10">
           <!-- Logo -->
           <div class="flex items-center space-x-3">
-            <img src="/images/tanjim.png" alt="Logo" class="h-14 w-14 rounded-xl object-cover shadow-lg border border-white/30" />
+            <img src="/images/abnalogo.jpg" alt="Logo" class="h-14 w-14 rounded-xl object-cover shadow-lg border border-white/30" />
             <div class="hidden md:block">
-              <h2 class="text-white font-bold text-xl tracking-tight">আবনায়ে ফরিদাবাদ</h2>
+              <h2 class="text-white font-bold text-xl tracking-tight">তানযীমে আবনায়ে  জামিয়া  ফরিদাবাদ
+</h2>
             </div>
           </div>
           
@@ -26,12 +27,19 @@
           <div class="hidden lg:flex items-center">
             <div class="bg-white/5 backdrop-blur-md rounded-full px-1.5 py-1.5 flex items-center">
               <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">হোম</a>
-              <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">আমাদের সম্পর্কে</a>
-              <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">কার্যক্রমসমূহ</a>
-              <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">ডিজিটাল লাইব্রেরী</a>
-              <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">বয়ান</a>
+              <div class="relative group">
+                <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">ডিজিটাল লাইব্রেরী</a>
+                <div class="absolute left-0 mt-2 min-w-[180px] bg-white rounded-lg shadow-lg z-50 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200">
+                  <a href="#" class="block px-5 py-2 text-gray-800 hover:bg-indigo-100 font-bangla border-b border-gray-100">কোরান</a>
+                  <a href="#" class="block px-5 py-2 text-gray-800 hover:bg-indigo-100 font-bangla border-b border-gray-100">হাদিস</a>
+                  <a href="#" class="block px-5 py-2 text-gray-800 hover:bg-indigo-100 font-bangla">ছাত্রদের তথ্যশালা</a>
+                </div>
+              </div>
+              <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">বায়ান</a>
               <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">মাসিক নেয়ামত</a>
               <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">জামিয়ার ওয়েবসাইট</a>
+              <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">অনুদান পেনেল</a>
+              <!-- <a href="#" class="px-4 py-1.5 text-sm font-medium text-white hover:bg-indigo-500 rounded-full transition-all duration-300 font-bangla">জামিয়ার ওয়েবসাইট</a> -->
             </div>
           </div>
 
@@ -75,7 +83,8 @@
             <span class="bg-gradient-to-r from-indigo-400 mr-2 to-purple-400 bg-clip-text text-transparent">জামিয়া ফরিদাবাদ</span>
           </h1>
           <p class="text-lg text-gray-300 font-bangla mb-8 max-w-lg">
-            জামিয়া আরাবিয়া ইমদাদুল উলূম ফরিদাবাদ এর প্রাক্তন ছাত্রদের জন্য একটি প্ল্যাটফর্ম।
+           জামিয়া আরাবিয়া ইমদাদুল উলুম ফরিদাবাদের প্রাক্তন ছাত্রদের সমন্বয়ে গঠিত দ্বীনী প্লাটফর্ম 
+
           </p>
           
           <div class="flex flex-col sm:flex-row items-center gap-4 mb-8">
@@ -92,15 +101,15 @@
           <!-- Stats -->
           <div class="grid grid-cols-3 gap-4 mt-4">
             <div class="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-              <p class="text-3xl font-bold text-indigo-400">১,২০০+</p>
+              <p class="text-3xl font-bold text-indigo-400">{{ stats.total_users }}+</p>
               <p class="text-sm text-gray-400 font-bangla">নিবন্ধিত আবনা</p>
             </div>
             <div class="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-              <p class="text-3xl font-bold text-indigo-400">৫০+</p>
+              <p class="text-3xl font-bold text-indigo-400">{{ stats.approved_users }}+</p>
               <p class="text-sm text-gray-400 font-bangla">দস্তারে ফযিলত গ্রহণকারী</p>
             </div>
             <div class="bg-white/5 backdrop-blur-sm rounded-xl p-4 border border-white/10">
-              <p class="text-3xl font-bold text-indigo-400">৭০+</p>
+              <p class="text-3xl font-bold text-indigo-400">{{ stats.batch_number }}+</p>
               <p class="text-sm text-gray-400 font-bangla">বর্ষ/ব্যাচ</p>
             </div>
           </div>
@@ -343,16 +352,60 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, computed } from 'vue'
+import axios from 'axios'
+const stats = ref({ total_users: 0, approved_users: 0, batch_number: 0 })
+
+onMounted(async () => {
+  try {
+    const res = await axios.get('/api/stats')
+    stats.value = res.data
+  } catch (e) {
+    // fallback: default batch number
+    stats.value.batch_number = new Date().getFullYear() - 1955 + 1
+  }
+})
+// Image slider logic
+const sliderImages = [
+  '/images/foridabad/20230204_164351-01[1].jpg',
+  '/images/foridabad/20230204_184049-01[1].jpg',
+  '/images/foridabad/20230204_194505-01[1].jpg',
+  '/images/foridabad/20230204_205847-01[1].jpg',
+  '/images/foridabad/dji_fly_20230103_150402_67_1672737670018_photo_optimized-01[1].jpg',
+  '/images/foridabad/dji_fly_20230204_190822_149_1675516134147_photo_optimized-01[1].jpg',
+  '/images/foridabad/dji_fly_20230204_200650_183_1675520219768_photo_optimized-01[1].jpg',
+  '/images/foridabad/dji_fly_20230204_213714_213_1675525413597_photo_optimized-01[1].jpg',
+  '/images/foridabad/IMG20210227123216-01[1].jpg',
+  '/images/foridabad/IMG20210227181718-01[1].jpg',
+  '/images/foridabad/IMG20210227193215-01[1].jpg',
+  '/images/foridabad/IMG20210227204737-01[1].jpg',
+  '/images/foridabad/IMG20210227205533-01[1].jpg',
+  '/images/foridabad/IMG_20220219_194043_Riyan-01[1].jpg',
+];
+const currentImageIndex = ref(0);
+const currentImage = computed(() => sliderImages[currentImageIndex.value]);
+let sliderInterval = null;
+
+onMounted(() => {
+  sliderInterval = setInterval(() => {
+    currentImageIndex.value = (currentImageIndex.value + 1) % sliderImages.length;
+  }, 4000); // Change image every 4 seconds
+  window.addEventListener('scroll', handleScroll)
+})
+
+onUnmounted(() => {
+  if (sliderInterval) clearInterval(sliderInterval);
+  window.removeEventListener('scroll', handleScroll)
+})
 import { useForm } from '@inertiajs/vue3'
 import Sidebar from 'primevue/sidebar'
 
 // Define props for status messages (like in auth/Login.vue)
 const props = defineProps({
-    canResetPassword: {
-        type: Boolean,
-        default: true
-    },
-    status: String,
+  canResetPassword: {
+    type: Boolean,
+    default: true
+  },
+  status: String,
 });
 
 const mobileMenu = ref(false)
