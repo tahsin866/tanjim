@@ -80,7 +80,7 @@
             <h3 class="text-xl font-bold mb-2">রেজিস্ট্রেশন ফি এবং পেমেন্ট নীতিমালা</h3>
             <p class="text-sm mb-2">
               মনে রাখবেন, এই ওয়েবসাইটটি কোনো ব্যবসায়িক প্ল্যাটফর্ম নয়। শুধুমাত্র রেজিস্ট্রেশনের তথ্য হালনাগাদ এবং দস্তরবন্দির জন্য রেজিস্ট্রেশন ফি নির্ধারিত হয়েছে।
-              এখানে কোনো ধরণের <span class="font-bold text-yellow-200">রিফান্ড পলিসি</span> নেই। অনুগ্রহ করে নিশ্চিত হয়ে পেমেন্ট সম্পন্ন করুন।
+              এখানে কোনো ধরণের <span class="font-bold text-yellow-200"><a href="/return-policy">রিফান্ড পলিসি</a></span> নেই। অনুগ্রহ করে নিশ্চিত হয়ে পেমেন্ট সম্পন্ন করুন।
             </p>
             <div class="mt-4 flex flex-col sm:flex-row gap-3 justify-center md:justify-start">
               <!-- <Button label="রেজিস্ট্রেশন ফি পেমেন্ট করুন" class="rounded-full px-6 py-2 bg-yellow-400 text-teal-900 font-bold hover:bg-yellow-500 transition-colors" /> -->
@@ -107,7 +107,7 @@
   <!-- Footer right bottom image -->
   <img src="/images/ssl.png" alt="Footer Decorative" class="hidden md:block absolute right-6 bottom-6 w-70 h-auto opacity-90 z-10" />
     <!-- Policy Links -->
-    <div class="mt-8 flex flex-col md:flex-row justify-center items-center gap-4 text-sm">
+  <div class="mt-8 flex flex-col md:flex-row justify-start items-center gap-4 text-sm md:pl-2">
       <a href="/privacy" class="text-gray-400 hover:text-teal-400 transition-colors">প্রাইভেসি পলিসি</a>
       <span class="hidden md:inline">|</span>
       <a href="/terms" class="text-gray-400 hover:text-teal-400 transition-colors">টার্মস এন্ড কন্ডিশন</a>

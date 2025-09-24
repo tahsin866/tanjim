@@ -11,28 +11,37 @@ use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
-    public function studentStats(Request $request)
+    /**
+     * Dashboard stats API
+     */
+    public function dashboardStats(Request $request)
     {
         $selectedYear = $request->get('year', date('Y'));
 
-        // Basic stats
-        $total = User::count();
-        $approved = User::where('status', User::STATUS_APPROVED)->count();
-        $suspended = User::where('status', User::STATUS_SUSPENDED)->count();
-        $rejected = User::where('status', User::STATUS_REJECTED)->count();
-        $pending = User::where('status', User::STATUS_PENDING)->count();
+        // User status constants (define if not in Model)
+        $STATUS_APPROVED   = User::STATUS_APPROVED   ?? 'approved';
+        $STATUS_SUSPENDED  = User::STATUS_SUSPENDED  ?? 'suspended';
+        $STATUS_REJECTED   = User::STATUS_REJECTED   ?? 'rejected';
+        $STATUS_PENDING    = User::STATUS_PENDING    ?? 'pending';
 
-        // Payment related stats (dummy data for now)
-        $totalRegistered = User::count();
-        $paidUsers = round($totalRegistered * 0.7); // 70% assumed paid
+        // Basic stats
+        $total     = User::count();
+        $approved  = User::where('status', $STATUS_APPROVED)->count();
+        $suspended = User::where('status', $STATUS_SUSPENDED)->count();
+        $rejected  = User::where('status', $STATUS_REJECTED)->count();
+        $pending   = User::where('status', $STATUS_PENDING)->count();
+
+        // Payment related stats (dummy)
+        $totalRegistered = $total;
+        $paidUsers  = round($totalRegistered * 0.7); // 70% paid assumption
         $unpaidUsers = $totalRegistered - $paidUsers;
 
         // Year wise registration stats
         $yearlyStats = User::select(
             DB::raw('YEAR(created_at) as year'),
             DB::raw('COUNT(*) as total_registrations'),
-            DB::raw('SUM(CASE WHEN status = "' . User::STATUS_APPROVED . '" THEN 1 ELSE 0 END) as approved_count'),
-            DB::raw('COUNT(*) * 100 as estimated_revenue') // Assuming 100 Taka per registration
+            DB::raw('SUM(CASE WHEN status = "' . $STATUS_APPROVED . '" THEN 1 ELSE 0 END) as approved_count'),
+            DB::raw('COUNT(*) * 100 as estimated_revenue')
         )
         ->groupBy(DB::raw('YEAR(created_at)'))
         ->orderBy('year', 'desc')
@@ -53,7 +62,7 @@ class DashboardController extends Controller
             ->limit(10)
             ->get();
 
-        // Recent updates (users who updated their info in last 7 days)
+        // Recent updates (users who updated info in last 7 days)
         $recentUpdates = User::with(['information'])
             ->whereHas('information', function($query) {
                 $query->where('updated_at', '>=', Carbon::now()->subDays(7));
@@ -65,7 +74,6 @@ class DashboardController extends Controller
         // Combined recent activities (registrations + updates)
         $recentActivities = collect();
 
-        // Add recent registrations with activity type
         foreach ($recentRegistrations as $user) {
             $recentActivities->push([
                 'id' => $user->id,
@@ -81,7 +89,6 @@ class DashboardController extends Controller
             ]);
         }
 
-        // Add recent updates with activity type
         foreach ($recentUpdates as $user) {
             $recentActivities->push([
                 'id' => $user->id,
@@ -97,7 +104,6 @@ class DashboardController extends Controller
             ]);
         }
 
-        // Sort by activity time and limit to 15
         $recentActivities = $recentActivities->sortByDesc('activity_time')->take(15)->values();
 
         // Monthly trend (last 12 months)
@@ -115,7 +121,7 @@ class DashboardController extends Controller
 
         $lastMonth = now()->subMonth();
         $totalLastMonth = User::where('created_at', '<', $lastMonth)->count();
-        $approvedLastMonth = User::where('created_at', '<', $lastMonth)->where('status', User::STATUS_APPROVED)->count();
+        $approvedLastMonth = User::where('created_at', '<', $lastMonth)->where('status', $STATUS_APPROVED)->count();
 
         $percent = function($now, $last) {
             if ($last == 0) return '+0%';
@@ -143,58 +149,59 @@ class DashboardController extends Controller
                 [
                     'title' => 'অপেক্ষমান',
                     'value' => number_format($pending),
-                    'change' => '+' . number_format(($pending / $total) * 100, 1) . '%',
+                    'change' => $total > 0 ? '+' . number_format(($pending / $total) * 100, 1) . '%' : '+0%',
                     'icon' => 'clock',
                     'color' => 'bg-yellow-500'
                 ],
                 [
                     'title' => 'পেমেন্ট বাকি',
                     'value' => number_format($unpaidUsers),
-                    'change' => number_format(($unpaidUsers / $total) * 100, 1) . '%',
+                    'change' => $total > 0 ? number_format(($unpaidUsers / $total) * 100, 1) . '%' : '0%',
                     'icon' => 'credit-card',
                     'color' => 'bg-red-500'
                 ]
             ],
-            'yearlyStats' => $yearlyStats,
-            'departmentStats' => $departmentStats,
+            'yearlyStats'      => $yearlyStats,
+            'departmentStats'  => $departmentStats,
             'recentActivities' => $recentActivities,
-            'monthlyTrend' => $monthlyTrend,
-            'paymentStats' => [
-                'total' => $totalRegistered,
-                'paid' => $paidUsers,
-                'unpaid' => $unpaidUsers,
-                'revenue' => $paidUsers * 100 // Assuming 100 Taka per registration
+            'monthlyTrend'     => $monthlyTrend,
+            'paymentStats'     => [
+                'total'    => $totalRegistered,
+                'paid'     => $paidUsers,
+                'unpaid'   => $unpaidUsers,
+                'revenue'  => $paidUsers * 100 // Assuming 100 Taka per registration
             ]
         ]);
     }
 
-    public function getNotices()
-    {
-        // For now, return static notices. Later you can create a Notice model
-        $notices = [
-            [
-                'id' => 1,
-                'title' => 'নতুন রেজিস্ট্রেশন নীতিমালা',
-                'content' => 'সকল ছাত্রদের জানানো যাচ্ছে যে নতুন রেজিস্ট্রেশন নীতিমালা অনুযায়ী...',
-                'type' => 'important',
-                'created_at' => now()->subDays(2)->format('Y-m-d H:i:s')
-            ],
-            [
-                'id' => 2,
-                'title' => 'পরীক্ষার সময়সূচী',
-                'content' => 'আগামী মাসের পরীক্ষার সময়সূচী প্রকাশিত হয়েছে...',
-                'type' => 'info',
-                'created_at' => now()->subDays(5)->format('Y-m-d H:i:s')
-            ],
-            [
-                'id' => 3,
-                'title' => 'ছুটির দিন ঘোষণা',
-                'content' => 'আগামী সপ্তাহে ২ দিন ছুটি থাকবে...',
-                'type' => 'general',
-                'created_at' => now()->subWeek()->format('Y-m-d H:i:s')
-            ]
-        ];
-
-        return response()->json(['notices' => $notices]);
-    }
+    /**
+     * Return static notices for dashboard
+     */
+    // public function notices()
+    // {
+    //     $notices = [
+    //         [
+    //             'id' => 1,
+    //             'title' => 'নতুন রেজিস্ট্রেশন নীতিমালা',
+    //             'content' => 'সকল ছাত্রদের জানানো যাচ্ছে যে নতুন রেজিস্ট্রেশন নীতিমালা অনুযায়ী...',
+    //             'type' => 'important',
+    //             'created_at' => now()->subDays(2)->format('Y-m-d H:i:s')
+    //         ],
+    //         [
+    //             'id' => 2,
+    //             'title' => 'পরীক্ষার সময়সূচী',
+    //             'content' => 'আগামী মাসের পরীক্ষার সময়সূচী প্রকাশিত হয়েছে...',
+    //             'type' => 'info',
+    //             'created_at' => now()->subDays(5)->format('Y-m-d H:i:s')
+    //         ],
+    //         [
+    //             'id' => 3,
+    //             'title' => 'ছুটির দিন ঘোষণা',
+    //             'content' => 'আগামী সপ্তাহে ২ দিন ছুটি থাকবে...',
+    //             'type' => 'general',
+    //             'created_at' => now()->subWeek()->format('Y-m-d H:i:s')
+    //         ]
+    //     ];
+    //     return response()->json(['notices' => $notices]);
+    // }
 }

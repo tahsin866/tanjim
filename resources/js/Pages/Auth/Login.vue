@@ -197,7 +197,7 @@ const submit = () => {
 
                         <div class="relative flex items-center justify-center w-full mt-6">
                             <div class="w-full h-px bg-gray-200 dark:bg-gray-700"></div>
-                            <div class="absolute px-3 font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 font-bangla">অথবা</div>
+                            <!-- <div class="absolute px-3 font-medium text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-900 font-bangla">অথবা</div> -->
                         </div>
                     </div>
                 </form>

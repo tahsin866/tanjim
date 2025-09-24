@@ -77,7 +77,7 @@
 
       <footer class="mt-8 pt-6 border-t flex flex-col md:flex-row md:justify-between items-center text-gray-500 text-xs">
         <span class="mb-2 md:mb-0">&copy; 2025 <span class="font-bold text-blue-700">abnaefaridabad</span> – All rights reserved.</span>
-        <span>Technical support by <span class="font-bold text-green-700">Quantic Dynamics</span></span>
+        <span>Technical support by <span class="font-bold text-green-700">Tahsin Abdullah and Abdur Rahman Aljami</span></span>
       </footer>
     </div>
   </div>

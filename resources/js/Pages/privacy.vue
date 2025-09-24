@@ -84,11 +84,11 @@
       <footer class="border-t pt-4 text-gray-500 text-xs flex flex-col md:flex-row md:justify-between items-center bg-white rounded-xl shadow px-2">
         <span class="mb-2 md:mb-0">&copy; 2025 <span class="font-bold text-blue-700">তানযীমে আবনায়ে জামিয়া ফরিদাবাদ</span> – All rights reserved.</span>
         <span>Technical support by <span class="font-bold text-green-700">Quantic Dynamics</span></span>
-        <div class="flex space-x-3 mt-2 md:mt-0">
-          <a href="#" class="footer-link">Terms & Conditions</a>
-          <a href="#" class="footer-link">Return & Refund</a>
-          <a href="#" class="footer-link">Privacy Policy</a>
-        </div>
+     <div class="flex space-x-4">
+        <a href="/terms" class="footer-link">Terms & Conditions</a>
+        <a href="/return-policy" class="footer-link">Return & Refund</a>
+        <a href="/privacy" class="footer-link">Privacy Policy</a>
+      </div>
       </footer>
     </div>
   </div>

@@ -256,302 +256,227 @@ const highlightMatch = (text, query) => {
 </script>
 
 <template>
-    <Head title="দস্তরবন্দি আবেদন তালিকা" />
-    <AuthenticatedLayout>
-        <template #header>
-            <div class="flex justify-between items-center">
-                <h2 class="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center">
-                    <i class="pi pi-file-edit text-blue-500 mr-2"></i>
-                    দস্তরবন্দি আবেদন তালিকা
-                </h2>
-                <button @click="router.reload()" class="inline-flex items-center px-3 py-1.5 text-sm rounded bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-blue-900/30 dark:text-blue-300 dark:hover:bg-blue-800/40 transition-colors">
-                    <i class="pi pi-refresh mr-1.5"></i> রিফ্রেশ
-                </button>
-            </div>
-        </template>
+  <AuthenticatedLayout style="font-family: 'SolaimanLipi', sans-serif;">
+    <div class="min-h-screen bg-gray-100 py-6 px-3">
+      <div class=" mx-auto">
+        <!-- Card -->
+        <div class="rounded-xl shadow-lg border bg-white">
+          <!-- Card Header -->
+          <div class="rounded-t-xl px-6 py-4 bg-blue-600 flex justify-between items-center">
+            <h3 class="text-white font-bold text-lg flex items-center gap-2">
+              <i class="pi pi-file-edit"></i>
+              দস্তরবন্দি আবেদন তালিকা
+            </h3>
+            <span class="bg-white text-blue-600 font-bold rounded px-4 py-1 shadow">
+              মোট: {{ users.total }} আবেদন
+            </span>
+          </div>
+          <!-- Filter/Search Bar -->
+          <div class="border-b px-6 py-4 bg-gray-50">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <input type="text" v-model="searchForm.search" placeholder="নাম/আইডি..." class="rounded border-gray-300 px-3 py-2 bg-white shadow-sm focus:ring-2 focus:ring-blue-200 text-sm" @keyup.enter="applyFilters">
 
-        <div class="py-4">
-            <div class="max-w-screen-2xl mx-auto px-4">
-                <!-- Search & Filter Card -->
-                <div class="mb-6 bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div class="p-4 border-b border-gray-200 dark:border-gray-700">
-                        <h3 class="text-base font-medium text-gray-700 dark:text-gray-200 flex items-center">
-                            <i class="pi pi-search text-blue-500 mr-2"></i>
-                            আবেদন খুঁজুন ও ফিল্টার করুন
-                        </h3>
-                    </div>
-                    
-                    <div class="p-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                            <div>
-                                <label for="search-input" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    নাম/আইডি দিয়ে খুঁজুন
-                                </label>
-                                <input
-                                    id="search-input"
-                                    type="text"
-                                    v-model="searchForm.search"
-                                    placeholder="নাম অথবা রেজিস্ট্রেশন আইডি লিখুন..."
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm"
-                                    @keyup.enter="applyFilters"
-                                />
-                            </div>
-                            <div>
-                                <label for="graduation-year-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    পাস বছর
-                                </label>
-                                <select
-                                    id="graduation-year-select"
-                                    v-model="searchForm.graduation_year"
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm">
-                                    <option value="">সব বছর</option>
-                                    <option v-for="year in graduationYears" :key="year" :value="year">
-                                        {{ year }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="status-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    স্ট্যাটাস
-                                </label>
-                                <select
-                                    id="status-filter-select"
-                                    v-model="searchForm.status_filter"
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm">
-                                    <option value="">সব স্ট্যাটাস</option>
-                                    <option v-for="status in statusOptions" :key="status.value" :value="status.value">
-                                        {{ status.label }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="division-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    বিভাগ
-                                </label>
-                                <select
-                                    id="division-filter-select"
-                                    v-model="searchForm.division_filter"
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm">
-                                    <option value="">সব বিভাগ</option>
-                                    <option v-for="division in divisions" :key="division.id" :value="division.id">
-                                        {{ division.division_name_bangla }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-                            <div>
-                                <label for="district-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    জেলা
-                                </label>
-                                <select
-                                    id="district-filter-select"
-                                    v-model="searchForm.district_filter"
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm"
-                                    :disabled="!searchForm.division_filter">
-                                    <option value="">সব জেলা</option>
-                                    <option v-for="district in filteredDistricts" :key="district.id" :value="district.id">
-                                        {{ district.district_name_bangla }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="thana-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    থানা
-                                </label>
-                                <select
-                                    id="thana-filter-select"
-                                    v-model="searchForm.thana_filter"
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm"
-                                    :disabled="!searchForm.district_filter">
-                                    <option value="">সব থানা</option>
-                                    <option v-for="thana in filteredThanas" :key="thana.id" :value="thana.id">
-                                        {{ thana.thana_name_bangla }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="blood-group-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    রক্তের গ্রুপ
-                                </label>
-                                <select
-                                    id="blood-group-filter-select"
-                                    v-model="searchForm.blood_group_filter"
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm">
-                                    <option value="">সব গ্রুপ</option>
-                                    <option v-for="bloodGroup in bloodGroups" :key="bloodGroup" :value="bloodGroup">
-                                        {{ bloodGroup }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="workplace-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    পেশা
-                                </label>
-                                <select
-                                    id="workplace-filter-select"
-                                    v-model="searchForm.workplace_filter"
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm">
-                                    <option value="">সব পেশা</option>
-                                    <option v-for="workplace in workplaces" :key="workplace" :value="workplace">
-                                        {{ workplace }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <div>
-                                <label for="department-filter-select" class="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                    বিভাগ
-                                </label>
-                                <select
-                                    id="department-filter-select"
-                                    v-model="searchForm.department_filter"
-                                    class="w-full rounded border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 px-3 py-2 focus:border-blue-400 focus:ring focus:ring-blue-200 focus:ring-opacity-50 dark:focus:border-blue-300 text-sm">
-                                    <option value="">সব বিভাগ</option>
-                                    <option v-for="department in departments" :key="department.value" :value="department.value">
-                                        {{ department.label }}
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="flex items-end md:col-span-3">
-                                <div class="flex gap-2 w-full">
-                                    <button
-                                        @click="applyFilters"
-                                        class="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-50 transition-colors">
-                                        <i class="pi pi-search mr-1.5"></i>
-                                        খুঁজুন
-                                    </button>
-                                    <button
-                                        @click="clearFilters"
-                                        class="flex items-center justify-center px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded text-sm font-medium hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors">
-                                        <i class="pi pi-times mr-1.5"></i>
-                                        রিসেট
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+              <select v-model="searchForm.graduation_year" class="rounded border-gray-300 px-3 py-2 bg-white shadow-sm text-sm">
+                <option value="">সব বছর</option>
+                <option v-for="year in graduationYears" :key="year" :value="year">{{ year }}</option>
+              </select>
 
-                <!-- Data Table -->
-                <div class="bg-white dark:bg-gray-800 rounded-md shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div class="px-4 py-3 flex flex-col md:flex-row items-center justify-between gap-3 border-b border-gray-200 dark:border-gray-700">
-                        <div class="text-sm text-gray-500 dark:text-gray-400">
-                            <span>মোট <span class="font-medium text-gray-700 dark:text-gray-300">{{ users.total }}</span> আবেদন</span>
-                            <span v-if="users.total > 0" class="ml-1">| পৃষ্ঠা <span class="font-medium text-gray-700 dark:text-gray-300">{{ users.current_page }}</span> / {{ users.last_page }}</span>
-                        </div>
-                        <Paginator
-                            :rows="users.per_page || 10"
-                            :totalRecords="users.total"
-                            :rowsPerPageOptions="[10, 20, 50, 100]"
-                            @page="onPage"
-                            :first="(users.current_page - 1) * users.per_page"
-                            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                            :pageLinkSize="5"
-                            class="p-paginator-sm"
-                            showCurrentPageReport
-                        />
-                    </div>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
-                            <thead class="bg-gray-50 dark:bg-gray-800/50 sticky top-0 z-10">
-                                <tr>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300 w-20">ছবি</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">নাম</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">রেজিস্ট্রেশন আইডি</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">পিতার নাম</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">জন্মতারিখ</th>
-                                    <!-- <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">রক্তের গ্রুপ</th> -->
-                                    <!-- <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">পেশা</th> -->
-                                    <!-- <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">বিভাগ</th> -->
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">জেলা</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">থানা</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">শিক্ষাগত বিভাগ</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">স্ট্যাটাস</th>
-                                    <th class="px-4 py-3 text-left font-medium text-gray-600 dark:text-gray-300">পেমেন্ট স্ট্যাটাস</th>
-                                    <th class="px-4 py-3 text-right font-medium text-gray-600 dark:text-gray-300">কার্যক্রম</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700 bg-white dark:bg-gray-800">
-                                <tr v-for="user in users.data.filter(u => u.status !== 'approved')" :key="user.id" class="hover:bg-gray-50 dark:hover:bg-gray-750 transition">
-                                    <td class="px-4 py-3">
-                                        <div class="flex items-center justify-center">
-                                            <img v-if="user.photo" 
-                                                :src="`/storage/${user.photo}`" 
-                                                :alt="user.full_name_bangla"
-                                                class="h-16 w-20 rounded-md object-cover border border-gray-200 dark:border-gray-600"
-                                                @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex';">
-                                            <div v-else class="h-16 w-20 rounded-md bg-gray-100 dark:bg-gray-700 flex items-center justify-center border border-gray-200 dark:border-gray-600">
-                                                <i class="pi pi-user text-gray-400 dark:text-gray-500 text-xl"></i>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
-                                        <span v-html="highlightMatch(user.full_name_bangla, searchForm.search)"/>
-                                    </td>
-                                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300">
-                                        <span class="font-mono text-xs bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{{ user.id }}</span>
-                                    </td>
-                                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300" v-html="highlightMatch(user.father_name, searchForm.search)" />
-                                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300">{{ user.date_of_birth || 'N/A' }}</td>
-                                    <!-- <td class="px-4 py-3 text-gray-600 dark:text-gray-300">{{ user.bloodGroup || 'N/A' }}</td> -->
-                                    <!-- <td class="px-4 py-3 text-gray-600 dark:text-gray-300" v-html="highlightMatch(user.workplace, searchForm.search)" /> -->
-                                    <!-- <td class="px-4 py-3 text-gray-600 dark:text-gray-300">{{ user.division_name || 'N/A' }}</td> -->
-                                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300">{{ user.district_name || 'N/A' }}</td>
-                                    <td class="px-4 py-3 text-gray-600 dark:text-gray-300">{{ user.thana_name || 'N/A' }}</td>
-                                    <td class="px-4 py-3">
-                                        <div class="flex flex-wrap gap-1">
-                                            <span v-if="user.dept_takmil" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
-                                                তাকমিল ({{ user.dept_takmil_year_english }})
-                                            </span>
-                                            <span v-if="user.dept_ifta" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300">
-                                                ইফতা ({{ user.dept_ifta_year_english }})
-                                            </span>
-                                            <span v-if="user.dept_hifz" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300">
-                                                হিফজ ({{ user.dept_hifz_year_english }})
-                                            </span>
-                                            <span v-if="user.dept_qirat" class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300">
-                                                কিরাআত ({{ user.dept_qirat_year_english }})
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium"
-                                            :class="getStatusBadgeClass(user.status)">
-                                            {{ getStatusText(user.status) }}
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3">
-                                        <span class="inline-flex rounded-full px-2 py-0.5 text-xs font-medium bg-yellow-50 text-yellow-700 border border-yellow-200 dark:bg-yellow-900/30 dark:text-yellow-300 dark:border-yellow-700/50">
-                                            পেন্ডিং
-                                        </span>
-                                    </td>
-                                    <td class="px-4 py-3 text-right">
-                                        <SplitButton :model="items(user)" label="" icon="pi pi-ellipsis-v" class="p-button-sm p-button-text" />
-                                    </td>
-                                </tr>
-                                <tr v-if="!users.data.filter(u => u.status !== 'approved').length">
-                                    <td colspan="13" class="px-4 py-8 text-center text-gray-500 dark:text-gray-400"><i class="pi pi-info-circle mr-1"></i> কোনো আবেদন পাওয়া যায়নি</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="px-4 py-3 border-t border-gray-200 dark:border-gray-700">
-                        <Paginator
-                            :rows="users.per_page || 10"
-                            :totalRecords="users.total"
-                            :rowsPerPageOptions="[10, 20, 50, 100]"
-                            @page="onPage"
-                            :first="(users.current_page - 1) * users.per_page"
-                            template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
-                            :pageLinkSize="5"
-                            class="p-paginator-sm"
-                            showCurrentPageReport
-                        />
-                    </div>
-                </div>
+              <select v-model="searchForm.status_filter" class="rounded border-gray-300 px-3 py-2 bg-white shadow-sm text-sm">
+                <option value="">সব স্ট্যাটাস</option>
+                <option v-for="status in statusOptions" :key="status.value" :value="status.value">{{ status.label }}</option>
+              </select>
+
+              <select v-model="searchForm.division_filter" class="rounded border-gray-300 px-3 py-2 bg-white shadow-sm text-sm">
+                <option value="">সব বিভাগ</option>
+                <option v-for="division in divisions" :key="division.id" :value="division.id">{{ division.division_name_bangla }}</option>
+              </select>
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+              <select v-model="searchForm.district_filter" :disabled="!searchForm.division_filter" class="rounded border-gray-300 px-3 py-2 bg-white shadow-sm text-sm">
+                <option value="">সব জেলা</option>
+                <option v-for="district in filteredDistricts" :key="district.id" :value="district.id">{{ district.district_name_bangla }}</option>
+              </select>
+              <select v-model="searchForm.thana_filter" :disabled="!searchForm.district_filter" class="rounded border-gray-300 px-3 py-2 bg-white shadow-sm text-sm">
+                <option value="">সব থানা</option>
+                <option v-for="thana in filteredThanas" :key="thana.id" :value="thana.id">{{ thana.thana_name_bangla }}</option>
+              </select>
+              <select v-model="searchForm.blood_group_filter" class="rounded border-gray-300 px-3 py-2 bg-white shadow-sm text-sm">
+                <option value="">সব গ্রুপ</option>
+                <option v-for="bloodGroup in bloodGroups" :key="bloodGroup" :value="bloodGroup">{{ bloodGroup }}</option>
+              </select>
+              <select v-model="searchForm.workplace_filter" class="rounded border-gray-300 px-3 py-2 bg-white shadow-sm text-sm">
+                <option value="">সব পেশা</option>
+                <option v-for="workplace in workplaces" :key="workplace" :value="workplace">{{ workplace }}</option>
+              </select>
+            </div>
+            <div class="flex gap-2 mt-4">
+              <button @click="applyFilters" class="px-6 py-2 bg-blue-600 text-white rounded font-semibold shadow hover:bg-blue-700 flex items-center gap-1">
+                <i class="pi pi-search"></i> খুঁজুন
+              </button>
+              <button @click="clearFilters" class="px-6 py-2 bg-gray-200 text-gray-700 rounded font-semibold shadow hover:bg-gray-300 flex items-center gap-1">
+                <i class="pi pi-times"></i> রিসেট
+              </button>
+            </div>
+          </div>
+          <!-- Data Table -->
+          <div class="overflow-x-auto px-4 py-4">
+            <table class="min-w-full table-auto border rounded-lg shadow-sm">
+              <thead class="bg-blue-50">
+                <tr>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">ছবি</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">নাম</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">রেজিস্ট্রেশন আইডি</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">পিতার নাম</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">জন্মতারিখ</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">জেলা</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">থানা</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">শিক্ষাগত বিভাগ</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">স্ট্যাটাস</th>
+                  <th class="px-4 py-2 text-left font-medium text-gray-600 whitespace-nowrap">পেমেন্ট স্ট্যাটাস</th>
+                  <th class="px-4 py-2 text-right font-medium text-gray-600 whitespace-nowrap">কার্যক্রম</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-100">
+                <tr v-for="user in users.data.filter(u => u.status !== 'approved')" :key="user.id" class="hover:bg-blue-50 transition">
+                  <td class="px-4 py-3">
+                    <div class="flex items-center justify-center">
+                      <img v-if="user.photo"
+                        :src="`/storage/${user.photo}`"
+                        :alt="user.full_name_bangla"
+                        class="h-10 w-10 rounded-full object-cover border border-gray-300"
+                        @error="$event.target.style.display='none'; $event.target.nextElementSibling.style.display='flex';">
+                      <div v-else class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center border border-gray-300">
+                        <i class="pi pi-user text-gray-400 text-lg"></i>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 font-semibold text-gray-900 whitespace-nowrap">
+                    <span v-html="highlightMatch(user.full_name_bangla, searchForm.search)" />
+                  </td>
+                  <td class="px-4 py-3 text-gray-600 whitespace-nowrap">
+                    <span class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">{{ user.id }}</span>
+                  </td>
+                  <td class="px-4 py-3 text-gray-600 whitespace-nowrap" v-html="highlightMatch(user.father_name, searchForm.search)" />
+                  <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ user.date_of_birth || 'N/A' }}</td>
+                  <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ user.district_name || 'N/A' }}</td>
+                  <td class="px-4 py-3 text-gray-600 whitespace-nowrap">{{ user.thana_name || 'N/A' }}</td>
+                  <td class="px-4 py-3 whitespace-nowrap">
+                    <div class="flex flex-wrap gap-1">
+                      <span v-if="user.dept_takmil" class="px-2 py-1 rounded bg-blue-600 text-white text-xs font-semibold">তাকমিল ({{ user.dept_takmil_year_english }})</span>
+                      <span v-if="user.dept_ifta" class="px-2 py-1 rounded bg-green-600 text-white text-xs font-semibold">ইফতা ({{ user.dept_ifta_year_english }})</span>
+                      <span v-if="user.dept_hifz" class="px-2 py-1 rounded bg-purple-600 text-white text-xs font-semibold">হিফজ ({{ user.dept_hifz_year_english }})</span>
+                      <span v-if="user.dept_qirat" class="px-2 py-1 rounded bg-yellow-400 text-gray-900 text-xs font-semibold">কিরাআত ({{ user.dept_qirat_year_english }})</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap">
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold"
+                      :class="getStatusBadgeClass(user.status)">
+                      {{ getStatusText(user.status) }}
+                    </span>
+                  </td>
+                  <td class="px-4 py-3 whitespace-nowrap">
+                    <span class="px-2 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700 border border-yellow-200">পেন্ডিং</span>
+                  </td>
+                  <td class="px-4 py-3 text-right whitespace-nowrap">
+                    <SplitButton :model="items(user)" label="" icon="pi pi-ellipsis-v" class=" text-white rounded py-1 px-2  transition" />
+                  </td>
+                </tr>
+                <tr v-if="!users.data.filter(u => u.status !== 'approved').length">
+                  <td colspan="11" class="px-4 py-8 text-center text-gray-500"><i class="pi pi-info-circle mr-1"></i> কোনো আবেদন পাওয়া যায়নি</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- Paginator -->
+          <div class="flex justify-between items-center px-6 py-4 border-t bg-gray-50 rounded-b-xl">
+            <div class="text-gray-600 text-sm">
+              <span>মোট <span class="font-bold text-gray-800">{{ users.total }}</span> আবেদন</span>
+              <span v-if="users.total > 0" class="ml-2">| পৃষ্ঠা <span class="font-bold text-gray-800">{{ users.current_page }}</span> / {{ users.last_page }}</span>
+            </div>
+            <Paginator
+              :rows="users.per_page || 10"
+              :totalRecords="users.total"
+              :rowsPerPageOptions="[10, 20, 50, 100]"
+              @page="onPage"
+              :first="(users.current_page - 1) * users.per_page"
+              template="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+              :pageLinkSize="5"
+              class="p-paginator-sm"
+              showCurrentPageReport
+            />
+          </div>
         </div>
-    </AuthenticatedLayout>
+      </div>
+    </div>
+  </AuthenticatedLayout>
 </template>
+<style>
+.adminlte-content-wrapper {
+  background: #ecf0f5;
+  min-height: 100vh;
+}
+.adminlte-card {
+  border-radius: 0.7rem;
+  box-shadow: 0 3px 16px rgba(44,62,80,.10);
+  margin-bottom: 2rem;
+}
+.adminlte-card-header {
+  border-radius: 0.7rem 0.7rem 0 0;
+  border-bottom: 1px solid #dee2e6;
+  box-shadow: 0 2px 6px rgba(44,62,80,.09);
+}
+.adminlte-card-body {
+  border-radius: 0 0 0.7rem 0.7rem;
+  background: #fff;
+}
+.adminlte-searchbar {
+  border-radius: 0.5rem;
+  background: #f8fafc;
+}
+.adminlte-table-wrapper {
+  border-radius: 0.5rem;
+  background: #fff;
+  overflow-x: auto;
+}
+.adminlte-table th, .adminlte-table td {
+  vertical-align: middle !important;
+  text-align: center;
+}
+.adminlte-table th {
+  font-size: 1rem;
+  font-weight: 500;
+}
+.adminlte-table tbody tr:hover {
+  background: #eaf5ff;
+  transition: background 0.12s;
+}
+.adminlte-avatar {
+  background: #f4f6f9;
+  box-shadow: 0 1px 3px rgba(44,62,80,.10);
+}
+.bg-purple {
+  background-color: #6f42c1 !important;
+  color: #fff !important;
+}
+.badge {
+  border-radius: 0.5em !important;
+  font-size: 0.97em !important;
+  padding: 0.45em 0.8em !important;
+}
+.badge-pill {
+  border-radius: 1em !important;
+}
+.fs-6 { font-size: 1rem !important; }
+.gap-1 { gap: 0.25rem !important; }
+.gap-2 { gap: 0.5rem !important; }
+.bg-warning-subtle {
+  background: #fff9db !important;
+}
+.text-warning-emphasis {
+  color: #f59e42 !important;
+}
+.adminlte-paginator {
+  border-top: 1px solid #dee2e6;
+  padding-top: 1rem;
+}
+</style>

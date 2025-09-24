@@ -189,12 +189,12 @@
                         icon="pi pi-arrow-left"
                         class="px-8 py-3 bg-gray-500 dark:bg-gray-800 border-0 shadow-lg hover:shadow-xl transition-all duration-300"
                         @click="prevStep" />
-                <Button label="পেমেন্ট করুন"
-                  icon="pi pi-credit-card"
+                <Button label="রেজিস্ট্রেশন করুন"
+                  icon="pi pi-user-plus"
                   iconPos="right"
-                  class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-bold ml-2"
+                  class="px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-700 dark:from-green-800 dark:to-emerald-900 border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-bold ml-2"
                   :loading="form.processing"
-                  @click.prevent="showPaymentModal = true" />
+                  @click.prevent="submit" />
               </div>
             </div>
           </div>
@@ -203,41 +203,47 @@
     </div>
   </div>
 
-  <!-- Payment Confirmation Modal -->
-  <div v-if="showPaymentModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-    <div class="bg-white dark:bg-gray-900 rounded-xl shadow-xl max-w-md w-full p-6 mx-2 relative">
-      <button @click="showPaymentModal = false"
-              class="absolute top-3 right-3 text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 text-xl font-bold">
-        &times;
-      </button>
-      <div class="mb-4 flex items-center">
-        <i class="pi pi-exclamation-triangle text-yellow-500 text-2xl mr-2"></i>
-        <h2 class="text-lg font-bold text-gray-900 dark:text-white">পেমেন্ট সতর্কবার্তা</h2>
-      </div>
-      <p class="text-gray-700 dark:text-gray-200 mb-4 whitespace-pre-line">
-        আপনার পেমেন্ট অফেরতযোগ্য। পেমেন্ট করার পূর্বে সকল তথ্য ভালো করে চেক করুন।
-        পেমেন্ট হলে আর কোন তথ্য সংশোধন করা যাবেনা।
 
-        আপনি কি নিশ্চিতভাবে পেমেন্ট করতে চান?
-      </p>
-  <div class="flex items-center mb-4">
-  <input id="confirmCheckbox" type="checkbox" v-model="isPaymentConfirmed"
-         class="mr-2 accent-blue-500 w-4 h-4" />
-  <label for="confirmCheckbox" class="text-gray-800 dark:text-gray-100 text-sm">
-    I have reviewed my information and agree to the <a href="/terms" class="text-blue-600 hover:underline">Terms & Conditions</a> for payment.
-  </label>
-</div>
-      <Button label="পেমেন্ট করুন"
-              icon="pi pi-credit-card"
-              iconPos="right"
-              class="w-full px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-700 dark:from-blue-800 dark:to-indigo-900 border-0 shadow-lg hover:shadow-xl transition-all duration-300 font-bold"
-              :disabled="!isPaymentConfirmed"
-              @click.prevent="handlePaymentSubmitModal" />
-    </div>
-  </div>
 </template>
 
 <script setup>
+// Step navigation and submit functions for template
+function nextStep() {
+  if (validateStep()) {
+    setTimeout(() => {
+      currentStep.value++;
+    }, 100);
+  } else {
+    const errorList = Object.values(validationErrors.value);
+    const errorMessage = errorList.length > 0 ? errorList.join(', ') : 'অনুগ্রহ করে সব তথ্য পূরণ করুন।';
+    toast.error(errorMessage, { position: "top-center", timeout: 4000 });
+  }
+}
+
+function prevStep() {
+  setTimeout(() => {
+    currentStep.value--;
+  }, 100);
+}
+
+function submit() {
+  if (validateStep()) {
+    form.post(route('register'), {
+      onSuccess: () => {
+        FormPersistence.clearAllFormData();
+        FormPersistence.saveSuccessMessage('নিবন্ধন সফল হয়েছে! স্বাগতম।');
+        toast.success('নিবন্ধন সফল হয়েছে! স্বাগতম।', { position: "top-center", timeout: 5000 });
+        form.reset();
+      },
+      onError: (errors) => {
+        const errorMessages = Object.values(errors).flat();
+        toast.error(errorMessages[0] || 'নিবন্ধন ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।', { position: "top-center", timeout: 6000 });
+      }
+    });
+  }
+}
+// Expose step handlers to template
+defineExpose({ nextStep, prevStep, submit });
 import BasicInfo from '@/Components/Auth/BasicInfo.vue';
 import EducationInfo from '@/Components/Auth/EducationInfo.vue';
 import FinalInfo from '@/Components/Auth/FinalInfo.vue';
@@ -246,73 +252,9 @@ import { ref, computed, onMounted, onUnmounted } from 'vue';
 import { useToast } from "vue-toastification";
 import { FormPersistence } from '@/Helpers/FormPersistence.js';
 import Button from 'primevue/button';
-
-onMounted(() => {
-  // SSLCommerz Sandbox script inject (for payment gateway)
-  const script = document.createElement('script');
-  script.src = 'https://sandbox.sslcommerz.com/embed.min.js?' + Math.random().toString(36).substring(7);
-  script.async = true;
-  document.body.appendChild(script);
-});
-
-const toast = useToast();
-const currentStep = ref(1);
-const validationErrors = ref({});
-const hasAttemptedValidation = ref(false);
-
-const stepItems = [
-  { label: 'ব্যক্তিগত তথ্য', icon: 'pi pi-user', description: 'আপনার ব্যক্তিগত তথ্য দিন' },
-  { label: 'শিক্ষাগত তথ্য', icon: 'pi pi-book', description: 'শিক্ষাগত যোগ্যতা ও বিভাগ' },
-  { label: 'নিরাপত্তা ও অতিরিক্ত', icon: 'pi pi-shield', description: 'পাসওয়ার্ড ও অন্যান্য তথ্য' }
-];
-
-// Responsive icon size
-const windowWidth = ref(typeof window !== "undefined" ? window.innerWidth : 1280);
-const stepIconSize = computed(() => windowWidth.value < 400 ? '1.2rem' : windowWidth.value < 700 ? '1.5rem' : '2rem');
-
-if (typeof window !== "undefined") {
-  window.addEventListener("resize", () => {
-    windowWidth.value = window.innerWidth;
-  });
-}
-
-const totalSteps = 3;
-const progressPercentage = computed(() => {
-  return Math.round((currentStep.value / totalSteps) * 100);
-});
-
-const stepCompletionStatus = computed(() => {
-  const step1Complete = form.fullNameBangla && form.fullNameEnglish && form.fatherName && form.email && form.phoneNumber && form.dateOfBirth && form.classmate1 && form.classmate2 && form.classmate3;
-  const isRollNumberValid = !form.examType || form.examType === 'জানা নেই' || form.rollNumber;
-  const step2Complete = (form.dept_takmil || form.dept_ifta || form.dept_hifz || form.dept_qirat || form.dept_adab || form.dept_other) &&
-                        form.examType && isRollNumberValid && form.idType;
-  const step3Complete = form.password && form.password_confirmation;
-
-  return {
-    1: step1Complete,
-    2: step2Complete && step1Complete,
-    3: step3Complete && step2Complete && step1Complete
-  };
-});
-
-const stepCompletionPercentage = computed(() => {
-  const step1Fields = ['fullNameBangla', 'fullNameEnglish', 'fatherName', 'email', 'phoneNumber', 'dateOfBirth', 'address', 'division', 'district', 'thana', 'classmate1', 'classmate2', 'classmate3'];
-  let step2Fields = ['examType', 'idType'];
-  if (form.examType && form.examType !== 'জানা নেই') {
-    step2Fields.push('rollNumber');
-  }
-  const step3Fields = ['password', 'password_confirmation'];
-  const getFieldsCompletion = (fields) => {
-    const completed = fields.filter(field => form[field] && form[field] !== '').length;
-    return Math.round((completed / fields.length) * 100);
-  };
-  const deptCompletion = (form.dept_takmil || form.dept_ifta || form.dept_hifz || form.dept_qirat || form.dept_adab || form.dept_other) ? 100 : 0;
-  return {
-    1: getFieldsCompletion(step1Fields),
-    2: Math.round((getFieldsCompletion(step2Fields) + deptCompletion) / 2),
-    3: getFieldsCompletion(step3Fields)
-  };
-});
+import { useStep } from '@/Pages/Auth/composables/useStep.js';
+import { useValidation } from '@/Pages/Auth/composables/useValidation.js';
+import { useKeyboard } from '@/Pages/Auth/composables/useKeyboard.js';
 
 const form = useForm({
   fullNameBangla: '',
@@ -370,108 +312,24 @@ const props = defineProps({
   custom_code: String
 });
 
-const validateStep = () => {
-  validationErrors.value = {};
-  hasAttemptedValidation.value = true;
+const toast = useToast();
+const {
+  currentStep,
+  totalSteps,
+  progressPercentage,
+  stepItems,
+  windowWidth,
+  stepIconSize,
+  stepCompletionStatus,
+  stepCompletionPercentage
+} = useStep(form);
 
-  if (currentStep.value === 1) {
-    if (!form.fullNameBangla) validationErrors.value.fullNameBangla = 'বাংলা নাম প্রয়োজন';
-    if (!form.fullNameEnglish) validationErrors.value.fullNameEnglish = 'ইংরেজি নাম প্রয়োজন';
-    if (!form.fatherName) validationErrors.value.fatherName = 'বাবার নাম প্রয়োজন';
-    if (!form.email) validationErrors.value.email = 'ইমেইল ঠিকানা প্রয়োজন';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) validationErrors.value.email = 'সঠিক ইমেইল ঠিকানা লিখুন';
-    if (!form.phoneNumber) validationErrors.value.phoneNumber = 'ফোন নম্বর প্রয়োজন';
-    else if (form.phoneNumber.trim().length !== 11) validationErrors.value.phoneNumber = 'ফোন নম্বর অবশ্যই ১১ সংখ্যার হতে হবে';
-    else if (!/^[0-9]+$/.test(form.phoneNumber.trim())) validationErrors.value.phoneNumber = 'ফোন নম্বরে শুধুমাত্র সংখ্যা থাকবে';
-    if (!form.dateOfBirth) validationErrors.value.dateOfBirth = 'জন্মতারিখ প্রয়োজন';
-    if (!form.address) validationErrors.value.address = 'ঠিকানা প্রয়োজন';
-    if (!form.division) validationErrors.value.division = 'বিভাগ নির্বাচন করুন';
-    if (!form.district) validationErrors.value.district = 'জেলা নির্বাচন করুন';
-    if (!form.thana) validationErrors.value.thana = 'থানা নির্বাচন করুন';
-    if (!form.classmate1) validationErrors.value.classmate1 = 'সহপাঠী ১ এর নাম প্রয়োজন';
-    if (!form.classmate2) validationErrors.value.classmate2 = 'সহপাঠী ২ এর নাম প্রয়োজন';
-    if (!form.classmate3) validationErrors.value.classmate3 = 'সহপাঠী ৩ এর নাম প্রয়োজন';
-    return Object.keys(validationErrors.value).length === 0;
-  }
-  if (currentStep.value === 2) {
-    const hasAnyDepartment =
-      form.dept_takmil ||
-      form.dept_ifta ||
-      form.dept_hifz ||
-      form.dept_qirat ||
-      form.dept_adab ||
-      form.dept_other;
-    const isRollNumberValid = !form.examType || form.examType === 'জানা নেই' || form.rollNumber;
-    if (!form.examType) validationErrors.value.examType = 'পরীক্ষার ধরন নির্বাচন করুন';
-    if (form.examType && form.examType !== 'জানা নেই' && !form.rollNumber) validationErrors.value.rollNumber = 'রোল নাম্বার লিখুন';
-    if (!form.idType) validationErrors.value.idType = 'পরিচয়পত্রের ধরন নির্বাচন করুন';
-    if (!hasAnyDepartment) validationErrors.value.departments = 'অন্তত একটি বিভাগ নির্বাচন করুন';
-    if (form.idType === 'birth') {
-      if (!form.birthCertificate) validationErrors.value.birthCertificate = 'জন্মনিবন্ধন নম্বর লিখুন';
-      else if (form.birthCertificate.length !== 17) validationErrors.value.birthCertificate = 'জন্মনিবন্ধন নম্বর অবশ্যই ১৭ সংখ্যার হতে হবে';
-      else if (!/^[0-9]+$/.test(form.birthCertificate)) validationErrors.value.birthCertificate = 'জন্মনিবন্ধন নম্বরে শুধুমাত্র সংখ্যা থাকবে';
-      if (!form.birthCertificatePhoto) validationErrors.value.birthCertificatePhoto = 'জন্মনিবন্ধন ছবি আপলোড করুন';
-    }
-    if (form.idType === 'voter') {
-      if (!form.voterId) validationErrors.value.voterId = 'ভোটার আইডি নম্বর লিখুন';
-      else if (form.voterId.length !== 10 && form.voterId.length !== 17) validationErrors.value.voterId = 'ভোটার আইডি নম্বর অবশ্যই ১০ বা ১৭ সংখ্যার হতে হবে';
-      else if (!/^[0-9]+$/.test(form.voterId)) validationErrors.value.voterId = 'ভোটার আইডি নম্বরে শুধুমাত্র সংখ্যা থাকবে';
-      if (!form.voterIdPhoto) validationErrors.value.voterIdPhoto = 'ভোটার আইডি ছবি আপলোড করুন';
-    }
-    if (form.idType === 'passport') {
-      if (!form.passport_id) validationErrors.value.passport_id = 'পাসপোর্ট নম্বর লিখুন';
-      if (!form.passport_photo || 
-          (typeof form.passport_photo === 'string' && form.passport_photo.trim() === '') ||
-          (typeof form.passport_photo === 'object' && form.passport_photo.size === 0)) {
-        validationErrors.value.passport_photo = 'পাসপোর্টের ছবি আপলোড করুন';
-      }
-    }
-    return Object.keys(validationErrors.value).length === 0;
-  }
-  if (currentStep.value === 3) {
-    if (!form.password) validationErrors.value.password = 'পাসওয়ার্ড প্রয়োজন';
-    else if (form.password.length < 8) validationErrors.value.password = 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষর হতে হবে';
-    if (!form.password_confirmation) validationErrors.value.password_confirmation = 'পাসওয়ার্ড নিশ্চিতকরণ প্রয়োজন';
-    else if (form.password !== form.password_confirmation) validationErrors.value.password_confirmation = 'পাসওয়ার্ড মিলছে না';
-    return Object.keys(validationErrors.value).length === 0;
-  }
-  return true;
-};
+const {
+  validationErrors,
+  hasAttemptedValidation,
+  validateStep
+} = useValidation(form, currentStep);
 
-const nextStep = () => {
-  if (validateStep()) {
-    setTimeout(() => {
-      currentStep.value++;
-    }, 100);
-  } else {
-    const errorList = Object.values(validationErrors.value);
-    const errorMessage = errorList.length > 0 ? errorList.join(', ') : 'অনুগ্রহ করে সব তথ্য পূরণ করুন।';
-    toast.error(errorMessage, { position: "top-center", timeout: 4000 });
-  }
-};
-
-const prevStep = () => {
-  setTimeout(() => {
-    currentStep.value--;
-  }, 100);
-};
-
-const submit = () => {
-  if (validateStep()) {
-    form.post(route('register'), {
-      onSuccess: () => {
-        FormPersistence.clearAllFormData();
-        FormPersistence.saveSuccessMessage('নিবন্ধন সফল হয়েছে! স্বাগতম।');
-        toast.success('নিবন্ধন সফল হয়েছে! স্বাগতম।', { position: "top-center", timeout: 5000 });
-        form.reset();
-      },
-      onError: (errors) => {
-        const errorMessages = Object.values(errors).flat();
-        toast.error(errorMessages[0] || 'নিবন্ধন ব্যর্থ হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।', { position: "top-center", timeout: 6000 });
-      }
-    });
-  }
-};
 
 // Payment Modal State and handler
 const showPaymentModal = ref(false);

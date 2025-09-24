@@ -69,14 +69,14 @@ const fetchDashboardData = async () => {
     }
 };
 
-const fetchNotices = async () => {
-    try {
-        const res = await axios.get('/api/admin/notices');
-        notices.value = res.data.notices;
-    } catch (e) {
-        console.error('Notices fetch error:', e);
-    }
-};
+// const fetchNotices = async () => {
+//     try {
+//         const res = await axios.get('/api/admin/notices');
+//         notices.value = res.data.notices;
+//     } catch (e) {
+//         console.error('Notices fetch error:', e);
+//     }
+// };
 
 const onYearChange = () => {
     loading.value = true;
