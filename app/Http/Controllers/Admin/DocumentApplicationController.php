@@ -81,15 +81,6 @@ protected DocumentApplicationService $documentApplicationService;
     }
 
 
-
-
-
-
-
-
-
-
-
     /**
      * Show user details
      */

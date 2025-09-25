@@ -97,22 +97,7 @@ Route::prefix('test-years')->group(function () {
     Route::post('/convert',[TestYearController::class, 'convertYear'])->name('test.years.convert');
 });
 
-/**
- * ---------------------------------------------
- * SSLCommerz Payment Routes
- * ---------------------------------------------
- */
-// Example pages
-Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);
-Route::get('/example2', [SslCommerzPaymentController::class, 'exampleHostedCheckout']);
 
-// Payment result routes
-Route::match(['GET', 'POST'], '/success', [SslCommerzPaymentController::class, 'success'])->name('payment.success');
-Route::match(['GET', 'POST'], '/fail',    [SslCommerzPaymentController::class, 'fail'])->name('payment.fail');
-Route::match(['GET', 'POST'], '/cancel',  [SslCommerzPaymentController::class, 'cancel'])->name('payment.cancel');
-Route::post('/ipn', [SslCommerzPaymentController::class, 'ipn'])->name('payment.ipn');
-Route::post('/pay', [SslCommerzPaymentController::class, 'index']);
-Route::post('/pay-via-ajax', [SslCommerzPaymentController::class, 'payViaAjax'])->name('pay-via-ajax');
 
 
 

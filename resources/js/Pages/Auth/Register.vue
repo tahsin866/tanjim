@@ -341,43 +341,7 @@ const handlePaymentSubmitModal = async () => {
   await handlePaymentSubmit();
 };
 
-const handlePaymentSubmit = async () => {
-  // ফর্ম ডাটা তৈরি করুন
-  const formData = new FormData();
-  const booleanFields = [
-    'dept_takmil', 'dept_ifta', 'dept_hifz', 'dept_qirat', 'dept_adab', 'dept_other'
-  ];
-  Object.keys(form).forEach(key => {
-    if (form[key] instanceof File && form[key] !== null) {
-      formData.append(key, form[key]);
-    } else if (booleanFields.includes(key)) {
-      formData.append(key, form[key] ? 1 : 0);
-    } else {
-      formData.append(key, form[key] ?? '');
-    }
-  });
 
-  try {
-    const response = await axios.post('/pay-via-ajax', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-
-    if (response.data.success && response.data.redirect_url) {
-      window.location.href = response.data.redirect_url;
-    } else {
-      alert(response.data.message || 'Payment initiation failed');
-    }
-  } catch (error) {
-    console.error('Payment error:', error);
-    if (error.response && error.response.data && error.response.data.message) {
-      alert(error.response.data.message);
-    } else {
-      alert('An error occurred during payment processing');
-    }
-  }
-};
 
 const handleKeyboard = (event) => {
   if (event.altKey && event.key === 'ArrowRight' && currentStep.value < totalSteps) {

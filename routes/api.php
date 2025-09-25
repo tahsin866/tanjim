@@ -12,3 +12,8 @@ use App\Http\Controllers\Admin\DashboardController;
 
 // Stats API for live user info
 Route::get('api/stats', [App\Http\Controllers\StatsController::class, 'getStats']);
+
+// Admin dashboard stats
+Route::get('/api/admin/dashboard-stats', [App\Http\Controllers\Admin\DashboardController::class, 'dashboardStats']);
+// Admin dashboard notices (uncomment if needed)
+// Route::get('/api/admin/notices', [App\Http\Controllers\Admin\DashboardController::class, 'notices']);

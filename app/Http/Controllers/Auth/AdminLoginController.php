@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\RedirectResponse;
 use Inertia\Inertia;
 use Inertia\Response;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AdminLoginController extends Controller
 {
@@ -23,39 +24,32 @@ class AdminLoginController extends Controller
     /**
      * Handle admin login request.
      */
-    public function login(Request $request): RedirectResponse
+    public function login(Request $request)
     {
         $this->validator($request->all())->validate();
 
         $credentials = $request->only('email', 'password');
-        $remember = $request->boolean('remember');
 
-if (Auth::guard('admin')->attempt($credentials, $remember)) {
-    $admin = Auth::guard('admin')->user();
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $admin = Auth::guard('admin')->user();
 
-    // Check if admin is active
-    if (!$admin->is_active) {
-        Auth::guard('admin')->logout();
-        return back()->withErrors(['email' => 'Your account is inactive.']);
-    }
+            // Check if admin is active
+            if (!$admin->is_active) {
+                Auth::guard('admin')->logout();
+                return back()->withErrors(['email' => 'Your account is inactive.'])->onlyInput('email');
+            }
 
-    // Retrieve the Eloquent admin model to update last login info
-    $adminModel = \App\Models\Admin::find($admin->id);
-    if ($adminModel) {
-        $adminModel->last_login_at = now();
-        $adminModel->last_login_ip = $request->ip();
-        $adminModel->save();
-    }
+            // Generate JWT token for API calls (optional)
+            $token = JWTAuth::fromUser($admin);
+            
+            // Store token in session for API usage if needed
+            session(['admin_token' => $token]);
 
-    $request->session()->regenerate();
+            // Redirect to dashboard instead of rendering - this ensures proper middleware pipeline
+            return redirect()->route('admin.admin_Dashboard');
+        }
 
-    return redirect()->intended(route('admin.admin_Dashboard'))
-        ->with('success', 'Welcome back, ' . $admin->name);
-}
-
-        return back()->withErrors([
-            'email' => 'The provided credentials do not match our records.',
-        ])->onlyInput('email');
+        return back()->withErrors(['email' => 'Invalid credentials'])->onlyInput('email');
     }
 
     /**

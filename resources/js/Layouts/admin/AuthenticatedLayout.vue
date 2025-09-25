@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import Dropdown from '@/Components/admin/Dropdown.vue';
 import DropdownLink from '@/Components/admin/DropdownLink.vue';
 import { Link, usePage } from '@inertiajs/vue3';
+import axios from 'axios';
 
 // Sidebar state
 const showSidebar = ref(false);
@@ -60,6 +61,13 @@ const setSelected = (item) => {
     selectedItem.value = item;
 }
 
+// Ensure dropdowns show after login if admin object is present
+onMounted(() => {
+    if (page.props.auth && page.props.auth.admin) {
+        selectedItem.value = 'admin_dashboard';
+    }
+});
+
 // Permission checking helper
 const hasPermission = (permission) => {
     const admin = page.props.auth?.admin;
@@ -107,6 +115,13 @@ const hasModuleAccess = (module) => {
     }
     return false;
 }
+
+// Axios request interceptor to add Authorization header
+axios.interceptors.request.use(config => {
+  const token = localStorage.getItem('admin_token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 </script>
 
 <template>
@@ -129,13 +144,13 @@ const hasModuleAccess = (module) => {
                 </div>
             </div>
             <nav style="font-family: 'Merriweather','SolaimanLipi',sans-serif;" class="max-h-[calc(100vh-4rem)] mt-4 overflow-y-auto custom-scrollbar space-y-2">
-                <Link :href="route('admin.admin_Dashboard')" class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2">
+                <Link v-if="$page.props.auth" :href="route('admin.admin_Dashboard')" class="flex text-lg gap-2 hover:bg-gray-700 items-center px-4 py-2">
                     <i class="h-6 text-sm w-6 fa-mosque fas"></i>
-                    তানজিম ড্যাশবোর্ড
+                    ড্যাশবোর্ড
                 </Link>
 
                 <!-- Admin User Management - Only for Super Admin -->
-                <div v-if="$page.props.auth.admin?.role === 'super_admin' || $page.props.auth.admin?.designation == 1">
+                <div v-if="$page.props.auth && $page.props.auth.admin && ($page.props.auth.admin.role === 'super_admin' || $page.props.auth.admin.designation == 1)">
                     <button @click="dropdownOpen.admin_management = !dropdownOpen.admin_management"
                         class="flex justify-between text-lg w-full hover:bg-gray-700 items-center px-4 py-2">
                         <div class="flex gap-2 items-center">
@@ -206,7 +221,7 @@ const hasModuleAccess = (module) => {
                 </div> -->
 
                 <!-- দস্তরবন্দি ব্যবস্থাপনা -->
-                <div v-if="hasModuleAccess('document_management')">
+                <div v-if="$page.props.auth && $page.props.auth.admin && hasModuleAccess('document_management')">
                     <button @click="dropdownOpen.document_management = !dropdownOpen.document_management"
                         class="flex justify-between text-lg w-full hover:bg-gray-700 items-center px-4 py-2">
                         <div class="flex gap-2 items-center">
@@ -265,7 +280,7 @@ const hasModuleAccess = (module) => {
                 </div>
 
                 <!-- আবেদন ব্যবস্থাপনা -->
-                <div v-if="hasModuleAccess('application_management')">
+                <div v-if="$page.props.auth && $page.props.auth.admin && hasModuleAccess('application_management')">
                     <button @click="dropdownOpen.application_management = !dropdownOpen.application_management"
                         class="flex justify-between text-lg w-full hover:bg-gray-700 items-center px-4 py-2">
                         <div class="flex gap-2 items-center">
@@ -306,7 +321,7 @@ const hasModuleAccess = (module) => {
                 </div>
 
                 <!-- অনুদান ব্যবস্থাপনা -->
-                <div v-if="hasModuleAccess('grant_management')">
+                <div v-if="$page.props.auth && $page.props.auth.admin && hasModuleAccess('grant_management')">
                     <button @click="dropdownOpen.grant_management = !dropdownOpen.grant_management"
                         class="flex justify-between text-lg w-full hover:bg-gray-700 items-center px-4 py-2">
                         <div class="flex gap-2 items-center">
@@ -407,14 +422,14 @@ const hasModuleAccess = (module) => {
                                     <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
                                         <div class="flex items-center">
                                             <div class="mr-2 h-8 w-8 rounded-full overflow-hidden border border-gray-200">
-                                                <img v-if="$page.props.auth.admin.profile_image" :src="`/storage/${$page.props.auth.admin.profile_image}`" alt="Profile" class="h-full w-full object-cover">
+                                                <img v-if="$page.props.auth.admin && $page.props.auth.admin.profile_image" :src="`/storage/${$page.props.auth.admin.profile_image}`" alt="Profile" class="h-full w-full object-cover">
                                                 <div v-else class="h-full w-full flex items-center justify-center bg-gray-100 text-gray-600">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                     </svg>
                                                 </div>
                                             </div>
-                                            <div class="hidden sm:block">
+                                            <div class="hidden sm:block" v-if="$page.props.auth.admin">
                                                 <div>{{ $page.props.auth.admin.name }}</div>
                                                 <div class="text-xs text-gray-500">
                                                     <span class="px-2 py-0.5 rounded-full text-xs" :class="{

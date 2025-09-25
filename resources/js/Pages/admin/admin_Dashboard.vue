@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import axios from 'axios';
+import axios from '@/axios';
 import dashboard_card from '../dashboard-component/dashboard_card.vue';
 import MonthlyTrendChart from '../dashboard-component/MonthlyTrendChart.vue';
 import AuthenticatedLayout from '@/Layouts/admin/AuthenticatedLayout.vue';
@@ -226,7 +226,7 @@ const getNoticeTypeClass = (type) => {
                                     </td>
                                 </tr>
                             </tfoot>
-                        </table>
+                        </table>n
                     </div>
                 </div>                <!-- Payment Overview -->
                 <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6">

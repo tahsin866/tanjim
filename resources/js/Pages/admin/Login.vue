@@ -14,6 +14,12 @@ const form = useForm({
 
 const submit = () => {
     form.post(route('admin.login'), {
+        onSuccess: (page) => {
+            // If token exists in response, save to localStorage
+            if (page.props && page.props.token) {
+                localStorage.setItem('admin_token', page.props.token);
+            }
+        },
         onFinish: () => form.reset('password'),
     });
 };
